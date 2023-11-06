@@ -17,7 +17,9 @@ public class App extends Object implements AppInterface<String>
         System.out.println("Cat name:"+name);
         System.out.println("Cat age:"+age);
         System.out.println("Cat bree:"+breed);
-         return "abd,12,uebf";
+
+        return "abdbf";
+         
     }
 
     public String printAddress(String address){
@@ -25,5 +27,7 @@ public class App extends Object implements AppInterface<String>
         return "abd,12,uebf";
 
     }
+
+    
 }
 

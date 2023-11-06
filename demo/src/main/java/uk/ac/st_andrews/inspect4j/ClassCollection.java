@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -41,7 +40,9 @@ public class ClassCollection {
             @Override
             public void visit(ClassOrInterfaceDeclaration cd, List<Class> collection) { 
                 super.visit(cd,collection);
-                collection.add(new Class(cd.getNameAsString(),cd.getTypeParameters(), cd.getImplementedTypes(), cd.getExtendedTypes()));
+                collection.add(new Class(cd.getNameAsString(),cd.getTypeParameters(), cd.getImplementedTypes(), cd.getExtendedTypes(), cd.isInnerClass(), 
+                cd.isLocalClassDeclaration(), cd.getBegin().get().line, cd.getEnd().get().line));
+                //isInnerClass only picks up on non-static nested classes
             }
 
     }

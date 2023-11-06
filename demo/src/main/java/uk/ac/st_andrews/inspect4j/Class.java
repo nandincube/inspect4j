@@ -1,5 +1,6 @@
 package uk.ac.st_andrews.inspect4j;
 
+
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
@@ -9,13 +10,23 @@ public class Class {
     private NodeList<TypeParameter> typeParams;
     private NodeList<ClassOrInterfaceType> implInterfaces;
     private NodeList<ClassOrInterfaceType> superClasses;
+    private boolean isInnerClass;
+    private boolean isLocalClass;
+    private int lineMin;
+    private int lineMax;
 
+ 
 
-    public Class(String name, NodeList<TypeParameter> typeParams, NodeList<ClassOrInterfaceType> implInterfaces, NodeList<ClassOrInterfaceType> superClasses) {
+    public Class(String name, NodeList<TypeParameter> typeParams, NodeList<ClassOrInterfaceType> implInterfaces, NodeList<ClassOrInterfaceType> superClasses, boolean isInnerClass,
+     boolean isLocalClass, int lineMin, int lineMax ) {
         this.name = name;
         this.typeParams = typeParams;
         this.implInterfaces = implInterfaces;
         this.superClasses = superClasses;
+        this.isInnerClass = isInnerClass;
+        this.isLocalClass =  isLocalClass;
+        this.lineMin = lineMin;
+        this.lineMax = lineMax;
     }
 
     public String getName() {
@@ -50,10 +61,43 @@ public class Class {
         this.superClasses = superClasses;
     }
 
+    public boolean isInnerClass() {
+        return isInnerClass;
+    }
+
+    public void setInnerClass(boolean isInnerClass) {
+        this.isInnerClass = isInnerClass;
+    }
+
+    public boolean isLocalClass() {
+        return isLocalClass;
+    }
+
+    public void setLocalClass(boolean isLocalClass) {
+        this.isLocalClass = isLocalClass;
+    }
+
+    public int getLineMin() {
+        return lineMin;
+    }
+
+    public void setLineMin(int lineMin) {
+        this.lineMin = lineMin;
+    }
+
+    public int getLineMax() {
+        return lineMax;
+    }
+
+    public void setLineMax(int lineMax) {
+        this.lineMax = lineMax;
+    }
+
     @Override
     public String toString() {
         return "Class [name=" + name + ", typeParams=" + typeParams + ", implInterfaces=" + implInterfaces
-                + ", superClasses=" + superClasses + "]";
+                + ", superClasses=" + superClasses + ", isInnerClass=" + isInnerClass + ", isLocalClass=" + isLocalClass
+                + ", lineMin=" + lineMin + ", lineMax=" + lineMax + "]\n";
     }
 
 }

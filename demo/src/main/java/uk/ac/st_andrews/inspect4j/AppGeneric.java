@@ -4,11 +4,17 @@ import java.util.List;
 
 public class AppGeneric<T> {
 
-     public String cat(String name, int age, String breed, List<String> list){
+     public String[] cat(String name, int age, String breed, List<String> list){
         System.out.println("Cat name:"+name);
         System.out.println("Cat age:"+age);
         System.out.println("Cat bree:"+breed);
-         return "abd,12,uebf";
+        
+        if(name.length() > 5){
+            String[] ar1 = {"i","efwef"};
+            return ar1;
+        }
+        String[] ar2 = {"i","5"};
+        return ar2;     
     }
 
     public String printAddress(String address){
