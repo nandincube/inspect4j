@@ -22,6 +22,17 @@ public class App extends Object implements AppInterface<String>
          
     }
 
+    public String bat(String name, int age, String breed, List<String> list){
+        System.out.println("Bat name:"+name);
+        System.out.println("Bat age:"+age);
+        System.out.println("Bat bree:"+breed);
+
+        return "Bat";
+         
+    }
+
+    
+
     public String printAddress(String address){
         System.out.println("Address: "+address);
         return "abd,12,uebf";

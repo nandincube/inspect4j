@@ -9,11 +9,11 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class InterfaceCollection {
-    private ArrayList<Class> classes;
+    private ArrayList<Interface> interfaces;
     private CompilationUnit ast;
 
     public InterfaceCollection(CompilationUnit ast){
-        this.classes = new ArrayList<>();
+        this.interfaces = new ArrayList<>();
         this.ast = ast;
     }
 
@@ -26,22 +26,24 @@ public class InterfaceCollection {
 
     
     private void printMetadata(){
-        classes.forEach(x -> System.out.println(x.toString()));
+        interfaces.forEach(x -> System.out.println(x.toString()));
     }
 
     
     private void getDeclarationInfo(){
-        VoidVisitor<List<Class>> classDefCollector = new ClassDefinitionCollector();
-        classDefCollector.visit(ast, classes);
+        VoidVisitor<List<Interface>> interfaceDefCollector = new InterfaceDefinitionCollector();
+        interfaceDefCollector.visit(ast, interfaces);
 
     }
 
-    private static class ClassDefinitionCollector extends VoidVisitorAdapter<List<Class>> {
-            @Override
-            public void visit(ClassOrInterfaceDeclaration cd, List<Class> collection) { 
-                super.visit(cd,collection);
-                //collection.add(new Interface(cd.getNameAsString(),cd.getTypeParameters(), cd.getImplementedTypes(), cd.getExtendedTypes()));
+    private static class InterfaceDefinitionCollector extends VoidVisitorAdapter<List<Interface>> {
+        @Override
+        public void visit(ClassOrInterfaceDeclaration id, List<Interface> collection) { 
+            super.visit(id,collection);
+            if(id.isInterface()){
+                collection.add(new Interface(id.getNameAsString(), id.getExtendedTypes(), id.getTypeParameters()));
             }
+        }
 
     }
 }

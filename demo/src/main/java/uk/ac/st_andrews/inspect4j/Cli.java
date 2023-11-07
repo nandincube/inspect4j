@@ -17,8 +17,10 @@ public class Cli {
         methods.getMetadata();
         ClassCollection classes = new ClassCollection(ast.getFullTree());
         classes.getMetadata();
-
-
+        InterfaceCollection interfaces = new InterfaceCollection(ast.getFullTree());
+        interfaces.getMetadata();
+        VariableCollection variables = new VariableCollection(ast.getFullTree());
+        variables.getMetadata();
     }
 
     public String getPath() {

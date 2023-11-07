@@ -40,9 +40,12 @@ public class ClassCollection {
             @Override
             public void visit(ClassOrInterfaceDeclaration cd, List<Class> collection) { 
                 super.visit(cd,collection);
-                collection.add(new Class(cd.getNameAsString(),cd.getTypeParameters(), cd.getImplementedTypes(), cd.getExtendedTypes(), cd.isInnerClass(), 
-                cd.isLocalClassDeclaration(), cd.getBegin().get().line, cd.getEnd().get().line));
-                //isInnerClass only picks up on non-static nested classes
+                if(!cd.isInterface()){
+                    collection.add(new Class(cd.getNameAsString(),cd.getTypeParameters(), cd.getImplementedTypes(), cd.getExtendedTypes(), cd.isInnerClass(), 
+                    cd.isLocalClassDeclaration(), cd.getBegin().get().line, cd.getEnd().get().line));
+                    //isInnerClass only picks up on non-static nested classes
+                }
+              
             }
 
     }

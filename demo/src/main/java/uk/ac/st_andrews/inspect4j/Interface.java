@@ -6,16 +6,14 @@ import com.github.javaparser.ast.type.TypeParameter;
 
 public class Interface {
     private String name;
+    private NodeList<ClassOrInterfaceType> extendedInterfaces;
     private NodeList<TypeParameter> typeParams;
-    private NodeList<ClassOrInterfaceType> implInterfaces;
-    private NodeList<ClassOrInterfaceType> superClasses;
 
 
-    public Interface(String name, NodeList<TypeParameter> typeParams, NodeList<ClassOrInterfaceType> implInterfaces, NodeList<ClassOrInterfaceType> superClasses) {
+    public Interface(String name, NodeList<ClassOrInterfaceType> extendedInterfaces, NodeList<TypeParameter> typeParams) {
         this.name = name;
+        this.extendedInterfaces = extendedInterfaces;
         this.typeParams = typeParams;
-        this.implInterfaces = implInterfaces;
-        this.superClasses = superClasses;
     }
 
     public String getName() {
@@ -26,6 +24,14 @@ public class Interface {
         this.name = name;
     }
 
+    public NodeList<ClassOrInterfaceType> getExtendedInterfaces() {
+        return extendedInterfaces;
+    }
+
+    public void setExtendedInterfaces(NodeList<ClassOrInterfaceType> extendedInterfaces) {
+        this.extendedInterfaces = extendedInterfaces;
+    }
+
     public NodeList<TypeParameter> getTypeParams() {
         return typeParams;
     }
@@ -34,26 +40,10 @@ public class Interface {
         this.typeParams = typeParams;
     }
 
-    public NodeList<ClassOrInterfaceType> getImplInterfaces() {
-        return implInterfaces;
-    }
-
-    public void setImplInterfaces(NodeList<ClassOrInterfaceType> implInterfaces) {
-        this.implInterfaces = implInterfaces;
-    }
-
-    public NodeList<ClassOrInterfaceType> getSuperClasses() {
-        return superClasses;
-    }
-
-    public void setSuperClasses(NodeList<ClassOrInterfaceType> superClasses) {
-        this.superClasses = superClasses;
-    }
-
     @Override
     public String toString() {
-        return "Class [name=" + name + ", typeParams=" + typeParams + ", implInterfaces=" + implInterfaces
-                + ", superClasses=" + superClasses + "]";
+        return "Interface [name=" + name + ", extendedInterfaces=" + extendedInterfaces + ", typeParams=" + typeParams + "]";
     }
 
+    
 }

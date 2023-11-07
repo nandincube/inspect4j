@@ -2,7 +2,6 @@ package uk.ac.st_andrews.inspect4j;
 
 import java.util.List;
 
-import com.github.javaparser.Position;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.stmt.ReturnStmt;

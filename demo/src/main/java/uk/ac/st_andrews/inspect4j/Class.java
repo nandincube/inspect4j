@@ -8,7 +8,7 @@ import com.github.javaparser.ast.type.TypeParameter;
 public class Class {
     private String name;
     private NodeList<TypeParameter> typeParams;
-    private NodeList<ClassOrInterfaceType> implInterfaces;
+    private NodeList<ClassOrInterfaceType> implementedInterfaces;
     private NodeList<ClassOrInterfaceType> superClasses;
     private boolean isInnerClass;
     private boolean isLocalClass;
@@ -17,11 +17,11 @@ public class Class {
 
  
 
-    public Class(String name, NodeList<TypeParameter> typeParams, NodeList<ClassOrInterfaceType> implInterfaces, NodeList<ClassOrInterfaceType> superClasses, boolean isInnerClass,
+    public Class(String name, NodeList<TypeParameter> typeParams, NodeList<ClassOrInterfaceType> implementedInterfaces, NodeList<ClassOrInterfaceType> superClasses, boolean isInnerClass,
      boolean isLocalClass, int lineMin, int lineMax ) {
         this.name = name;
         this.typeParams = typeParams;
-        this.implInterfaces = implInterfaces;
+        this.implementedInterfaces = implementedInterfaces;
         this.superClasses = superClasses;
         this.isInnerClass = isInnerClass;
         this.isLocalClass =  isLocalClass;
@@ -45,12 +45,12 @@ public class Class {
         this.typeParams = typeParams;
     }
 
-    public NodeList<ClassOrInterfaceType> getImplInterfaces() {
-        return implInterfaces;
+    public NodeList<ClassOrInterfaceType> getimplementedInterfaces() {
+        return implementedInterfaces;
     }
 
-    public void setImplInterfaces(NodeList<ClassOrInterfaceType> implInterfaces) {
-        this.implInterfaces = implInterfaces;
+    public void setimplementedInterfaces(NodeList<ClassOrInterfaceType> implementedInterfaces) {
+        this.implementedInterfaces = implementedInterfaces;
     }
 
     public NodeList<ClassOrInterfaceType> getSuperClasses() {
@@ -95,7 +95,7 @@ public class Class {
 
     @Override
     public String toString() {
-        return "Class [name=" + name + ", typeParams=" + typeParams + ", implInterfaces=" + implInterfaces
+        return "Class [name=" + name + ", typeParams=" + typeParams + ", implementedInterfaces=" + implementedInterfaces
                 + ", superClasses=" + superClasses + ", isInnerClass=" + isInnerClass + ", isLocalClass=" + isLocalClass
                 + ", lineMin=" + lineMin + ", lineMax=" + lineMax + "]\n";
     }
