@@ -10,7 +10,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class ClassCollection {
     private ArrayList<Class> classes;
-    private CompilationUnit ast;
+    private transient CompilationUnit ast;
 
     public ClassCollection(CompilationUnit ast){
         this.classes = new ArrayList<>();
@@ -24,8 +24,12 @@ public class ClassCollection {
         printMetadata();
     }
 
+    public void extractMetadata(){
+        getDeclarationInfo();
+
+    }
     
-    private void printMetadata(){
+    public void printMetadata(){
         classes.forEach(x -> System.out.println(x.toString()));
     }
 
@@ -36,17 +40,42 @@ public class ClassCollection {
 
     }
 
+    public void addMethods(MethodCollection md){
+        classes.forEach(x-> x.findMethods(md));
+    }
+  
+    public void addOuterClasses(ClassCollection cls){
+        classes.forEach(x-> x.findOuterClass(cls));
+    }
+
+    public void addInnerOrLocal(ClassCollection cls){
+        classes.forEach(x-> x.findInterOrLocalChildrenClasses(cls));
+    }
+
+    public ArrayList<Class> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(ArrayList<Class> classes) {
+        this.classes = classes;
+    }
+
+    public CompilationUnit getAst() {
+        return ast;
+    }
+
+    public void setAst(CompilationUnit ast) {
+        this.ast = ast;
+    }
+
     private static class ClassDefinitionCollector extends VoidVisitorAdapter<List<Class>> {
             @Override
             public void visit(ClassOrInterfaceDeclaration cd, List<Class> collection) { 
                 super.visit(cd,collection);
                 if(!cd.isInterface()){
-                    collection.add(new Class(cd.getNameAsString(),cd.getTypeParameters(), cd.getImplementedTypes(), cd.getExtendedTypes(), cd.isInnerClass(), 
-                    cd.isLocalClassDeclaration(), cd.getBegin().get().line, cd.getEnd().get().line));
-                    //isInnerClass only picks up on non-static nested classes
+                    collection.add(new Class(cd));
                 }
               
             }
-
     }
 }

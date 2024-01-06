@@ -17,6 +17,23 @@ public class InterfaceCollection {
         this.ast = ast;
     }
 
+    public ArrayList<Interface> getInterfaces() {
+        return interfaces;
+    }
+
+    public void setInterfaces(ArrayList<Interface> interfaces) {
+        this.interfaces = interfaces;
+    }
+
+
+    public CompilationUnit getAst() {
+        return ast;
+    }
+
+    public void setAst(CompilationUnit ast) {
+        this.ast = ast;
+    }
+
     public void getMetadata(){
         getDeclarationInfo();
         //getMethodDocumentation();
@@ -24,8 +41,16 @@ public class InterfaceCollection {
         printMetadata();
     }
 
+    public void extractMetadata(){
+        getDeclarationInfo();
+
+    }
+
+    public void addMethods(MethodCollection md){
+        interfaces.forEach(x-> x.findMethods(md));
+    }
     
-    private void printMetadata(){
+    public void printMetadata(){
         interfaces.forEach(x -> System.out.println(x.toString()));
     }
 
@@ -35,13 +60,12 @@ public class InterfaceCollection {
         interfaceDefCollector.visit(ast, interfaces);
 
     }
-
     private static class InterfaceDefinitionCollector extends VoidVisitorAdapter<List<Interface>> {
         @Override
-        public void visit(ClassOrInterfaceDeclaration id, List<Interface> collection) { 
-            super.visit(id,collection);
-            if(id.isInterface()){
-                collection.add(new Interface(id.getNameAsString(), id.getExtendedTypes(), id.getTypeParameters()));
+        public void visit(ClassOrInterfaceDeclaration intDecl, List<Interface> collection) { 
+            super.visit(intDecl, collection);
+            if(intDecl.isInterface()){
+                collection.add(new Interface(intDecl));
             }
         }
 

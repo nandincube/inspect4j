@@ -38,7 +38,6 @@ public class App extends Object implements AppInterface<String>
         return "abd,12,uebf";
 
     }
-
     
 }
 

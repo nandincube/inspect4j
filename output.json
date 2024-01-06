@@ -1,0 +1,165 @@
+{
+    "classes": [
+        {
+            "name": "AppMultiClass",
+            "isInnerClass": false,
+            "isLocalClass": false,
+            "lineMin": 12,
+            "lineMax": 90,
+            "methods": [
+                {
+                    "declarationAsString": "public static void main(String[] args)",
+                    "name": "main",
+                    "params": [
+                        {
+                            "parameter": "String[] args"
+                        }
+                    ],
+                    "returnStmts": [],
+                    "lineMin": 13,
+                    "lineMax": 15,
+                    "storedVarCalls": []
+                },
+                {
+                    "declarationAsString": "public String cat(String name, int age, String breed, List\u003cString\u003e list)",
+                    "name": "cat",
+                    "params": [
+                        {
+                            "parameter": "String name"
+                        },
+                        {
+                            "parameter": "int age"
+                        },
+                        {
+                            "parameter": "String breed"
+                        },
+                        {
+                            "parameter": "List\u003cString\u003e list"
+                        }
+                    ],
+                    "returnStmts": [
+                        {
+                            "return": "return \"Cat2\";"
+                        },
+                        {
+                            "return": "return \"Cat\";"
+                        }
+                    ],
+                    "lineMin": 17,
+                    "lineMax": 45,
+                    "storedVarCalls": [
+                        {
+                            "name": "b",
+                            "methodCalled": "printAddress"
+                        },
+                        {
+                            "name": "a",
+                            "methodCalled": "printAddress"
+                        }
+                    ]
+                },
+                {
+                    "declarationAsString": "public String bat(String name, int age, String breed, List\u003cString\u003e list)",
+                    "name": "bat",
+                    "params": [
+                        {
+                            "parameter": "String name"
+                        },
+                        {
+                            "parameter": "int age"
+                        },
+                        {
+                            "parameter": "String breed"
+                        },
+                        {
+                            "parameter": "List\u003cString\u003e list"
+                        }
+                    ],
+                    "returnStmts": [
+                        {
+                            "return": "return \"Bat\";"
+                        }
+                    ],
+                    "lineMin": 47,
+                    "lineMax": 54,
+                    "storedVarCalls": []
+                },
+                {
+                    "declarationAsString": "public String printAddress(String address)",
+                    "name": "printAddress",
+                    "params": [
+                        {
+                            "parameter": "String address"
+                        }
+                    ],
+                    "returnStmts": [
+                        {
+                            "return": "return \"abd,12,uebf\";"
+                        }
+                    ],
+                    "lineMin": 56,
+                    "lineMax": 72,
+                    "storedVarCalls": []
+                }
+            ],
+            "typeParams": [],
+            "implementedInterfaces": [
+                "AppInterface"
+            ],
+            "superClasses": [
+                "Object"
+            ],
+            "innerOrLocalChildrenClasses": [
+                {
+                    "name": "Local",
+                    "isInnerClass": false,
+                    "isLocalClass": true,
+                    "lineMin": 60,
+                    "lineMax": 66,
+                    "methods": [
+                        {
+                            "declarationAsString": " void run()",
+                            "name": "run",
+                            "params": [],
+                            "returnStmts": [],
+                            "lineMin": 62,
+                            "lineMax": 64,
+                            "storedVarCalls": []
+                        }
+                    ],
+                    "typeParams": [],
+                    "implementedInterfaces": [],
+                    "superClasses": [],
+                    "innerOrLocalChildrenClasses": []
+                },
+                {
+                    "name": "InnerClass",
+                    "isInnerClass": true,
+                    "isLocalClass": false,
+                    "lineMin": 74,
+                    "lineMax": 89,
+                    "methods": [
+                        {
+                            "declarationAsString": "private void hiya()",
+                            "name": "hiya",
+                            "params": [],
+                            "returnStmts": [],
+                            "lineMin": 83,
+                            "lineMax": 87,
+                            "storedVarCalls": [
+                                {
+                                    "name": "c",
+                                    "methodCalled": "printAddress"
+                                }
+                            ]
+                        }
+                    ],
+                    "typeParams": [],
+                    "implementedInterfaces": [],
+                    "superClasses": [],
+                    "innerOrLocalChildrenClasses": []
+                }
+            ]
+        }
+    ]
+}
