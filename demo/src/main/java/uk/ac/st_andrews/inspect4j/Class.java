@@ -2,7 +2,10 @@ package uk.ac.st_andrews.inspect4j;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.Node.DirectChildrenIterator;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -18,9 +21,11 @@ public class Class {
     private List<String> typeParams;
     private List<String> implementedInterfaces;
     private List<String> superClasses;
-    private transient Class outerClass;
+    private transient Class outerClass;    
+    private transient Method outerMethod;
     private transient String ancestor = null;
     private  List<Class> innerOrLocalChildrenClasses;
+    private String javaDoc;
     
     public Class(ClassOrInterfaceDeclaration classDecl) {
         
@@ -39,12 +44,32 @@ public class Class {
         this.superClasses = new ArrayList<String>();
         this.outerClass = null;
         this.innerOrLocalChildrenClasses = new ArrayList<Class>();
+        this.javaDoc = getJavaDoc(classDecl);
+
+        findMyMethods(classDecl);
 
         typesToString(typeParams);
         interfacesToString(implementedInterfaces);
         superClassesToString(superClasses);
 
     }
+
+    public String getJavaDoc() {
+        return javaDoc;
+    }
+
+    public void setJavaDoc(String javaDoc) {
+        this.javaDoc = javaDoc;
+    }
+
+
+    private String getJavaDoc(ClassOrInterfaceDeclaration cl){
+        if (cl.getJavadoc().isPresent()){
+            return cl.getJavadocComment().get().getContent().strip();   
+        }
+        return null;
+    }
+
 
     public void typesToString(NodeList<TypeParameter> t){
         t.forEach(x -> typeParams.add(x.getNameAsString().trim()));
@@ -57,20 +82,19 @@ public class Class {
     }
 
     public void superClassesToString(NodeList<ClassOrInterfaceType> s){
-      
+        
         s.forEach(x -> superClasses.add(x.getNameAsString().trim()));
         
     }
 
-    /*public void methodsToString(List<MethodDeclaration> m){
-        m.forEach(x -> methods.add(x.getDeclarationAsString().trim()));
-        
-    }*/
-
     private String findAncestorToDecl(ClassOrInterfaceDeclaration classDecl){
+         if(classDecl.findAncestor(MethodDeclaration.class).isPresent()){
+                return classDecl.findAncestor(MethodDeclaration.class).get().getNameAsString();
+        }
         if(classDecl.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()){
                 return classDecl.findAncestor(ClassOrInterfaceDeclaration.class).get().getNameAsString();
         }
+        
         return null;
     }
 
@@ -84,23 +108,53 @@ public class Class {
             }
         }
     }
+
+    public void findMethods(ClassOrInterfaceDeclaration c){
+        List<Node> md = c.stream(Node.TreeTraversal.DIRECT_CHILDREN).filter(x -> x instanceof MethodDeclaration).toList();
+        md.forEach(x -> x.);
+        System.out.println("METHODS for "+ name+" : " );
+
+
+    }
     
-    public Class findOuterClass(ClassCollection classCol){
-         if(this.isInnerClass == true || this.isLocalClass == true ){
-                for(Class cl: classCol.getClasses()){
-                    if(ancestor.equals(cl.getName())){
-                        System.out.println("FOUND!!! "+ cl.getName());
-                        this.outerClass = cl;
-                    }
+    public void findOuterClassOrMethod(ClassCollection classCol, MethodCollection methodCol){
+
+        if(this.isInnerClass == true || this.isLocalClass == true ){
+            for(Method md: methodCol.getMethods()){
+                if(ancestor.equals(md.getName())){
+                    System.out.println("FOUND!!! "+ md.getName());
+                    this.outerMethod = md;
+                    return;
                 }
+            }
+            for(Class cl: classCol.getClasses()){
+                if(ancestor.equals(cl.getName())){
+                    System.out.println("FOUND!!! "+ cl.getName());
+                    this.outerClass = cl;
+                }
+            }
+
         }
-        return null;
+    }
+
+    public void findOuterClass(ClassCollection classCol){
+
+        if(this.isInnerClass == true || this.isLocalClass == true ){
+        
+            for(Class cl: classCol.getClasses()){
+                if(ancestor.equals(cl.getName())){
+                    System.out.println("FOUND!!! "+ cl.getName());
+                    this.outerClass = cl;
+                }
+            }
+
+        }
     }
 
     public Class findInterOrLocalChildrenClasses(ClassCollection classCol){
-         if(this.isInnerClass == false ){
+         if(this.isInnerClass == false || this.isLocalClass == false ){
                 for(Class cl: classCol.getClasses()){
-                    if(cl.isInnerClass == true || cl.isLocalClass == true ){
+                    if(cl.isInnerClass() == true || cl.isLocalClass() == true ){
                         if(cl.getOuterClass() == this){
                             innerOrLocalChildrenClasses.add(cl);
                         }
@@ -110,6 +164,30 @@ public class Class {
         return null;
     }
 
+
+    public Method getOuterMethod() {
+        return outerMethod;
+    }
+
+    public void setOuterMethod(Method outerMethod) {
+        this.outerMethod = outerMethod;
+    }
+
+    public String getAncestor() {
+        return ancestor;
+    }
+
+    public void setAncestor(String ancestor) {
+        this.ancestor = ancestor;
+    }
+
+    public List<Class> getInnerOrLocalChildrenClasses() {
+        return innerOrLocalChildrenClasses;
+    }
+
+    public void setInnerOrLocalChildrenClasses(List<Class> innerOrLocalChildrenClasses) {
+        this.innerOrLocalChildrenClasses = innerOrLocalChildrenClasses;
+    }
 
     public String getName() {
         return name;
@@ -198,6 +276,10 @@ public class Class {
 
     public void setOuterClass(Class outerClass) {
         this.outerClass = outerClass;
+    }
+
+    public Class returnInstance(){
+        return this;
     }
 
     @Override

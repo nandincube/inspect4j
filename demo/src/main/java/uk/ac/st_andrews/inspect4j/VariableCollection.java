@@ -48,8 +48,6 @@ public class VariableCollection {
         VoidVisitor<List<Variable>> variableCollector = new StoredVariableCallsCollector();
         variableCollector.visit(ast, variables);
     }
-    
-  
 
     public CompilationUnit getAst() {
         return ast;

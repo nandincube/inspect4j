@@ -1,6 +1,7 @@
 package uk.ac.st_andrews.inspect4j;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -55,7 +56,7 @@ public class LambdaCollection {
 
     }
 
-    private static class LambdaExprCollector extends VoidVisitorAdapter<List<Lambda>> {
+    private class LambdaExprCollector extends VoidVisitorAdapter<List<Lambda>> {
             @Override
             public void visit(LambdaExpr le, List<Lambda> collection) { 
                 super.visit(le, collection);
@@ -64,25 +65,22 @@ public class LambdaCollection {
 
     }
 
-    private static List<ReturnStmt>  getReturnStatements(LambdaExpr le){
-        List<ReturnStmt> rtns = new ArrayList<ReturnStmt>();
-        GenericListVisitorAdapter<ReturnStmt, List<ReturnStmt>> returnPrinter = new ReturnStatementCollector();
-        rtns = returnPrinter.visit(le, rtns);
-        List<ReturnStmt>  rtnsWithoutDuplicates = new ArrayList<ReturnStmt>();
-        for(ReturnStmt rs: rtns){
-            if(!rtnsWithoutDuplicates.contains(rs)){
-                rtnsWithoutDuplicates.add(rs);
-            }
-        }
-        return rtnsWithoutDuplicates;
+    private HashSet<String> getReturnStatements(LambdaExpr le){
+        List<String> rtns = new ArrayList<String>();
+        GenericListVisitorAdapter<String, List<String>> returnPrinter = new ReturnStatementCollector();
+        return new HashSet<String>(returnPrinter.visit(le, rtns));
     }
-    private static class ReturnStatementCollector extends GenericListVisitorAdapter<ReturnStmt, List<ReturnStmt>> {
-            @Override
-            public List<ReturnStmt> visit(ReturnStmt rs, List<ReturnStmt> arg) { 
-                super.visit(rs,arg);
-                arg.add(rs);
-                return arg;
+
+    private class ReturnStatementCollector extends GenericListVisitorAdapter<String, List<String>> {
+        @Override
+        public List<String> visit(ReturnStmt rs, List<String> arg) { 
+            super.visit(rs,arg);
+            if(rs.getExpression().isPresent()){
+                String expr = rs.getExpression().get().toString();
+                arg.add(expr);
             }
             
-    }
+            return arg;
+        }     
+}
 }

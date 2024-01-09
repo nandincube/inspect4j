@@ -2,7 +2,6 @@ package uk.ac.st_andrews.inspect4j;
 
 public class Cli {
 
-    private String path;
     private AST ast;
     private ClassCollection classes;
     private MethodCollection methods;
@@ -10,10 +9,17 @@ public class Cli {
     private MethodReferenceCollection references;
     private LambdaCollection lambdas;
     private VariableCollection variables;
+    private String path;
+
 
     public Cli(String path){
-        this.path = path;
         this.ast = new AST(path);
+        this.path = path;
+        this.classes = new ClassCollection(ast.getFullTree());
+        this.interfaces = new InterfaceCollection(ast.getFullTree());
+        this.methods = null;
+        this.lambdas = null;
+        this.variables = null;
         analyse();
        
     }
@@ -49,14 +55,9 @@ public class Cli {
 
 
     public void analyse(){
-        
-        
-        classes = new ClassCollection(ast.getFullTree());
+       
         classes.extractMetadata();
-
-        interfaces = new InterfaceCollection(ast.getFullTree());
         interfaces.extractMetadata();
-        
 
         methods = new MethodCollection(ast.getFullTree(), classes, interfaces);
         methods.extractMetadata();
@@ -64,7 +65,7 @@ public class Cli {
 
         variables = new VariableCollection(ast.getFullTree(), classes, interfaces, methods);
         variables.extractMetadata();
-        methods.addVariables(variables);
+        createMethodHierarchy();
 
         lambdas = new LambdaCollection(ast.getFullTree());
         lambdas.extractMetadata();
@@ -92,27 +93,30 @@ public class Cli {
         System.out.println("Method References: \n");
         references.printMetadata();
         System.out.println("--------------------------------------");
-        /*JSONWriterGson json = new JSONWriterGson(classes);
-        json.write();*/
-         JSONWriterGson json2 = new JSONWriterGson(interfaces);
-        json2.writeInterfaces();
+
+        FileInfo fileInfo = new FileInfo(path, classes);
+
+        JSONWriterGson json = new JSONWriterGson(fileInfo);
+        
+        json.write();
+        /*JSONWriterGson json2 = new JSONWriterGson(interfaces);
+        json2.writeInterfaces();*/
     }
 
     private void createClassHierarchy(){
-        classes.addOuterClasses(classes);
+        classes.addOuterClassesOrMethods(classes, methods);
         classes.addInnerOrLocal(classes);
         classes.addMethods(methods);
         classes.getClasses().removeIf(x -> x.isInnerClass() == true || x.isLocalClass() == true);
     }
 
-    public String getPath() {
-        return path;
+    private void createMethodHierarchy(){
+        methods.addVariables(variables);
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    private void createLambdaHierarchy(){
+        methods.addVariables(variables);
     }
-
      
     public AST getAst() {
         return ast;
@@ -121,5 +125,66 @@ public class Cli {
     public void setAst(AST ast) {
         this.ast = ast;
     }
+
+
+    public ClassCollection getClasses() {
+        return classes;
+    }
+
+
+    public void setClasses(ClassCollection classes) {
+        this.classes = classes;
+    }
+
+
+    public MethodCollection getMethods() {
+        return methods;
+    }
+
+
+    public void setMethods(MethodCollection methods) {
+        this.methods = methods;
+    }
+
+
+    public InterfaceCollection getInterfaces() {
+        return interfaces;
+    }
+
+
+    public void setInterfaces(InterfaceCollection interfaces) {
+        this.interfaces = interfaces;
+    }
+
+
+    public MethodReferenceCollection getReferences() {
+        return references;
+    }
+
+
+    public void setReferences(MethodReferenceCollection references) {
+        this.references = references;
+    }
+
+
+    public LambdaCollection getLambdas() {
+        return lambdas;
+    }
+
+
+    public void setLambdas(LambdaCollection lambdas) {
+        this.lambdas = lambdas;
+    }
+
+
+    public VariableCollection getVariables() {
+        return variables;
+    }
+
+
+    public void setVariables(VariableCollection variables) {
+        this.variables = variables;
+    }
+  
 
 }

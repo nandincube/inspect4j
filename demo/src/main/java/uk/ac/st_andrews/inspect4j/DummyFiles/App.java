@@ -1,4 +1,4 @@
-package uk.ac.st_andrews.inspect4j;
+package uk.ac.st_andrews.inspect4j.DummyFiles;
 
 import java.util.List;
 
@@ -30,8 +30,6 @@ public class App extends Object implements AppInterface<String>
         return "Bat";
          
     }
-
-    
 
     public String printAddress(String address){
         System.out.println("Address: "+address);

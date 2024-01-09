@@ -1,4 +1,4 @@
-package uk.ac.st_andrews.inspect4j;
+package uk.ac.st_andrews.inspect4j.DummyFiles;
 import java.util.List;
 
 public interface AppInterface<T> extends AppInterfaceParent<T> {

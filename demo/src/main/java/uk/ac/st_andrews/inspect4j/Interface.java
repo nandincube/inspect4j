@@ -7,18 +7,28 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
+import com.google.gson.annotations.SerializedName;
 
 public class Interface {
     private  String name;
     private transient NodeList<ClassOrInterfaceType> extendedInterfaces;
     private transient NodeList<TypeParameter> typeParams;
     private List<Method> methods;
+    private String javaDoc;
 
     public Interface(ClassOrInterfaceDeclaration interfaceDecl) {
         this.name = interfaceDecl.getNameAsString();
         this.extendedInterfaces = interfaceDecl.getExtendedTypes();
         this.typeParams = interfaceDecl.getTypeParameters();
         this.methods = new ArrayList<Method>();
+        this.javaDoc = getJavaDoc(interfaceDecl);
+    }
+
+    private String getJavaDoc(ClassOrInterfaceDeclaration cl){
+        if (cl.getJavadoc().isPresent()){
+            return cl.getJavadocComment().get().getContent().strip();   
+        }
+        return null;
     }
     
     public void findMethods(MethodCollection mdCol){
@@ -67,6 +77,16 @@ public class Interface {
 
     public void setMethods(List<Method> methods) {
         this.methods = methods;
+    }
+
+
+    public String getJavaDoc() {
+        return javaDoc;
+    }
+
+
+    public void setJavaDoc(String javaDoc) {
+        this.javaDoc = javaDoc;
     }
 
   

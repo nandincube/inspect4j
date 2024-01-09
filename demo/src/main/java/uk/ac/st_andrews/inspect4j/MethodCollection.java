@@ -1,6 +1,7 @@
 package uk.ac.st_andrews.inspect4j;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -46,10 +47,6 @@ public class MethodCollection {
         VoidVisitor<List<Method>> methodDeclCollector = new MethodDeclarationCollector();
         methodDeclCollector.visit(ast, methods);
     }
-    
- 
-
-
 
     public ClassCollection getClasses() {
         return classes;
@@ -101,25 +98,21 @@ public class MethodCollection {
             }
     }
 
-    private  List<ReturnStmt>  getReturnStatements(MethodDeclaration md){
-        List<ReturnStmt> rtns = new ArrayList<ReturnStmt>();
-        GenericListVisitorAdapter<ReturnStmt, List<ReturnStmt>> returnPrinter = new ReturnStatementCollector();
-        rtns = returnPrinter.visit(md, rtns);
-        List<ReturnStmt>  rtnsWithoutDuplicates = new ArrayList<ReturnStmt>();
-        for(ReturnStmt rs: rtns){
-            if(!rtnsWithoutDuplicates.contains(rs)){
-                rtnsWithoutDuplicates.add(rs);
-            }
-        }
-        return rtnsWithoutDuplicates;
+    private HashSet<String> getReturnStatements(MethodDeclaration md){
+        List<String> rtns = new ArrayList<String>();
+        GenericListVisitorAdapter<String, List<String>> returnPrinter = new ReturnStatementCollector();
+        return new HashSet<String>(returnPrinter.visit(md, rtns));
     }
-    private class ReturnStatementCollector extends GenericListVisitorAdapter<ReturnStmt, List<ReturnStmt>> {
+    private class ReturnStatementCollector extends GenericListVisitorAdapter<String, List<String>> {
             @Override
-            public List<ReturnStmt> visit(ReturnStmt rs, List<ReturnStmt> arg) { 
+            public List<String> visit(ReturnStmt rs, List<String> arg) { 
                 super.visit(rs,arg);
-                arg.add(rs);
+                if(rs.getExpression().isPresent()){
+                    String expr = rs.getExpression().get().toString();
+                    arg.add(expr);
+                }
+                
                 return arg;
-            }
-            
+            }     
     }
 }

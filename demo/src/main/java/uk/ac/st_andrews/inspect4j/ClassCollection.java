@@ -44,9 +44,14 @@ public class ClassCollection {
         classes.forEach(x-> x.findMethods(md));
     }
   
-    public void addOuterClasses(ClassCollection cls){
+    public void addOuterClassesOrMethods(ClassCollection cls, MethodCollection mds){
+        classes.forEach(x-> x.findOuterClassOrMethod(cls, mds));
+    }
+
+     public void addOuterClasses(ClassCollection cls){
         classes.forEach(x-> x.findOuterClass(cls));
     }
+
 
     public void addInnerOrLocal(ClassCollection cls){
         classes.forEach(x-> x.findInterOrLocalChildrenClasses(cls));
