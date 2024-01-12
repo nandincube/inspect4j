@@ -1,4 +1,4 @@
-package uk.ac.st_andrews.inspect4j.DummyFiles;
+package uk.ac.st_andrews.inspect4j.DummyFiles.DummyDir.Child;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * Hello world!
  *
  */
-public class AppMultiClass extends App implements AppInterface<String>{
+public class AppMultiClass{
     public static void main( String[] args ){
         System.out.println( "Hello World!" );
     }

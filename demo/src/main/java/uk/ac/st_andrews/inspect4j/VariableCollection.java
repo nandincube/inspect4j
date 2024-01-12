@@ -13,30 +13,21 @@ public class VariableCollection {
 
     private ArrayList<Variable> variables;
     private CompilationUnit ast;
-    private ClassCollection classes;
-    private InterfaceCollection interfaces;
-    private MethodCollection methods;
 
   
-    public VariableCollection(CompilationUnit ast, ClassCollection classes, InterfaceCollection interfaces, MethodCollection methods){
+    public VariableCollection(CompilationUnit ast){
         this.variables = new ArrayList<>();
         this.ast = ast;
-        this.methods = methods;
-        this.classes = classes;
-        this.interfaces = interfaces;
     }
 
     public void getMetadata(){
-        getDeclarationInfo();
+        extractVariablesFromAST();
         //getMethodDocumentation();
         //getMethodReturnStatements();
         printMetadata();
     }
 
-    public void extractMetadata(){
-        getDeclarationInfo();
-
-    }
+  
 
     public void printMetadata(){
         variables.forEach(x -> System.out.println(x.toString()));
@@ -44,7 +35,7 @@ public class VariableCollection {
     }
 
 
-    private void getDeclarationInfo(){
+    public void extractVariablesFromAST(){
         VoidVisitor<List<Variable>> variableCollector = new StoredVariableCallsCollector();
         variableCollector.visit(ast, variables);
     }
@@ -64,33 +55,7 @@ public class VariableCollection {
     public void setVariables(ArrayList<Variable> variables) {
         this.variables = variables;
     }
-
-
-    public ClassCollection getClasses() {
-        return classes;
-    }
-
-    public void setClasses(ClassCollection classes) {
-        this.classes = classes;
-    }
-
-    public InterfaceCollection getInterfaces() {
-        return interfaces;
-    }
-
-    public void setInterfaces(InterfaceCollection interfaces) {
-        this.interfaces = interfaces;
-    }
-
-    public MethodCollection getMethods() {
-        return methods;
-    }
-
-    public void setMethods(MethodCollection methods) {
-        this.methods = methods;
-    }
-
-    private class StoredVariableCallsCollector extends VoidVisitorAdapter<List<Variable> >{
+    private static class StoredVariableCallsCollector extends VoidVisitorAdapter<List<Variable> >{
                     
         @Override
         public void visit(MethodDeclaration md, List<Variable> collection) { 
@@ -106,7 +71,7 @@ public class VariableCollection {
 
                        // String idAsString = assignment.getTarget().asNameExpr().getNameAsString();
                        // String methodNameAsString = assignment.getValue().asMethodCallExpr().getName().asString();
-                        collection.add(new Variable(assignment,classes,interfaces,methods));
+                        collection.add(new Variable(assignment));
                         //collection.add(new Variable(idAsString,null,null, methodNameAsString));
                     }
 

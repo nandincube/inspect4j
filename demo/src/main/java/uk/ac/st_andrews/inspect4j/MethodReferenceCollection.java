@@ -19,16 +19,11 @@ public class MethodReferenceCollection {
     }
 
     public void getMetadata(){
-        getDeclarationInfo();
+        extractReferencesFromAST();
         printMetadata();
     }
 
-    public void extractMetadata(){
-        getDeclarationInfo();
-
-    }
-
-    private void getDeclarationInfo(){
+    public void extractReferencesFromAST(){
         VoidVisitor<List<MethodReference>> methodRefDeclCollector = new MethodReferenceExprCollector();
         methodRefDeclCollector.visit(ast, methodRefs);
     }

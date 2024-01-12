@@ -1,21 +1,16 @@
 package uk.ac.st_andrews.inspect4j;
 
-public class ParentEntity<T, S> {
-    private T entity;
-    private S declaration;
+public class ParentEntity<T> {
+    private T declaration;
     private EntityType entityType;
 
-    public ParentEntity(T entity, S declaration, EntityType entityType){
-        this.entity = entity;
+    public ParentEntity(T declaration, EntityType entityType){
+        //this.entity = entity;
         this.declaration = declaration;
         this.entityType = entityType;
     }
-    
-    public T getEntity(){
-        return entity;
-    }
 
-    public S getDeclaration(){
+    public T getDeclaration(){
         return declaration;
     }
 

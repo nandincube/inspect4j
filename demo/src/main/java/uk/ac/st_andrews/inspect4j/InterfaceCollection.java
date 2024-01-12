@@ -35,31 +35,31 @@ public class InterfaceCollection {
     }
 
     public void getMetadata(){
-        getDeclarationInfo();
+        extractInterfacesFromAST();
         //getMethodDocumentation();
         //getMethodReturnStatements();
         printMetadata();
     }
 
-    public void extractMetadata(){
-        getDeclarationInfo();
+    public void extractInterfacesFromAST(){
+          VoidVisitor<List<Interface>> interfaceDefCollector = new InterfaceDefinitionCollector();
+        interfaceDefCollector.visit(ast, interfaces);
 
     }
 
-    public void addMethods(MethodCollection md){
-        interfaces.forEach(x-> x.findMethods(md));
-    }
+    public void addMethods(MethodCollection methods){
+        interfaces.forEach(x-> x.findMethods(methods));
+   }
+
+    // public void addMethods(MethodCollection md){
+    //     interfaces.forEach(x-> x.findMethods(md));
+    // }
     
     public void printMetadata(){
         interfaces.forEach(x -> System.out.println(x.toString()));
     }
 
-    
-    private void getDeclarationInfo(){
-        VoidVisitor<List<Interface>> interfaceDefCollector = new InterfaceDefinitionCollector();
-        interfaceDefCollector.visit(ast, interfaces);
 
-    }
     private static class InterfaceDefinitionCollector extends VoidVisitorAdapter<List<Interface>> {
         @Override
         public void visit(ClassOrInterfaceDeclaration intDecl, List<Interface> collection) { 

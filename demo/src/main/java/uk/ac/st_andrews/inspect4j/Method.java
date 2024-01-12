@@ -21,11 +21,16 @@ public class Method {
     private int lineMax;
     private List<Variable> storedVarCalls;
     private List<Lambda> lambdas;
-    private Class parentClass;
-    private Interface parentInterface;
+    private List<Class> classes;
+    private List<Interface> interfaces;
+    private List<MethodReference> references;
+    private ParentEntity<?> parent;
+    private MethodDeclaration declaration;
+    //private Class parentClass;
+   // private Interface parentInterface;
+    //private MethodDeclaration declaration;
    
-    public Method(MethodDeclaration method, HashSet<String> returnStmts, ClassCollection classes,
-            InterfaceCollection interfaces) {
+    public Method(MethodDeclaration method, HashSet<String> returnStmts) {
         this.name = method.getNameAsString();
         this.params = new HashMap<String, String>();
         this.returnType = method.getTypeAsString();
@@ -33,8 +38,16 @@ public class Method {
         this.returnStmts = returnStmts;
         this.lineMin = method.getBegin().get().line;
         this.lineMax = method.getEnd().get().line;
-        this.parentClass = findParentClass(method, classes);
-        this.parentInterface = findParentInterface(method, interfaces);
+        this.parent = findParentClassInterface(method);
+        this.declaration = method;
+
+        this.classes = new ArrayList<Class>();
+        this.interfaces = new ArrayList<Interface>();
+        this.references = new ArrayList<MethodReference>();
+        this.lambdas = new ArrayList<Lambda>();
+
+        //this.parentClass = findParentClass(method, classes);
+        //this.parentInterface = findParentInterface(method, interfaces);
         this.storedVarCalls = new ArrayList<Variable>();
         this.javaDoc = getJavaDoc(method);
         // findInnerOrLocalChildrenClasses(classes);
@@ -80,6 +93,22 @@ public class Method {
         return null;
     }
 
+    private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(MethodDeclaration md) {
+        if (md.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
+            ClassOrInterfaceDeclaration parentIC = md.findAncestor(ClassOrInterfaceDeclaration.class).get();
+            if(parentIC == null) System.out.println("Could not find parent for this method");
+            if(parentIC.isInterface()){
+                return new ParentEntity<ClassOrInterfaceDeclaration>(parentIC, EntityType.INTERFACE);
+            }else{
+                return new ParentEntity<ClassOrInterfaceDeclaration>(parentIC, EntityType.CLASS);
+            }
+        }
+        return null;
+    }
+
+    
+
+
     // private void findInnerOrLocalChildrenClasses(ClassCollection classCol){
     // for(Class cl: classCol.getClasses()){
     // if(cl.isInnerClass() == true || cl.isLocalClass() == true ){
@@ -90,45 +119,45 @@ public class Method {
     // }
     // }
 
-    private Class findParentClass(MethodDeclaration md, ClassCollection classCol) {
-        if (md.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
-            String pClass = md.findAncestor(ClassOrInterfaceDeclaration.class).get().getNameAsString();
-            for (Class cl : classCol.getClasses()) {
-                if (pClass.equals(cl.getName())) {
-                    return cl;
-                }
-            }
-        }
-        return null;
-    }
+    // private Class findParentClass(MethodDeclaration md, ClassCollection classCol) {
+    //     if (md.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
+    //         String pClass = md.findAncestor(ClassOrInterfaceDeclaration.class).get().getNameAsString();
+    //         for (Class cl : classCol.getClasses()) {
+    //             if (pClass.equals(cl.getName())) {
+    //                 return cl;
+    //             }
+    //         }
+    //     }
+    //     return null;
+    // }
 
-    private Interface findParentInterface(MethodDeclaration md, InterfaceCollection interfaceCol) {
-        if (md.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
-            String pInterface = md.findAncestor(ClassOrInterfaceDeclaration.class).get().getNameAsString();
-            for (Interface intf : interfaceCol.getInterfaces()) {
-                if (pInterface.equals(intf.getName())) {
-                    return intf;
-                }
-            }
-        }
-        return null;
-    }
+    // private Interface findParentInterface(MethodDeclaration md, InterfaceCollection interfaceCol) {
+    //     if (md.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
+    //         String pInterface = md.findAncestor(ClassOrInterfaceDeclaration.class).get().getNameAsString();
+    //         for (Interface intf : interfaceCol.getInterfaces()) {
+    //             if (pInterface.equals(intf.getName())) {
+    //                 return intf;
+    //             }
+    //         }
+    //     }
+    //     return null;
+    // }
 
-    public Class getParentClass() {
-        return parentClass;
-    }
+    // public Class getParentClass() {
+    //     return parentClass;
+    // }
 
-    public void setParentClass(Class parentClass) {
-        this.parentClass = parentClass;
-    }
+    // public void setParentClass(Class parentClass) {
+    //     this.parentClass = parentClass;
+    // }
 
-    public Interface getParentInterface() {
-        return parentInterface;
-    }
+    // public Interface getParentInterface() {
+    //     return parentInterface;
+    // }
 
-    public void setParentInterface(Interface parentInterface) {
-        this.parentInterface = parentInterface;
-    }
+    // public void setParentInterface(Interface parentInterface) {
+    //     this.parentInterface = parentInterface;
+    // }
 
     public String getName() {
         return name;
@@ -162,45 +191,98 @@ public class Method {
         this.lineMax = lineMax;
     }
 
-    public void findVariables(VariableCollection vars) {
-        // for (Variable v : vars.getVariables()) {
-        //     if (v.getParentMethod() != null) {
-        //         if (v.getParentMethod() == this) {
-        //             storedVarCalls.add(v);
-        //         }
-        //     }
-        // }
+    // public void findVariables(VariableCollection vars) {
+    //     // for (Variable v : vars.getVariables()) {
+    //     //     if (v.getParentMethod() != null) {
+    //     //         if (v.getParentMethod() == this) {
+    //     //             storedVarCalls.add(v);
+    //     //         }
+    //     //     }
+    //     // }
 
-        for (Variable v : vars.getVariables()) {
-            ParentEntity<?,?> par = v.getParent();
-            if (par != null && par.getEntityType() == EntityType.METHOD) {
+    //     for (Variable v : vars.getVariables()) {
+    //         ParentEntity<?,?> par = v.getParent();
+    //         if (par != null && par.getEntityType() == EntityType.METHOD) {
                 
+    //         }
+    //     }
 
+    // }
+
+    public void findVariables(VariableCollection vars){
+        for (Variable v : vars.getVariables()) {
+            ParentEntity<?> varParent = v.getParent();
+            if (varParent != null &&  varParent.getEntityType() == EntityType.METHOD) {
+                if(varParent.getDeclaration() == declaration){
+                    System.out.println("Found Child");
+                    storedVarCalls.add(v);
+                }
+                
             }
         }
-
     }
 
-    public void findLambdas(LambdaCollection lams) {
-        for (Lambda l : lams.getLambdas()) {
-            if (l.getParentMethod() != null) {
-                if (l.getParentMethod() == this) {
+    public void findLambdas(LambdaCollection ls){
+        for (Lambda l : ls.getLambdas()) {
+            ParentEntity<?> lambdaParent = l.getParent();
+            if (lambdaParent != null &&  lambdaParent.getEntityType() == EntityType.METHOD) {
+                if(lambdaParent.getDeclaration() == declaration){
+                    System.out.println("Found Child");
                     lambdas.add(l);
                 }
+                
             }
         }
     }
+
+    public void findClasses(ClassCollection cls){
+        for (Class cl : cls.getClasses()) {
+            ParentEntity<?> classParent = cl.getParent();
+            if (classParent != null &&  classParent.getEntityType() == EntityType.METHOD) {
+                if(classParent.getDeclaration() == declaration){
+                    System.out.println("Found Child");
+                    classes.add(cl);
+                }
+                
+            }
+        }
+    }
+
+    public void findInterfaces(InterfaceCollection intfs){
+        for (Interface intf: intfs.getInterfaces()) {
+            ParentEntity<?> interfaceParent = intf.getParent();
+            if (interfaceParent != null &&  interfaceParent.getEntityType() == EntityType.METHOD) {
+                if(interfaceParent.getDeclaration() == declaration){
+                    System.out.println("Found Child");
+                    interfaces.add(intf);
+                }
+                
+            }
+        }
+    }
+
+
+    public void findReferences(MethodReferenceCollection refs){
+        for (MethodReference ref : refs.getMethodReferences()) {
+            ParentEntity<?> referenceParent = ref.getParent();
+            if (referenceParent != null &&  referenceParent.getEntityType() == EntityType.METHOD) {
+                if(referenceParent.getDeclaration() == declaration){
+                    System.out.println("Found Child");
+                    references.add(ref);
+                }
+                
+            }
+        }
+    }
+
+
 
     @Override
     public String toString() {
-        String output = "Method [name=" + name + ", params=" + params
-                + ", returnStmts=" + returnStmts + ", lineMin=" + lineMin + ", lineMax=" + lineMax + ", parentClass=";
-        output = parentClass != null ? output + parentClass.getName() : output + "null";
-        output = output + ", storedVarCalls=";
-        output = !storedVarCalls.isEmpty() ? output + storedVarCalls : output + "null";
-        output = output + ", parentInterface=";
-        output = parentInterface != null ? output + parentInterface.getName() + "]" : output + "null]";
-        return output;
+        return "Method [javaDoc=" + javaDoc + ", name=" + name + ", params=" + params + ", returnStmts=" + returnStmts
+                + ", returnType=" + returnType + ", lineMin=" + lineMin + ", lineMax=" + lineMax + ", storedVarCalls="
+                + storedVarCalls + ", lambdas=" + lambdas + ", classes=" + classes + ", interfaces=" + interfaces
+                + ", references=" + references + ", parent=" + parent + ", declaration=" + declaration + "]";
     }
 
     public List<Variable> getStoredVarCalls() {
@@ -233,6 +315,46 @@ public class Method {
 
     public void setReturnType(String returnType) {
         this.returnType = returnType;
+    }
+
+    public ParentEntity<?> getParent() {
+        return parent;
+    }
+
+    public void setParent(ParentEntity<?> parent) {
+        this.parent = parent;
+    }
+
+    public List<Class> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<Class> classes) {
+        this.classes = classes;
+    }
+
+    public List<Interface> getInterfaces() {
+        return interfaces;
+    }
+
+    public void setInterfaces(List<Interface> interfaces) {
+        this.interfaces = interfaces;
+    }
+
+    public List<MethodReference> getReferences() {
+        return references;
+    }
+
+    public void setReferences(List<MethodReference> references) {
+        this.references = references;
+    }
+
+    public MethodDeclaration getDeclaration() {
+        return declaration;
+    }
+
+    public void setDeclaration(MethodDeclaration declaration) {
+        this.declaration = declaration;
     }
 
 

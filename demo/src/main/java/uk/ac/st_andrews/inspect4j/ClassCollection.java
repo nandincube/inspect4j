@@ -10,22 +10,25 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class ClassCollection {
     private ArrayList<Class> classes;
-    private transient CompilationUnit ast;
+    private CompilationUnit ast;
+    //private MethodCollection methods;
 
     public ClassCollection(CompilationUnit ast){
         this.classes = new ArrayList<>();
         this.ast = ast;
+        //this.methods = methods;
     }
 
     public void getMetadata(){
-        getDeclarationInfo();
+        extractClassesFromAST();
         //getMethodDocumentation();
         //getMethodReturnStatements();
         printMetadata();
     }
 
-    public void extractMetadata(){
-        getDeclarationInfo();
+    public void extractClassesFromAST(){
+         VoidVisitor<List<Class>> classDefCollector = new ClassDefinitionCollector();
+        classDefCollector.visit(ast, classes);
 
     }
     
@@ -34,27 +37,46 @@ public class ClassCollection {
     }
 
     
-    private void getDeclarationInfo(){
-        VoidVisitor<List<Class>> classDefCollector = new ClassDefinitionCollector();
-        classDefCollector.visit(ast, classes);
 
-    }
-
-    public void addMethods(MethodCollection md){
-        classes.forEach(x-> x.findMethods(md));
-    }
+    // public void addMethods(MethodCollection md){
+    //     classes.forEach(x-> x.findMethods(md));
+    // }
   
-    public void addOuterClassesOrMethods(ClassCollection cls, MethodCollection mds){
-        classes.forEach(x-> x.findOuterClassOrMethod(cls, mds));
+    // public void addOuterClassesOrMethods(ClassCollection cls, MethodCollection mds){
+    //     classes.forEach(x-> x.findOuterClassOrMethod(cls, mds));
+    // }
+
+    //  public void addOuterClasses(ClassCollection cls){
+    //     classes.forEach(x-> x.findOuterClass(cls));
+    // }
+
+
+    // public void addInnerOrLocal(ClassCollection cls){
+    //     classes.forEach(x-> x.findInterOrLocalChildrenClasses(cls));
+    // }
+
+    public void addVariables(VariableCollection vars){
+        classes.forEach(x-> x.findVariables(vars));
+   }
+
+   public void addLambdas(LambdaCollection lbdas){
+        classes.forEach(x-> x.findLambdas(lbdas));
     }
 
-     public void addOuterClasses(ClassCollection cls){
-        classes.forEach(x-> x.findOuterClass(cls));
+   public void addMethods(MethodCollection methods){
+        classes.forEach(x-> x.findMethods(methods));
+   }
+
+   public void addInterfaces(InterfaceCollection intfs){
+        classes.forEach(x-> x.findInterfaces(intfs));
+   }
+
+    public void addReferences(MethodReferenceCollection refs){
+        classes.forEach(x-> x.findReferences(refs));
     }
 
-
-    public void addInnerOrLocal(ClassCollection cls){
-        classes.forEach(x-> x.findInterOrLocalChildrenClasses(cls));
+    public void addClasses(ClassCollection refs){
+        classes.forEach(x-> x.findClasses(refs));
     }
 
     public ArrayList<Class> getClasses() {

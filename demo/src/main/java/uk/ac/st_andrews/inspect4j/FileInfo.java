@@ -1,27 +1,23 @@
 package uk.ac.st_andrews.inspect4j;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.commons.io.FilenameUtils;
-
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.CompilationUnit.Storage;
-
 public class FileInfo {
     private String path;
     private String fileNameBase;
     private String extension;
     private ClassCollection classes;
+    private InterfaceCollection interfaces;
     private String javaDoc;
 
-    public FileInfo(String filePath, ClassCollection classes) {
+    public FileInfo(String filePath, ClassCollection classes, InterfaceCollection interfaces) {
         File file = new File(filePath);
         this.path = file.getAbsolutePath();
         this.fileNameBase = extractFileName(file.getName());
         this.extension = extractExtensions(file.getName());
         this.classes = classes;
+        this.interfaces = interfaces;
         this.javaDoc = getFileDoc();
     }
 
@@ -43,10 +39,17 @@ public class FileInfo {
                                 .filter(x -> !x.isInnerClass() && !x.isLocalClass())
                                 .findAny()
                                 .orElse(null);
+    
 
-        if(publicClass != null) return publicClass.getJavaDoc();
-
-        return null;
+        if(publicClass != null) {
+            return publicClass.getJavaDoc();
+        }else{
+            Interface publicInterface = interfaces.getInterfaces().stream()
+                                            .findAny()
+                                            .orElse(null);
+            
+            return publicInterface.getJavaDoc();                                             
+        }
 
     }
 
@@ -97,6 +100,14 @@ public class FileInfo {
 
     public void setJavaDoc(String javaDoc) {
         this.javaDoc = javaDoc;
+    }
+
+    public InterfaceCollection getInterfaces() {
+        return interfaces;
+    }
+
+    public void setInterfaces(InterfaceCollection interfaces) {
+        this.interfaces = interfaces;
     }
   
 }

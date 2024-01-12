@@ -1,190 +1,125 @@
 package uk.ac.st_andrews.inspect4j;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+
+@Command(name = "inspect4j", version = "inspect4j 1.0", mixinStandardHelpOptions = true)
+
+//public class Cli implements Runnable {
 public class Cli {
 
-    private AST ast;
-    private ClassCollection classes;
-    private MethodCollection methods;
-    private InterfaceCollection interfaces;
-    private MethodReferenceCollection references;
-    private LambdaCollection lambdas;
-    private VariableCollection variables;
+  
+    //private AST ast;
+    @Option(names = { "-i", "--input_path" },type = String.class, required = true, description = "input path of the file or directory to inspect.")
     private String path;
+    @Option(names = { "-o", "--output_path" }, type = String.class,  defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
+    private String outputDir;
 
+    private static final String FILE_PATH = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\main\\java\\uk\\ac\\st_andrews\\inspect4j\\DummyFiles\\DummyDir\\\\"; 
+    private static final String OUTPUTDIR_PATH = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\OutputDir";
+   
+    
+    @Option(names = { "--help" }, description = "Show this message and exit.")
+  
 
-    public Cli(String path){
-        this.ast = new AST(path);
+    // public static void main(String[] args) throws Exception {
+    //     int exitCode = new CommandLine(new Cli()).execute(args); 
+    //     System.exit(exitCode); 
+    // }
+
+    public static void main(String[] args) throws Exception {
+         Cli c = new Cli(FILE_PATH, OUTPUTDIR_PATH);
+    }
+
+    // @Override
+    // public void run() { 
+    //     analyse();
+    // }
+
+    public Cli(){
+    }
+
+    public Cli(String path, String outputDir){
         this.path = path;
-        this.classes = new ClassCollection(ast.getFullTree());
-        this.interfaces = new InterfaceCollection(ast.getFullTree());
-        this.methods = null;
-        this.lambdas = null;
-        this.variables = null;
+        this.outputDir = outputDir;
         analyse();
        
     }
-    /*public void analyse(){
-        
-        System.out.println("Classes: \n");
-        ClassCollection classes = new ClassCollection(ast.getFullTree());
-        classes.getMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Interfaces: \n");
-        InterfaceCollection interfaces = new InterfaceCollection(ast.getFullTree());
-        interfaces.getMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Methods: \n");
-        MethodCollection methods = new MethodCollection(ast.getFullTree(), classes, interfaces);
-        methods.getMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Stored Variables: \n");
-        VariableCollection variables = new VariableCollection(ast.getFullTree(), classes, interfaces, methods);
-        variables.getMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Lambdas: \n");
-        LambdaCollection lambdas = new LambdaCollection(ast.getFullTree());
-        lambdas.getMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Method References: \n");
-        MethodReferenceCollection references = new MethodReferenceCollection(ast.getFullTree());
-        references.getMetadata();
-        System.out.println("--------------------------------------");
-        JSONWriter json = new JSONWriter(classes);
-        json.write();
-    }*/
-
-
+ 
     public void analyse(){
-       
-        classes.extractMetadata();
-        interfaces.extractMetadata();
 
-        methods = new MethodCollection(ast.getFullTree(), classes, interfaces);
-        methods.extractMetadata();
-       
+        Path pathObj = Paths.get(path);
+        if(Files.exists(pathObj)){
+            if(Files.isDirectory(pathObj)){
+                analyseDirectory(path, outputDir);
+            }else{
+                analyseFile(path, outputDir);
+            } 
+        }else{
+            System.out.println("Could not find source file/directory!");
+        }
+    }
+    public void analyseDirectory(String dirPath, String outDir){
+        try{
 
-        variables = new VariableCollection(ast.getFullTree(), classes, interfaces, methods);
-        variables.extractMetadata();
-        createMethodHierarchy();
+            System.out.println("Processing... "+dirPath);
+            System.out.println("Output Directory: "+outDir);
+            Path dirObj =  Paths.get(dirPath);
+            List<File> directories = Files.list(dirObj)
+                .map(Path::toFile)
+                .filter(File::isDirectory)
+                .collect(Collectors.toList());
 
-        lambdas = new LambdaCollection(ast.getFullTree());
-        lambdas.extractMetadata();
+            if(directories.size() > 0){
+                directories.forEach(x-> {
+                    String outPath = outDir+"\\"+x.getName();
+                    String dir =  dirPath+"\\"+x.getName();
+                    
+                    System.out.println("Output Directory in loop: "+outPath);
+                    analyseDirectory(dir, outPath);
+                });
+            }
+            
+            List<File> files = Files.list(dirObj)
+                .map(Path::toFile)
+                .filter(File::isFile)
+                .collect(Collectors.toList());
+            if(files.size() > 0){
+                files.forEach(x-> {
+                    String filePath = x.getAbsolutePath();
+                    analyseFile(filePath, outDir);
+                });
+            }
 
-        references = new MethodReferenceCollection(ast.getFullTree());
-        references.extractMetadata();
-       
-        createClassHierarchy();
-        interfaces.addMethods(methods);
-        System.out.println("Classes: \n");
-        classes.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Interfaces: \n");
-        interfaces.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Methods: \n");
-        methods.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Stored Variables: \n");
-        variables.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Lambdas: \n");
-        lambdas.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Method References: \n");
-        references.printMetadata();
-        System.out.println("--------------------------------------");
+   
+            
+        }catch(IOException i){
+            System.out.println("Couldn't analyse this directory! "+ i);
+        }
 
-        FileInfo fileInfo = new FileInfo(path, classes);
+    }
 
-        JSONWriterGson json = new JSONWriterGson(fileInfo);
+
+    public void analyseFile(String filePath, String outDir){
+        if(filePath.length() > 0  && filePath != null){
+            System.out.println("Processing... "+filePath);
+            System.out.println("Output Directory: "+outDir);
+            AST ast = new AST(filePath);
+            ast.extractMetadata();
+            ast.printMetadata();
+            ast.writeToJson(filePath, outDir);
+        } 
         
-        json.write();
-        /*JSONWriterGson json2 = new JSONWriterGson(interfaces);
-        json2.writeInterfaces();*/
-    }
 
-    private void createClassHierarchy(){
-        classes.addOuterClassesOrMethods(classes, methods);
-        classes.addInnerOrLocal(classes);
-        classes.addMethods(methods);
-        classes.getClasses().removeIf(x -> x.isInnerClass() == true || x.isLocalClass() == true);
-    }
-
-    private void createMethodHierarchy(){
-        methods.addVariables(variables);
-    }
-
-    private void createLambdaHierarchy(){
-        methods.addVariables(variables);
-    }
-     
-    public AST getAst() {
-        return ast;
-    }
-
-    public void setAst(AST ast) {
-        this.ast = ast;
-    }
-
-
-    public ClassCollection getClasses() {
-        return classes;
-    }
-
-
-    public void setClasses(ClassCollection classes) {
-        this.classes = classes;
-    }
-
-
-    public MethodCollection getMethods() {
-        return methods;
-    }
-
-
-    public void setMethods(MethodCollection methods) {
-        this.methods = methods;
-    }
-
-
-    public InterfaceCollection getInterfaces() {
-        return interfaces;
-    }
-
-
-    public void setInterfaces(InterfaceCollection interfaces) {
-        this.interfaces = interfaces;
-    }
-
-
-    public MethodReferenceCollection getReferences() {
-        return references;
-    }
-
-
-    public void setReferences(MethodReferenceCollection references) {
-        this.references = references;
-    }
-
-
-    public LambdaCollection getLambdas() {
-        return lambdas;
-    }
-
-
-    public void setLambdas(LambdaCollection lambdas) {
-        this.lambdas = lambdas;
-    }
-
-
-    public VariableCollection getVariables() {
-        return variables;
-    }
-
-
-    public void setVariables(VariableCollection variables) {
-        this.variables = variables;
-    }
-  
+    }  
 
 }

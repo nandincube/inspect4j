@@ -22,15 +22,11 @@ public class LambdaCollection {
     }
 
     public void getMetadata(){
-        getDeclarationInfo();
+        extractLambdasFromAST();
         printMetadata();
     }
 
-    public void extractMetadata(){
-        getDeclarationInfo();
-
-    }
-    private void getDeclarationInfo(){
+    public void extractLambdasFromAST(){
         VoidVisitor<List<Lambda>> lambdaDeclCollector = new LambdaExprCollector();
         lambdaDeclCollector.visit(ast, lambdas);
     }
