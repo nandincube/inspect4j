@@ -1,47 +1,54 @@
 package uk.ac.st_andrews.inspect4j;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.type.Type;
 
 
 public class MethodReference {
-    private String expressionAsString;
-    private Expression containingEntity;
+    //private String expressionAsString;
+    private String containingEntity;
     private String identifier;
-    private NodeList<Type> argumentTypes;
+    //private NodeList<String> argumentTypes;
+    private List<String> argumentTypes;
     private ParentEntity<?> parent;
 
     public MethodReference(MethodReferenceExpr methodRef){
-        this.expressionAsString = methodRef.toString();
-        this.containingEntity = methodRef.getScope();
+        //this.expressionAsString = methodRef.toString();
+        this.containingEntity = methodRef.getScope().toString();
         this.identifier = methodRef.getIdentifier();
         this.parent = findParent(methodRef);
+        this.argumentTypes = new ArrayList<String>();
+        addArgumentTypes(methodRef);
+    }
+
+    private void addArgumentTypes(MethodReferenceExpr methodRef){
         if (methodRef.getTypeArguments().isPresent()) {
-            this.argumentTypes = methodRef.getTypeArguments().get();
-        }else{
-            this.argumentTypes = null;
+            methodRef.getTypeArguments().get().stream().forEach(x -> argumentTypes.add(x.asString()));
         }
-        
-
     }
 
-    public String getExpressionAsString() {
-        return expressionAsString;
-    }
+    // public String getExpressionAsString() {
+    //     return expressionAsString;
+    // }
 
-    public void setExpressionAsString(String expressionAsString) {
-        this.expressionAsString = expressionAsString;
-    }
+    // public void setExpressionAsString(String expressionAsString) {
+    //     this.expressionAsString = expressionAsString;
+    // }
 
-    public Expression getContainingEntity() {
+    public String getContainingEntity() {
         return containingEntity;
     }
 
-    public void setContainingEntity(Expression containingEntity) {
+    public void setContainingEntity(String containingEntity) {
         this.containingEntity = containingEntity;
     }
 
@@ -53,11 +60,11 @@ public class MethodReference {
         this.identifier = identifier;
     }
 
-    public NodeList<Type> getArgumentTypes() {
+    public List<String> getArgumentTypes() {
         return argumentTypes;
     }
 
-    public void setArgumentTypes(NodeList<Type> argumentTypes) {
+    public void setArgumentTypes(List<String> argumentTypes) {
         this.argumentTypes = argumentTypes;
     }
 
@@ -120,12 +127,12 @@ public class MethodReference {
         return null;
     }
 
-    
+
 
     @Override
     public String toString() {
-        return "MethodReference [expressionAsString=" + expressionAsString + ", containingEntity=" + containingEntity
-                + ", identifier=" + identifier + ", argumentTypes=" + argumentTypes + "]";
+        return "MethodReference [containingEntity=" + containingEntity + ", identifier=" + identifier
+                + ", argumentTypes=" + argumentTypes + ", parent=" + parent + "]";
     }
 
     public ParentEntity<?> getParent() {

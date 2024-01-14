@@ -24,7 +24,7 @@ public class Cli {
     @Option(names = { "-o", "--output_path" }, type = String.class,  defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
     private String outputDir;
 
-    private static final String FILE_PATH = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\main\\java\\uk\\ac\\st_andrews\\inspect4j\\DummyFiles\\DummyDir\\\\"; 
+    private static final String FILE_PATH = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\main\\java\\uk\\ac\\st_andrews\\inspect4j\\DummyFiles\\DummyDir"; 
     private static final String OUTPUTDIR_PATH = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\OutputDir";
    
     
@@ -37,13 +37,13 @@ public class Cli {
     // }
 
     public static void main(String[] args) throws Exception {
-         Cli c = new Cli(FILE_PATH, OUTPUTDIR_PATH);
+        Cli c = new Cli(FILE_PATH, OUTPUTDIR_PATH);
     }
 
-    // @Override
-    // public void run() { 
-    //     analyse();
-    // }
+    //  @Override
+    //  public void run() { 
+    //       analyse();
+    //  }
 
     public Cli(){
     }

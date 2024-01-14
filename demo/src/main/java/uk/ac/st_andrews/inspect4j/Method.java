@@ -9,7 +9,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 
 public class Method {
     private String javaDoc;
@@ -26,6 +25,7 @@ public class Method {
     private List<MethodReference> references;
     private ParentEntity<?> parent;
     private MethodDeclaration declaration;
+    private boolean isMain;
     //private Class parentClass;
    // private Interface parentInterface;
     //private MethodDeclaration declaration;
@@ -40,6 +40,7 @@ public class Method {
         this.lineMax = method.getEnd().get().line;
         this.parent = findParentClassInterface(method);
         this.declaration = method;
+        this.isMain = checkIfMain(method);
 
         this.classes = new ArrayList<Class>();
         this.interfaces = new ArrayList<Interface>();
@@ -53,13 +54,23 @@ public class Method {
         // findInnerOrLocalChildrenClasses(classes);
     }
 
-    // @SerializedName("min_max_lineno")
-    @SerializedName("min_max_lineno")
     public JsonObject lineRange() {
         JsonObject range = new JsonObject();
         range.addProperty("min_lineno", lineMin);
         range.addProperty("max_lineno", lineMax);
         return range;
+    }
+
+    private boolean checkIfMain(MethodDeclaration md){
+        if(md.isPublic() && md.isStatic() && md.getType().isVoidType()){
+            if(name.equals("main") && params.size() == 1){
+                String paramType = params.values().stream().findFirst().get();
+                if(paramType.equals("String[]")){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void extractParameterInformation(MethodDeclaration md) {
@@ -355,6 +366,14 @@ public class Method {
 
     public void setDeclaration(MethodDeclaration declaration) {
         this.declaration = declaration;
+    }
+
+    public boolean isMain() {
+        return isMain;
+    }
+
+    public void setMain(boolean isMain) {
+        this.isMain = isMain;
     }
 
 

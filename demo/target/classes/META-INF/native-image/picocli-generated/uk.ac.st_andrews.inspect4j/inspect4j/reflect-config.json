@@ -1,0 +1,16 @@
+[
+  {
+    "name" : "uk.ac.st_andrews.inspect4j.Cli",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "fields" : [
+      { "name" : "outputDir" },
+      { "name" : "path" }
+    ],
+    "methods" : [
+      { "name" : "main", "parameterTypes" : ["java.lang.String[]"] }
+    ]
+  }
+]

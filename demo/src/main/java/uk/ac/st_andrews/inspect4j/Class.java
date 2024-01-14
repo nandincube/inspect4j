@@ -396,7 +396,6 @@ public class Class {
             ParentEntity<?> methodParent = md.getParent();
             if (methodParent != null &&  methodParent.getEntityType() == EntityType.CLASS) {
                 if(methodParent.getDeclaration() == declaration){
-                    System.out.println("Found Child - Class found its methods");
                     methods.add(md);
                 }
                 

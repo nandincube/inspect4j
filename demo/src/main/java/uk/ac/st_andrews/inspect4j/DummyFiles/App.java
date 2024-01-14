@@ -10,6 +10,7 @@ public class App extends Object implements AppInterface<String>
 {
     public static void main( String[] args )
     {
+        cat2( "kitty", 2, "tabby" );
         System.out.println( "Hello World!" );
     }
 
@@ -17,6 +18,14 @@ public class App extends Object implements AppInterface<String>
         System.out.println("Cat name:"+name);
         System.out.println("Cat age:"+age);
         System.out.println("Cat bree:"+breed);
+
+        return "abdbf";
+         
+    }
+
+    public static String cat2(String name, int age, String breed){
+        System.out.println("Cat name:"+name);
+        System.out.println("Cat age:"+age);
 
         return "abdbf";
          

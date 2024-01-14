@@ -89,7 +89,6 @@ public class MethodCollection {
         methods.forEach(x -> System.out.println(x.toString()));
 
     }
-
     
 
     // public void addVariables(VariableCollection vars){

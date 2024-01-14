@@ -10,8 +10,9 @@ public class FileInfo {
     private ClassCollection classes;
     private InterfaceCollection interfaces;
     private String javaDoc;
+    private MainInfo main;
 
-    public FileInfo(String filePath, ClassCollection classes, InterfaceCollection interfaces) {
+    public FileInfo(String filePath, ClassCollection classes, InterfaceCollection interfaces, MainInfo main) {
         File file = new File(filePath);
         this.path = file.getAbsolutePath();
         this.fileNameBase = extractFileName(file.getName());
@@ -19,6 +20,8 @@ public class FileInfo {
         this.classes = classes;
         this.interfaces = interfaces;
         this.javaDoc = getFileDoc();
+        this.main = main;
+
     }
 
     public String extractFileName(String filename){
@@ -108,6 +111,14 @@ public class FileInfo {
 
     public void setInterfaces(InterfaceCollection interfaces) {
         this.interfaces = interfaces;
+    }
+
+    public MainInfo getMain() {
+        return main;
+    }
+
+    public void setMain(MainInfo main) {
+        this.main = main;
     }
   
 }

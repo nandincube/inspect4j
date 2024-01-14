@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.Statement;
 
 public class AST {
     private CompilationUnit fullTree;
@@ -18,6 +21,8 @@ public class AST {
     private MethodReferenceCollection references;
     private LambdaCollection lambdas;
     private VariableCollection variables;
+    private MainInfo main;
+
 
     public AST(String path){
         this.fullTree = parseFile(path);
@@ -27,6 +32,7 @@ public class AST {
         this.references = new MethodReferenceCollection(fullTree);
         this.lambdas = new LambdaCollection(fullTree);
         this.variables = new VariableCollection(fullTree);
+        this.main = null;
     }
 
     public AST(CompilationUnit cu, String path){
@@ -60,6 +66,34 @@ public class AST {
         return null;
     }
 
+    public MainInfo findMainMethod(){
+        Method mainMd = methods.getMethods()
+                .stream()
+                .filter(x -> x.isMain() == true)
+                .findAny()
+                .orElse(null);
+
+        
+        if(mainMd == null){
+            return new MainInfo(false, null);
+        }else{
+           
+            NodeList<Statement> stmts = mainMd.getDeclaration().getBody().get().getStatements();
+            String mainMdCall = null;
+            for(Statement stmt: stmts){
+                Expression expr = stmt.asExpressionStmt().getExpression();
+
+                if(expr.isMethodCallExpr()){
+                   mainMdCall = expr.asMethodCallExpr().getNameAsString();
+                   break;
+                }
+            }
+            
+
+            return new MainInfo(true, mainMdCall); 
+        }
+    }
+
  
     public void extractMetadata(){
         variables.extractVariablesFromAST();
@@ -71,8 +105,8 @@ public class AST {
         addMethodMembers();
         addClassMembers();
         addInterfaceMembers();
+        main = findMainMethod();
     }
-
 
     private void addMethodMembers(){
         methods.addVariables(variables);
@@ -119,7 +153,7 @@ public class AST {
 
     
     public void writeToJson(String path, String directory){
-        FileInfo fileInfo = new FileInfo(path, classes, interfaces);
+        FileInfo fileInfo = new FileInfo(path, classes, interfaces,main);
         JSONWriterGson json = new JSONWriterGson(fileInfo);
         json.write(directory);
     }
@@ -190,5 +224,13 @@ public class AST {
 
     public void setVariables(VariableCollection variables) {
         this.variables = variables;
+    }
+    
+    public MainInfo getMain() {
+        return main;
+    }
+
+    public void setMain(MainInfo main) {
+        this.main = main;
     }
 }

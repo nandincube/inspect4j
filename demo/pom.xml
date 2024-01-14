@@ -78,6 +78,18 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.0</version>
+          <configuration>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli-codegen</artifactId>
+                <version>4.7.5</version>
+              </path>
+            </annotationProcessorPaths>
+            <compilerArgs>
+              <arg>-Aproject=uk.ac.st_andrews.inspect4j/inspect4j</arg>
+            </compilerArgs>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -104,6 +116,44 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>appassembler-maven-plugin</artifactId>
+          <version>1.10</version>
+          <configuration>
+            <programs>
+              <program>
+                <mainClass>uk.ac.st_andrews.inspect4j.Cli</mainClass>
+                <id>cli</id>
+              </program>
+            </programs>
+          </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <version>${native.maven.plugin.version}</version>
+            <extensions>true</extensions>
+            <executions>
+              <execution>
+                <id>build-native</id>
+                <goals>
+                  <goal>compile-no-fork</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+              <execution>
+                <id>test-native</id>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <phase>test</phase>
+              </execution>
+            </executions>
+            <configuration>
+              <!-- ... -->
+            </configuration>
+          </plugin>
       </plugins>
     </pluginManagement>
   </build>

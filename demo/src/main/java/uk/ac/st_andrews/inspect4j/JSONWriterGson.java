@@ -9,6 +9,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.management.MBeanOperationInfo;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -77,8 +80,6 @@ public class JSONWriterGson {
         Gson gson = gsonBuilder.create();
         String fileInfoAsJson = gson.toJson(fileInfo);
         String fileName = fileInfo.getFileNameBase()+".json";
-    
-       
 
 
         try {
@@ -120,13 +121,20 @@ public class JSONWriterGson {
     }
 
     private void addCustomSerialisers(GsonBuilder gb) {
-        serialiseMethod(gb);
-        serialiseClass(gb);
         serialiseFile(gb);
-        serialiseLambda(gb);
+
+        serialiseClass(gb);
         serialiseInterface(gb);
-        //serialiseVariable(gb)
-        //serialiseMethodReference(gb)
+
+        serialiseMethod(gb);
+        serialiseMainInfo(gb);
+
+        serialiseLambda(gb);
+        //serialiseMethodReference(gb);
+       // serialiseVariable(gb);
+        
+
+        
     }
 
     private void serialiseFile(GsonBuilder gb) {
@@ -166,6 +174,11 @@ public class JSONWriterGson {
                     jsonFile.add("interfaces", interfaceCollectionJsonObject);
                 }
 
+                if(src.getMain().hasMain()){
+                    JsonElement mainElement = context.serialize(src.getMain(), MainInfo.class);
+                    jsonFile.add("main_info", mainElement);
+                }
+              
                 return jsonFile;
             }
 
@@ -366,6 +379,51 @@ public class JSONWriterGson {
 
     }
 
+    // private void serialiseMethodReference(GsonBuilder gb) {
+    //     Type parameterType = new TypeToken<MethodReference>() {
+    //     }.getType();
+
+    //     JsonSerializer<MethodReference> serialiser = new JsonSerializer<MethodReference>() {
+    //         @Override
+    //         public JsonElement serialize(MethodReference src, Type typeOfSrc, JsonSerializationContext context) {
+    //             JsonObject jsonReference = new JsonObject();
+    //             // JsonObject jsonDetails = new JsonObject();
+
+    //             // jsonObject.addProperty("declarationAsString", src.getDeclarationAsString());
+
+    //             JsonArray returnStmtsJsonArray = new JsonArray();
+    //             if (src.getReturnStmts() != null) {
+    //                 src.getReturnStmts().forEach(x -> returnStmtsJsonArray.add(new JsonPrimitive(x)));
+    //             }
+
+    //             JsonArray paramNamesJsonArray = new JsonArray();
+    //             JsonObject paramTypesJsonObject = new JsonObject();
+    //             if (src.getParams() != null) {
+    //                 HashMap<String, String> params = src.getParams();
+    //                 params.forEach((a, b) -> {
+    //                     paramNamesJsonArray.add(new JsonPrimitive(a));
+    //                     paramTypesJsonObject.addProperty(a, b);
+    //                 });
+    //             }
+
+    //             jsonLambda.add("args", paramNamesJsonArray);
+    //             jsonLambda.add("arg_types", paramTypesJsonObject);
+    //             jsonLambda.addProperty("body", src.getBodyAsString());
+    //             jsonLambda.add("returns", returnStmtsJsonArray);
+
+    //             JsonObject lineNumbers = new JsonObject();
+    //             lineNumbers.addProperty("min_lineno", src.getLineMin());
+    //             lineNumbers.addProperty("max_lineno", src.getLineMax());
+    //             jsonLambda.add("min_max_lineno", lineNumbers);
+
+    //             return jsonLambda;
+    //         }
+    //     };
+
+    //     gb.registerTypeAdapter(parameterType, serialiser);
+
+    // }
+
     private void serialiseInterface(GsonBuilder gb) {
         Type parameterType = new TypeToken<Interface>() {}.getType();
 
@@ -406,6 +464,29 @@ public class JSONWriterGson {
 
                 jsonInterface.add(src.getName(), jsonDetails);
                 return jsonInterface;
+            }
+
+        };
+        gb.registerTypeAdapter(parameterType, serialiser);
+
+    }
+
+    private void serialiseMainInfo(GsonBuilder gb) {
+        Type parameterType = new TypeToken<MainInfo>() {}.getType();
+
+        JsonSerializer<MainInfo> serialiser = new JsonSerializer<MainInfo>() {
+            @Override
+            public JsonElement serialize(MainInfo src, Type typeOfSrc, JsonSerializationContext context) {
+                JsonObject jsonMainInfo = new JsonObject();
+                //JsonObject jsonDetails = new JsonObject();
+
+
+                jsonMainInfo.addProperty("main_flag", src.hasMain());
+                jsonMainInfo.addProperty("main_method", src.getMainMethod());
+
+                
+
+                return jsonMainInfo;
             }
 
         };
