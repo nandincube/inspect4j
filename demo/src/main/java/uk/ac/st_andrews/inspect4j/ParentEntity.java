@@ -5,7 +5,6 @@ public class ParentEntity<T> {
     private EntityType entityType;
 
     public ParentEntity(T declaration, EntityType entityType){
-        //this.entity = entity;
         this.declaration = declaration;
         this.entityType = entityType;
     }

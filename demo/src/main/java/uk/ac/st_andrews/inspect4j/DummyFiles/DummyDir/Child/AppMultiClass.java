@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * Hello world!
  *
  */
-public class AppMultiClass{
+public class AppMultiClass {
 
     /**
     * Returns an Image object that can then be painted on the screen. 
@@ -45,6 +45,7 @@ public class AppMultiClass{
         numbers.stream().map(n -> n * 2).collect(Collectors.toList());
         
         numbers.stream().map((n)-> n* 2).collect(Collectors.toList());
+        numbers.forEach(System.out::println);
         String b = null;
         b = printAddress("addr");
         String a = null;
@@ -89,20 +90,23 @@ public class AppMultiClass{
     }
 
     private class InnerClass {
-            private String horseName;
-
-            public InnerClass(String hn) { 
-                this.horseName = hn;
-               
-                
-            }
-
-            private void hiya(){
-                System.out.println("hi");
-                String c = null;
-                c = printAddress("addr");
-            }
-
+        private String horseName;
+    
+        public InnerClass(String hn) { 
+            this.horseName = hn;
+           
+            
+        }
+    
+        private void hiya(){
+            System.out.println("hi");
+            String c = null;
+            c = printAddress("addr");
+        }
+    
     }
+
 }
+
+
 

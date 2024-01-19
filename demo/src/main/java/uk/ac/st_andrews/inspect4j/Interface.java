@@ -61,24 +61,12 @@ public class Interface {
         interfaces.forEach(x -> extendedInterfaces.add(x.getNameAsString().trim()));
     }
 
-    
-    
-    // public void findMethods(MethodCollection mdCol){
-    //     for(Method md: mdCol.getMethods()){
-    //         if(md.getParentInterface() != null){
-    //             if( md.getParentInterface() == this){
-    //                 methods.add(md);
-    //             }
-    //         }
-    //     }
-    // }
 
     public void findMethods(MethodCollection mds){
         for (Method md : mds.getMethods()) {
             ParentEntity<?> methodParent = md.getParent();
-            if (methodParent != null &&  methodParent.getEntityType() == EntityType.CLASS) {
+            if (methodParent != null &&  methodParent.getEntityType() == EntityType.INTERFACE) {
                 if(methodParent.getDeclaration() == declaration){
-                    System.out.println("Found Child - Class found its methods");
                     methods.add(md);
                 }
                 

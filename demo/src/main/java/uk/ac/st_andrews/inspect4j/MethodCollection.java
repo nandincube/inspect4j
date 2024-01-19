@@ -14,37 +14,14 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 public class MethodCollection {
     private ArrayList<Method> methods;
     private CompilationUnit ast;
-   // private ClassCollection classes;
-    //private InterfaceCollection interfaces;
-    //private VariableCollection variables;
-   // private LambdaCollection lambdas;
-
   
     public MethodCollection(CompilationUnit ast){
         this.methods = new ArrayList<>();
         this.ast = ast;
     }
 
-    // public MethodCollection(CompilationUnit ast, VariableCollection vars, LambdaCollection lambdas){
-    //     this.methods = new ArrayList<>();
-    //     this.ast = ast;
-    //     this.variables = vars;
-    //     this.lambdas = lambdas;
-    // }
-
-    // public MethodCollection(CompilationUnit ast, ClassCollection classes, VariableCollection vars, InterfaceCollection interfaces){
-    //     this.methods = new ArrayList<>();
-    //     this.ast = ast;
-    //     this.classes = classes;
-    //     this.interfaces = interfaces;
-    //     this.variables = vars;
-
-    // }
-
     public void getMetadata(){
         extractMethodsFromAST();
-        //getMethodDocumentation();
-        //getMethodReturnStatements();
         printMetadata();
     }
 
@@ -52,22 +29,6 @@ public class MethodCollection {
         VoidVisitor<List<Method>> methodDeclCollector = new MethodDeclarationCollector();
         methodDeclCollector.visit(ast, methods);
     }
-
-    // public ClassCollection getClasses() {
-    //     return classes;
-    // }
-
-    // public  void setClasses(ClassCollection classes) {
-    //     this.classes = classes;
-    // }
-
-    // public InterfaceCollection getInterfaces() {
-    //     return interfaces;
-    // }
-
-    // public void setInterfaces(InterfaceCollection interfaces) {
-    //     this.interfaces = interfaces;
-    // }
 
     public ArrayList<Method> getMethods() {
         return methods;
@@ -91,10 +52,6 @@ public class MethodCollection {
     }
     
 
-    // public void addVariables(VariableCollection vars){
-    //     methods.forEach(x-> x.findVariables(vars));
-    // }
-
     public void addVariables(VariableCollection vars){
          methods.forEach(x-> x.findVariables(vars));
     }
@@ -113,27 +70,7 @@ public class MethodCollection {
 
     public void addReferences(MethodReferenceCollection refs){
          methods.forEach(x-> x.findReferences(refs));
-     }
-
-
-
-    // public VariableCollection getVariables() {
-    //     return variables;
-    // }
-
-    // public void setVariables(VariableCollection variables) {
-    //     this.variables = variables;
-    // }
-
-    // public LambdaCollection getLambdas() {
-    //     return lambdas;
-    // }
-
-    // public void setLambdas(LambdaCollection lambdas) {
-    //     this.lambdas = lambdas;
-    // }
-
-
+    }
 
     private static class MethodDeclarationCollector extends VoidVisitorAdapter<List<Method>> {
             @Override
@@ -149,15 +86,14 @@ public class MethodCollection {
         return new HashSet<String>(returnPrinter.visit(md, rtns));
     }
     private static class ReturnStatementCollector extends GenericListVisitorAdapter<String, List<String>> {
-            @Override
-            public List<String> visit(ReturnStmt rs, List<String> arg) { 
-                super.visit(rs,arg);
-                if(rs.getExpression().isPresent()){
-                    String expr = rs.getExpression().get().toString();
-                    arg.add(expr);
-                }
-                
-                return arg;
-            }     
+        @Override
+        public List<String> visit(ReturnStmt rs, List<String> arg) { 
+            super.visit(rs,arg);
+            if(rs.getExpression().isPresent()){
+                String expr = rs.getExpression().get().toString();
+                arg.add(expr);
+            }
+            return arg;
+        }     
     }
 }

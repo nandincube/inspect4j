@@ -8,22 +8,11 @@ import com.github.javaparser.ast.expr.NameExpr;
 public class Variable {
     private String name;
     private ParentEntity<?> parent;
-    //private AssignExpr nodeRef;
-    // private transient Class varClass;
-    // private transient Interface varInterface;
-    // private transient Method parentMethod;
     private String methodCalled;
     private String javaDoc;
 
-  
-
     public Variable(AssignExpr assignment) {
         this.name = assignment.getTarget().asNameExpr().getNameAsString();
-        //this.nodeRef = assignment;
-        // this.varClass = findParentClass(assignment, classes);
-        // this.varInterface = findParentInterface(assignment, interfaces);
-        // this.parentMethod = findParentMethod(assignment,methods);
-
         this.parent = findParent(assignment);
         this.methodCalled = assignment.getValue().asMethodCallExpr().getName().asString();
         this.javaDoc = findJavaDoc(assignment.getTarget().asNameExpr());
@@ -69,65 +58,16 @@ public class Variable {
                 return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.CLASS);
             }
             
-            //String parentICAString = parentIC.getNameAsString();
-            // for (Class cl : classCol.getClasses()) {
-            //     if (parentICAString.equals(cl.getName())) {
-            //         parentIC.isAncestorOf(parentIC);
-            //         return new ParentEntity<Class, ClassOrInterfaceDeclaration>(cl, parentIC, EntityType.CLASS);
-
-            //     }
-            // }
-
-            // for (Interface intf : interfCol.getInterfaces()) {
-            //     if (parentICAString.equals(intf.getName())) {
-            //         return new ParentEntity<Interface, ClassOrInterfaceDeclaration>(intf, parentIC,
-            //                 EntityType.INTERFACE);
-            //     }
-            // }
         }
         return null;
     }
 
-    // private Interface findParentInterface(AssignExpr expr, InterfaceCollection
-    // interfaceCol){
-    // if(expr.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()){
-    // String pInterf =
-    // expr.findAncestor(ClassOrInterfaceDeclaration.class).get().getNameAsString();
-    // for(Interface intf: interfaceCol.getInterfaces()){
-    // if(pInterf.equals(intf.getName())){
-    // return intf;
-    // }
-    // }
-    // }
-    // return null;
-    // }
-
-    // private Method findParentMethod(AssignExpr expr, MethodCollection methodCol){
-    // if(expr.findAncestor(MethodDeclaration.class).isPresent()){
-    // String pMethod =
-    // expr.findAncestor(MethodDeclaration.class).get().getNameAsString();
-    // for(Method md: methodCol.getMethods()){
-    // if(pMethod.equals(md.getName())){
-    // return md;
-    // }
-    // }
-    // }
-    // return null;
-    // }
-
     private ParentEntity<MethodDeclaration> findParentMethod(AssignExpr expr){
         if(expr.findAncestor(MethodDeclaration.class).isPresent()){
-            MethodDeclaration parentMethod = expr.findAncestor(MethodDeclaration.class).get();
-            //String parentMethodString = parentMethod.getNameAsString();
-           // for(Method md: methodCol.getMethods()){
-              //  if(parentMethodString.equals(md.getName())){
-                if(parentMethod != null){
-                    return new ParentEntity<MethodDeclaration>(parentMethod, EntityType.METHOD);
-                }
-                    
-            //     }
-            // }
-           
+            MethodDeclaration parentMethod = expr.findAncestor(MethodDeclaration.class).get();   
+            if(parentMethod != null){
+                return new ParentEntity<MethodDeclaration>(parentMethod, EntityType.METHOD);
+            }
         }
         return null;
     }
@@ -140,25 +80,6 @@ public class Variable {
         this.name = name;
     }
 
-    // public Class getVarClass() {
-    // return varClass;
-    // }
-
-    // public void setVarClass(Class varClass) {
-    // this.varClass = varClass;
-    // }
-
-    // public Method getParentMethod() {
-    // return parentMethod;
-    // }
-
-    // public void setMethod(Method method) {
-    // this.parentMethod = method;
-    // }
-
-    // public void setParentMethod(Method parentMethod) {
-    // this.parentMethod = parentMethod;
-    // }
     public String getMethodCalled() {
         return methodCalled;
     }
@@ -174,30 +95,5 @@ public class Variable {
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;
     }
-
-    // @Override
-    // public String toString() {
-    // String output = "Variable [name=" + name + ", varClass=";
-    // output = varClass != null? output + varClass.getName(): output +"null";
-    // output = output + ", varInterface=" ;
-    // output = varInterface != null? output + varInterface.getName(): output
-    // +"null";
-    // output = output + ", method=";
-    // output = parentMethod != null? output + parentMethod.getName(): output
-    // +"null";
-    // output = output + ", methodCalled=" + methodCalled + "]";
-
-    // return output;
-    // }
-
-    // public Interface getVarInterface() {
-    // return varInterface;
-    // }
-
-    // public void setVarInterface(Interface varInterface) {
-    // this.varInterface = varInterface;
-    // }
-
-
 
 }

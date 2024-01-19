@@ -1,31 +1,41 @@
 package uk.ac.st_andrews.inspect4j;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.LambdaExpr;
 
-
 public class Lambda {
     private String bodyAsString;
     private HashMap<String, String> params;
     private HashSet<String> returnStmts;
     private ParentEntity<?> parent;
-    private int lineMin; 
+    private int lineMin;
     private int lineMax;
-    //private Method parentMethod;
+    private LambdaExpr declaration;
+    private List<Class> classes;
+    private List<MethodReference> references;
+    private List<Lambda> lambdas;
+    private List<Variable> storedVarCalls;
 
-    public Lambda(LambdaExpr lambda, HashSet<String> returnStmts){
-        this.bodyAsString = lambda.getBody().toString();
-        this.params = new HashMap<String,String>();
-        extractParameterInformation(lambda);
+    public Lambda(LambdaExpr lambdaDecl, HashSet<String> returnStmts) {
+
+        this.bodyAsString = lambdaDecl.getBody().toString();
+        this.params = new HashMap<String, String>();
+        this.lambdas = new ArrayList<Lambda>();
+        this.classes = new ArrayList<Class>();
+        this.storedVarCalls = new ArrayList<Variable>();
+        this.declaration = lambdaDecl;
+        extractParameterInformation(lambdaDecl);
         this.returnStmts = returnStmts;
-        this.lineMin = lambda.getBegin().get().line;
-        this.lineMax = lambda.getEnd().get().line;
-        this.parent = findParent(lambda);
+        this.lineMin = lambdaDecl.getBegin().get().line;
+        this.lineMax = lambdaDecl.getEnd().get().line;
+        this.parent = findParent(lambdaDecl);
     }
 
     public String getBodyAsString() {
@@ -60,66 +70,89 @@ public class Lambda {
         this.lineMax = lineMax;
     }
 
-    // private Method findParentMethod(LambdaExpr expr, MethodCollection methodCol){
-    //     if(expr.findAncestor(MethodDeclaration.class).isPresent()){
-    //         String pMethod = expr.findAncestor(MethodDeclaration.class).get().getNameAsString();
-    //         for(Method md: methodCol.getMethods()){
-    //             if(pMethod.equals(md.getName())){
-    //                 return md;
-    //             }
-    //         }
-    //     }
-    //     return null;
-    // }
+    public void findClasses(ClassCollection cls) {
+        for (Class cl : cls.getClasses()) {
+            ParentEntity<?> classParent = cl.getParent();
+            if (classParent != null && classParent.getEntityType() == EntityType.LAMBDA) {
+                if (classParent.getDeclaration() == declaration) {
+                    classes.add(cl);
+                }
+            }
+        }
+    }
 
+    public void findLambdas(LambdaCollection lbds) {
+        for (Lambda lm : lbds.getLambdas()) {
+            ParentEntity<?> classParent = lm.getParent();
+            if (classParent != null && classParent.getEntityType() == EntityType.LAMBDA) {
+                if (classParent.getDeclaration() == declaration) {
+                    lambdas.add(lm);
+                }
+            }
+        }
+    }
+
+    public void findReferences(MethodReferenceCollection refs) {
+        for (MethodReference ref : refs.getMethodReferences()) {
+            ParentEntity<?> classParent = ref.getParent();
+            if (classParent != null && classParent.getEntityType() == EntityType.LAMBDA) {
+                if (classParent.getDeclaration() == declaration) {
+                    references.add(ref);
+                }
+            }
+        }
+    }
+
+    public void findVariables(VariableCollection vars) {
+        for (Variable var : vars.getVariables()) {
+            ParentEntity<?> classParent = var.getParent();
+            if (classParent != null && classParent.getEntityType() == EntityType.LAMBDA) {
+                if (classParent.getDeclaration() == declaration) {
+                    storedVarCalls.add(var);
+                }
+            }
+        }
+    }
 
     private ParentEntity<?> findParent(LambdaExpr expr) {
 
         ParentEntity<ClassOrInterfaceDeclaration> parentIC = findParentClassInterface(expr);
         ParentEntity<MethodDeclaration> parentMethod = findParentMethod(expr);
 
-        if(parentIC == null && parentMethod == null) return null;
-        if(parentIC == null && parentMethod != null) return parentMethod;
-        if(parentIC != null && parentMethod == null) return parentIC;
+        if (parentIC == null && parentMethod == null)
+            return null;
+        if (parentIC == null && parentMethod != null)
+            return parentMethod;
+        if (parentIC != null && parentMethod == null)
+            return parentIC;
         if (parentIC.getDeclaration().isAncestorOf(parentMethod.getDeclaration())) {
             return parentMethod;
         }
         return parentIC;
     }
 
-    private ParentEntity< ClassOrInterfaceDeclaration> findParentClassInterface(LambdaExpr expr) {
+    private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(LambdaExpr expr) {
         if (expr.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = expr.findAncestor(ClassOrInterfaceDeclaration.class).get();
-            if(parentIC.isInterface()){
-                return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.INTERFACE);
-            }else{
-                return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.CLASS);
+            if (parentIC.isInterface()) {
+                return new ParentEntity<ClassOrInterfaceDeclaration>(parentIC, EntityType.INTERFACE);
+            } else {
+                return new ParentEntity<ClassOrInterfaceDeclaration>(parentIC, EntityType.CLASS);
             }
         }
         return null;
-        
+
     }
 
-    
-    private ParentEntity<MethodDeclaration> findParentMethod(LambdaExpr expr){
-        if(expr.findAncestor(MethodDeclaration.class).isPresent()){
+    private ParentEntity<MethodDeclaration> findParentMethod(LambdaExpr expr) {
+        if (expr.findAncestor(MethodDeclaration.class).isPresent()) {
             MethodDeclaration parentMethod = expr.findAncestor(MethodDeclaration.class).get();
-            if(parentMethod != null){   
+            if (parentMethod != null) {
                 return new ParentEntity<MethodDeclaration>(parentMethod, EntityType.METHOD);
             }
         }
         return null;
     }
-
-
-
-    // public Method getParentMethod() {
-    //     return parentMethod;
-    // }
-
-    // public void setParentMethod(Method parentMethod) {
-    //     this.parentMethod = parentMethod;
-    // }
 
     @Override
     public String toString() {
@@ -150,6 +183,4 @@ public class Lambda {
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;
     }
-
-    
 }

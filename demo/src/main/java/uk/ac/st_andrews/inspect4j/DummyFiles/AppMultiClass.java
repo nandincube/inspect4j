@@ -92,20 +92,30 @@ public class AppMultiClass extends App implements AppInterface<String>{
     }
 
     private class InnerClass {
-            private String horseName;
-
-            public InnerClass(String hn) { 
-                this.horseName = hn;
-               
-                
-            }
-
-            private void hiya(){
-                System.out.println("hi");
-                String c = null;
-                c = printAddress("addr");
-            }
-
+        private String horseName;
+    
+        public InnerClass(String hn) { 
+            this.horseName = hn;
+           
+            
+        }
+    
+        private void hiya(){
+            System.out.println("hi");
+            String c = null;
+            c = printAddress("addr");
+        }
+    
     }
+
+}
+
+ class AnotherClass {
+    private String horseName;
+
+    public static void main( String[] args ){
+        System.out.println( "Hello World!" );
+    }
+
 }
 

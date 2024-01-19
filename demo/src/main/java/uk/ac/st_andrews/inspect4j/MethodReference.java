@@ -1,28 +1,18 @@
 package uk.ac.st_andrews.inspect4j;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
-import com.github.javaparser.ast.type.Type;
-
 
 public class MethodReference {
-    //private String expressionAsString;
     private String containingEntity;
     private String identifier;
-    //private NodeList<String> argumentTypes;
     private List<String> argumentTypes;
     private ParentEntity<?> parent;
 
     public MethodReference(MethodReferenceExpr methodRef){
-        //this.expressionAsString = methodRef.toString();
         this.containingEntity = methodRef.getScope().toString();
         this.identifier = methodRef.getIdentifier();
         this.parent = findParent(methodRef);
@@ -35,14 +25,6 @@ public class MethodReference {
             methodRef.getTypeArguments().get().stream().forEach(x -> argumentTypes.add(x.asString()));
         }
     }
-
-    // public String getExpressionAsString() {
-    //     return expressionAsString;
-    // }
-
-    // public void setExpressionAsString(String expressionAsString) {
-    //     this.expressionAsString = expressionAsString;
-    // }
 
     public String getContainingEntity() {
         return containingEntity;
@@ -91,22 +73,6 @@ public class MethodReference {
             }else{
                 return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.CLASS);
             }
-            
-            //String parentICAString = parentIC.getNameAsString();
-            // for (Class cl : classCol.getClasses()) {
-            //     if (parentICAString.equals(cl.getName())) {
-            //         parentIC.isAncestorOf(parentIC);
-            //         return new ParentEntity<Class, ClassOrInterfaceDeclaration>(cl, parentIC, EntityType.CLASS);
-
-            //     }
-            // }
-
-            // for (Interface intf : interfCol.getInterfaces()) {
-            //     if (parentICAString.equals(intf.getName())) {
-            //         return new ParentEntity<Interface, ClassOrInterfaceDeclaration>(intf, parentIC,
-            //                 EntityType.INTERFACE);
-            //     }
-            // }
         }
         return null;
     }
@@ -114,20 +80,12 @@ public class MethodReference {
     private ParentEntity<MethodDeclaration> findParentMethod(MethodReferenceExpr expr){
         if(expr.findAncestor(MethodDeclaration.class).isPresent()){
             MethodDeclaration parentMethod = expr.findAncestor(MethodDeclaration.class).get();
-            //String parentMethodString = parentMethod.getNameAsString();
-           // for(Method md: methodCol.getMethods()){
-              //  if(parentMethodString.equals(md.getName())){
-                if(parentMethod != null){   
-                    return new ParentEntity<MethodDeclaration>(parentMethod, EntityType.METHOD);
-                }
-            //     }
-            // }
-           
+            if(parentMethod != null){   
+                return new ParentEntity<MethodDeclaration>(parentMethod, EntityType.METHOD);
+            }
         }
         return null;
     }
-
-
 
     @Override
     public String toString() {
@@ -142,7 +100,5 @@ public class MethodReference {
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;
     }
-
-    
     
 }

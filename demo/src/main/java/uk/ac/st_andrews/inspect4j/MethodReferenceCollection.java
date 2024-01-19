@@ -9,25 +9,25 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class MethodReferenceCollection {
+    
     private ArrayList<MethodReference> methodRefs;
     private CompilationUnit ast;
 
-  
-    public MethodReferenceCollection(CompilationUnit ast){
+    public MethodReferenceCollection(CompilationUnit ast) {
         this.methodRefs = new ArrayList<>();
         this.ast = ast;
     }
 
-    public void getMetadata(){
+    public void getMetadata() {
         extractReferencesFromAST();
         printMetadata();
     }
 
-    public void extractReferencesFromAST(){
+    public void extractReferencesFromAST() {
         VoidVisitor<List<MethodReference>> methodRefDeclCollector = new MethodReferenceExprCollector();
         methodRefDeclCollector.visit(ast, methodRefs);
     }
-    
+
     public ArrayList<MethodReference> getMethodReferences() {
         return methodRefs;
     }
@@ -44,17 +44,17 @@ public class MethodReferenceCollection {
         this.ast = ast;
     }
 
-    public void printMetadata(){
+    public void printMetadata() {
         methodRefs.forEach(x -> System.out.println(x.toString()));
 
     }
 
     private static class MethodReferenceExprCollector extends VoidVisitorAdapter<List<MethodReference>> {
-            @Override
-            public void visit(MethodReferenceExpr methodRef, List<MethodReference> collection) { 
-                super.visit(methodRef, collection);
-                collection.add(new MethodReference(methodRef));
-            }
+        @Override
+        public void visit(MethodReferenceExpr methodRef, List<MethodReference> collection) {
+            super.visit(methodRef, collection);
+            collection.add(new MethodReference(methodRef));
+        }
 
     }
 }

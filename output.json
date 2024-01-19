@@ -1,0 +1,25 @@
+{
+    "file": {
+        "path": "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\main\\java\\uk\\ac\\st_andrews\\inspect4j\\DummyFiles\\AppInterface.java",
+        "fileNameBase": "AppInterface",
+        "extension": "java"
+    },
+    "classes": {},
+    "interfaces": {
+        "AppInterface": {
+            "AppInterface": {
+                "type_params": [
+                    "T"
+                ],
+                "extend": [
+                    "AppInterfaceParent"
+                ],
+                "methods": [],
+                "min_max_lineno": {
+                    "min_lineno": 4,
+                    "max_lineno": 8
+                }
+            }
+        }
+    }
+}

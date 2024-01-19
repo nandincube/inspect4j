@@ -14,28 +14,22 @@ public class VariableCollection {
     private ArrayList<Variable> variables;
     private CompilationUnit ast;
 
-  
-    public VariableCollection(CompilationUnit ast){
+    public VariableCollection(CompilationUnit ast) {
         this.variables = new ArrayList<>();
         this.ast = ast;
     }
 
-    public void getMetadata(){
+    public void getMetadata() {
         extractVariablesFromAST();
-        //getMethodDocumentation();
-        //getMethodReturnStatements();
         printMetadata();
     }
 
-  
-
-    public void printMetadata(){
+    public void printMetadata() {
         variables.forEach(x -> System.out.println(x.toString()));
 
     }
 
-
-    public void extractVariablesFromAST(){
+    public void extractVariablesFromAST() {
         VoidVisitor<List<Variable>> variableCollector = new StoredVariableCallsCollector();
         variableCollector.visit(ast, variables);
     }
@@ -55,31 +49,28 @@ public class VariableCollection {
     public void setVariables(ArrayList<Variable> variables) {
         this.variables = variables;
     }
-    private static class StoredVariableCallsCollector extends VoidVisitorAdapter<List<Variable> >{
-                    
+
+    private static class StoredVariableCallsCollector extends VoidVisitorAdapter<List<Variable>> {
+
         @Override
-        public void visit(MethodDeclaration md, List<Variable> collection) { 
-            super.visit(md,collection);
+        public void visit(MethodDeclaration md, List<Variable> collection) {
+            super.visit(md, collection);
 
             List<AssignExpr> assignments = md.findAll(AssignExpr.class);
-            
-            for(AssignExpr assignment: assignments ){
 
-                if(assignment.getTarget().isNameExpr() || assignment.getTarget().isFieldAccessExpr()){ // is the thing being assigned a variable or field
+            for (AssignExpr assignment : assignments) {
+                if (assignment.getTarget().isNameExpr() ||
+                        assignment.getTarget().isFieldAccessExpr()) { // is the thing being assigned a variable or field
+                    if (assignment.getValue().isMethodCallExpr()) {
 
-                    if(assignment.getValue().isMethodCallExpr()){
-
-                       // String idAsString = assignment.getTarget().asNameExpr().getNameAsString();
-                       // String methodNameAsString = assignment.getValue().asMethodCallExpr().getName().asString();
                         collection.add(new Variable(assignment));
-                        //collection.add(new Variable(idAsString,null,null, methodNameAsString));
+
                     }
 
-                } 
+                }
             }
         }
 
     }
-
 
 }

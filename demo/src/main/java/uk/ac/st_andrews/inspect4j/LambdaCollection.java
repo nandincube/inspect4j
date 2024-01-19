@@ -15,22 +15,37 @@ public class LambdaCollection {
     private ArrayList<Lambda> lambdas;
     private CompilationUnit ast;
 
-  
-    public LambdaCollection(CompilationUnit ast){
+    public LambdaCollection(CompilationUnit ast) {
         this.lambdas = new ArrayList<>();
         this.ast = ast;
     }
 
-    public void getMetadata(){
+    public void getMetadata() {
         extractLambdasFromAST();
         printMetadata();
     }
 
-    public void extractLambdasFromAST(){
+    public void extractLambdasFromAST() {
         VoidVisitor<List<Lambda>> lambdaDeclCollector = new LambdaExprCollector();
         lambdaDeclCollector.visit(ast, lambdas);
     }
-    
+
+    public void addClasses(ClassCollection classes) {
+        lambdas.forEach(x -> x.findClasses(classes));
+    }
+
+    public void addLambdas(LambdaCollection lmbds) {
+        lambdas.forEach(x -> x.findLambdas(lmbds));
+    }
+
+    public void addReferences(MethodReferenceCollection refs) {
+        lambdas.forEach(x -> x.findReferences(refs));
+    }
+
+    public void addVariable(VariableCollection vars) {
+        lambdas.forEach(x -> x.findVariables(vars));
+    }
+
     public ArrayList<Lambda> getLambdas() {
         return lambdas;
     }
@@ -47,21 +62,21 @@ public class LambdaCollection {
         this.ast = ast;
     }
 
-    public void printMetadata(){
+    public void printMetadata() {
         lambdas.forEach(x -> System.out.println(x.toString()));
 
     }
 
     private class LambdaExprCollector extends VoidVisitorAdapter<List<Lambda>> {
-            @Override
-            public void visit(LambdaExpr le, List<Lambda> collection) { 
-                super.visit(le, collection);
-                collection.add(new Lambda( le, getReturnStatements(le)));
-            }
+        @Override
+        public void visit(LambdaExpr le, List<Lambda> collection) {
+            super.visit(le, collection);
+            collection.add(new Lambda(le, getReturnStatements(le)));
+        }
 
     }
 
-    private HashSet<String> getReturnStatements(LambdaExpr le){
+    private HashSet<String> getReturnStatements(LambdaExpr le) {
         List<String> rtns = new ArrayList<String>();
         GenericListVisitorAdapter<String, List<String>> returnPrinter = new ReturnStatementCollector();
         return new HashSet<String>(returnPrinter.visit(le, rtns));
@@ -69,14 +84,14 @@ public class LambdaCollection {
 
     private class ReturnStatementCollector extends GenericListVisitorAdapter<String, List<String>> {
         @Override
-        public List<String> visit(ReturnStmt rs, List<String> arg) { 
-            super.visit(rs,arg);
-            if(rs.getExpression().isPresent()){
+        public List<String> visit(ReturnStmt rs, List<String> arg) {
+            super.visit(rs, arg);
+            if (rs.getExpression().isPresent()) {
                 String expr = rs.getExpression().get().toString();
                 arg.add(expr);
             }
-            
+
             return arg;
-        }     
-}
+        }
+    }
 }

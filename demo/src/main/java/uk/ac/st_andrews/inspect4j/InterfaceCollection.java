@@ -25,7 +25,6 @@ public class InterfaceCollection {
         this.interfaces = interfaces;
     }
 
-
     public CompilationUnit getAst() {
         return ast;
     }
@@ -36,8 +35,6 @@ public class InterfaceCollection {
 
     public void getMetadata(){
         extractInterfacesFromAST();
-        //getMethodDocumentation();
-        //getMethodReturnStatements();
         printMetadata();
     }
 
@@ -50,15 +47,10 @@ public class InterfaceCollection {
     public void addMethods(MethodCollection methods){
         interfaces.forEach(x-> x.findMethods(methods));
    }
-
-    // public void addMethods(MethodCollection md){
-    //     interfaces.forEach(x-> x.findMethods(md));
-    // }
     
     public void printMetadata(){
         interfaces.forEach(x -> System.out.println(x.toString()));
     }
-
 
     private static class InterfaceDefinitionCollector extends VoidVisitorAdapter<List<Interface>> {
         @Override

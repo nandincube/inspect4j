@@ -19,9 +19,6 @@ public class Class {
     private List<String> typeParams;
     private List<String> implementedInterfaces;
     private List<String> superClasses;
-    //private transient Class outerClass;    
-    //private transient Method outerMethod;
-    //private transient String ancestor = null;
     private List<Class> classes;
     private List<Interface> interfaces;
     private List<MethodReference> references;
@@ -29,14 +26,13 @@ public class Class {
     private ParentEntity<?> parent;
     private ClassOrInterfaceDeclaration declaration;
     private List<Variable> storedVarCalls;
-
     private String javaDoc;
     
     public Class(ClassOrInterfaceDeclaration classDecl) {
         NodeList<TypeParameter> typeParams = classDecl.getTypeParameters();
         NodeList<ClassOrInterfaceType> implementedInterfaces = classDecl.getImplementedTypes();
         NodeList<ClassOrInterfaceType> superClasses = classDecl.getExtendedTypes();
-        //ancestor = findAncestorToDecl(classDecl);
+
         this.name = classDecl.getNameAsString();
         this.isInnerClass = classDecl.isInnerClass();    //isInnerClass only picks up on non-static nested classes
         this.isLocalClass = classDecl.isLocalClassDeclaration();
@@ -47,7 +43,7 @@ public class Class {
         this.typeParams = new ArrayList<String>();
         this.implementedInterfaces = new ArrayList<String>();
         this.superClasses = new ArrayList<String>();
-        //this.outerClass = null;
+    
         this.javaDoc = getJavaDoc(classDecl);
         this.parent = findParent(classDecl);
 
@@ -56,8 +52,6 @@ public class Class {
         this.interfaces = new ArrayList<Interface>();
         this.references = new ArrayList<MethodReference>();
         this.lambdas = new ArrayList<Lambda>();
-
-       // findMethods(methds, classDecl);
 
         typesToString(typeParams);
         interfacesToString(implementedInterfaces);
@@ -98,97 +92,6 @@ public class Class {
         
     }
 
-    // private String findAncestorToDecl(ClassOrInterfaceDeclaration classDecl){
-    //      if(classDecl.findAncestor(MethodDeclaration.class).isPresent()){
-    //             return classDecl.findAncestor(MethodDeclaration.class).get().getNameAsString();
-    //     }
-    //     if(classDecl.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()){
-    //             return classDecl.findAncestor(ClassOrInterfaceDeclaration.class).get().getNameAsString();
-    //     }
-        
-    //     return null;
-    // }
-
-
-    // public void findMethods(MethodCollection ms, ClassOrInterfaceDeclaration ci){
-    //     for (Method v : ms.getMethods()) {
-    //         ParentEntity<?> methodParent = v.getParent();
-    //         if (methodParent != null &&  methodParent.getEntityType() == EntityType.CLASS) {
-    //             if(methodParent.getDeclaration() == ci){
-    //                 System.out.println("Found Child");
-    //                 methods.add(v);
-    //             }
-                
-    //         }
-    //     }
-    // }
-
-
-    // public void findMethods(MethodCollection mdCol){
-    //     for(Method md: mdCol.getMethods()){
-    //         if(md.getParentClass() != null){
-    //             if( md.getParentClass() == this){
-    //                 methods.add(md);
-    //             }
-    //         }
-    //     }
-    // }
-
-    // public void findMethods(ClassOrInterfaceDeclaration c){
-    //     List<Node> md = c.stream(Node.TreeTraversal.DIRECT_CHILDREN).filter(x -> x instanceof MethodDeclaration).toList();
-    //     md.forEach(x -> x.);
-    //     System.out.println("METHODS for "+ name+" : " );
-
-
-    // }
-    
-    // public void findOuterClassOrMethod(ClassCollection classCol, MethodCollection methodCol){
-
-    //     if(this.isInnerClass == true || this.isLocalClass == true ){
-    //         for(Method md: methodCol.getMethods()){
-    //             if(ancestor.equals(md.getName())){
-    //                 System.out.println("FOUND!!! "+ md.getName());
-    //                 this.outerMethod = md;
-    //                 return;
-    //             }
-    //         }
-    //         for(Class cl: classCol.getClasses()){
-    //             if(ancestor.equals(cl.getName())){
-    //                 System.out.println("FOUND!!! "+ cl.getName());
-    //                 this.outerClass = cl;
-    //             }
-    //         }
-
-    //     }
-    // }
-
-    // public void findOuterClass(ClassCollection classCol){
-
-    //     if(this.isInnerClass == true || this.isLocalClass == true ){
-        
-    //         for(Class cl: classCol.getClasses()){
-    //             if(ancestor.equals(cl.getName())){
-    //                 System.out.println("FOUND!!! "+ cl.getName());
-    //                 this.outerClass = cl;
-    //             }
-    //         }
-
-    //     }
-    // }
-
-    // public Class findInterOrLocalChildrenClasses(ClassCollection classCol){
-    //      if(this.isInnerClass == false || this.isLocalClass == false ){
-    //             for(Class cl: classCol.getClasses()){
-    //                 if(cl.isInnerClass() == true || cl.isLocalClass() == true ){
-    //                     if(cl.getOuterClass() == this){
-    //                         innerOrLocalChildrenClasses.add(cl);
-    //                     }
-    //                 }
-    //             }
-    //     }
-    //     return null;
-    // }
-
 
     private ParentEntity<?> findParent(ClassOrInterfaceDeclaration decl) {
 
@@ -213,94 +116,23 @@ public class Class {
             }else{
                 return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.CLASS);
             }
-            
-            //String parentICAString = parentIC.getNameAsString();
-            // for (Class cl : classCol.getClasses()) {
-            //     if (parentICAString.equals(cl.getName())) {
-            //         parentIC.isAncestorOf(parentIC);
-            //         return new ParentEntity<Class, ClassOrInterfaceDeclaration>(cl, parentIC, EntityType.CLASS);
-
-            //     }
-            // }
-
-            // for (Interface intf : interfCol.getInterfaces()) {
-            //     if (parentICAString.equals(intf.getName())) {
-            //         return new ParentEntity<Interface, ClassOrInterfaceDeclaration>(intf, parentIC,
-            //                 EntityType.INTERFACE);
-            //     }
-            // }
+     
         }
         return null;
     }
 
-    // private Interface findParentInterface(AssignExpr expr, InterfaceCollection
-    // interfaceCol){
-    // if(expr.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()){
-    // String pInterf =
-    // expr.findAncestor(ClassOrInterfaceDeclaration.class).get().getNameAsString();
-    // for(Interface intf: interfaceCol.getInterfaces()){
-    // if(pInterf.equals(intf.getName())){
-    // return intf;
-    // }
-    // }
-    // }
-    // return null;
-    // }
 
-    // private Method findParentMethod(AssignExpr expr, MethodCollection methodCol){
-    // if(expr.findAncestor(MethodDeclaration.class).isPresent()){
-    // String pMethod =
-    // expr.findAncestor(MethodDeclaration.class).get().getNameAsString();
-    // for(Method md: methodCol.getMethods()){
-    // if(pMethod.equals(md.getName())){
-    // return md;
-    // }
-    // }
-    // }
-    // return null;
-    // }
 
     private ParentEntity<MethodDeclaration> findParentMethod(ClassOrInterfaceDeclaration decl){
         if(decl.findAncestor(MethodDeclaration.class).isPresent()){
-            MethodDeclaration parentMethod = decl.findAncestor(MethodDeclaration.class).get();
-            //String parentMethodString = parentMethod.getNameAsString();
-           // for(Method md: methodCol.getMethods()){
-              //  if(parentMethodString.equals(md.getName())){  
-                if(parentMethod != null){
-                    
-                    return new ParentEntity<MethodDeclaration>(parentMethod, EntityType.METHOD);
-                }
-            //     }
-            // }
+            MethodDeclaration parentMethod = decl.findAncestor(MethodDeclaration.class).get();  
+            if(parentMethod != null){
+                return new ParentEntity<MethodDeclaration>(parentMethod, EntityType.METHOD);
+            }
            
         }
         return null;
     }
-
-
-    // public Method getOuterMethod() {
-    //     return outerMethod;
-    // }
-
-    // public void setOuterMethod(Method outerMethod) {
-    //     this.outerMethod = outerMethod;
-    // }
-
-    // public String getAncestor() {
-    //     return ancestor;
-    // }
-
-    // public void setAncestor(String ancestor) {
-    //     this.ancestor = ancestor;
-    // }
-
-    // public List<Class> getInnerOrLocalChildrenClasses() {
-    //     return innerOrLocalChildrenClasses;
-    // }
-
-    // public void setInnerOrLocalChildrenClasses(List<Class> innerOrLocalChildrenClasses) {
-    //     this.innerOrLocalChildrenClasses = innerOrLocalChildrenClasses;
-    // }
 
     public String getName() {
         return name;
@@ -383,14 +215,6 @@ public class Class {
         this.implementedInterfaces = implementedInterfaces;
     }
 
-    // public Class getOuterClass() {
-    //     return outerClass;
-    // }
-
-    // public void setOuterClass(Class outerClass) {
-    //     this.outerClass = outerClass;
-    // }
-
     public void findMethods(MethodCollection mds){
         for (Method md : mds.getMethods()) {
             ParentEntity<?> methodParent = md.getParent();
@@ -408,7 +232,6 @@ public class Class {
             ParentEntity<?> varParent = v.getParent();
             if (varParent != null &&  varParent.getEntityType() == EntityType.CLASS) {
                 if(varParent.getDeclaration() == declaration){
-                    System.out.println("Found Child");
                     storedVarCalls.add(v);
                 }
                 
@@ -419,9 +242,8 @@ public class Class {
     public void findLambdas(LambdaCollection ls){
         for (Lambda l : ls.getLambdas()) {
             ParentEntity<?> lambdaParent = l.getParent();
-            if (lambdaParent != null &&  lambdaParent.getEntityType() == EntityType.METHOD) {
+            if (lambdaParent != null &&  lambdaParent.getEntityType() == EntityType.CLASS) {
                 if(lambdaParent.getDeclaration() == declaration){
-                    System.out.println("Found Child");
                     lambdas.add(l);
                 }
                 
@@ -432,12 +254,11 @@ public class Class {
     public void findClasses(ClassCollection cls){
         for (Class cl : cls.getClasses()) {
             ParentEntity<?> classParent = cl.getParent();
-            if (classParent != null &&  classParent.getEntityType() == EntityType.METHOD) {
-                if(classParent.getDeclaration() == declaration){
-                    System.out.println("Found Child");
-                    classes.add(cl);
-                }
-                
+            if (classParent != null && 
+                classParent.getEntityType() == EntityType.CLASS && cl.isInnerClass()) {
+                    if(classParent.getDeclaration() == declaration){
+                        classes.add(cl);
+                    }
             }
         }
     }
@@ -445,9 +266,8 @@ public class Class {
     public void findInterfaces(InterfaceCollection intfs){
         for (Interface intf: intfs.getInterfaces()) {
             ParentEntity<?> interfaceParent = intf.getParent();
-            if (interfaceParent != null &&  interfaceParent.getEntityType() == EntityType.METHOD) {
+            if (interfaceParent != null &&  interfaceParent.getEntityType() == EntityType.CLASS) {
                 if(interfaceParent.getDeclaration() == declaration){
-                    System.out.println("Found Child");
                     interfaces.add(intf);
                 }
                 
@@ -459,9 +279,8 @@ public class Class {
     public void findReferences(MethodReferenceCollection refs){
         for (MethodReference ref : refs.getMethodReferences()) {
             ParentEntity<?> referenceParent = ref.getParent();
-            if (referenceParent != null &&  referenceParent.getEntityType() == EntityType.METHOD) {
+            if (referenceParent != null &&  referenceParent.getEntityType() == EntityType.CLASS) {
                 if(referenceParent.getDeclaration() == declaration){
-                    System.out.println("Found Child");
                     references.add(ref);
                 }
                 
