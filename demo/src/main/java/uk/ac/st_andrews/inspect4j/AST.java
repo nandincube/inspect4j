@@ -98,7 +98,7 @@ public class AST {
         addMethodMembers();
         addClassMembers();
         addInterfaceMembers();
-        addLambdaMembers();
+        //addLambdaMembers();
         main = findMainMethod();
     }
 
@@ -119,14 +119,14 @@ public class AST {
         classes.addMethods(methods);
     }
 
-    private void addLambdaMembers() {
-       // classes.addVariables(variables);
-        lambdas.addLambdas(lambdas);
-        lambdas.addClasses(classes);
-        //classes.addInterfaces(interfaces);
-        //classes.addReferences(references);
-        //classes.addMethods(methods);
-    }
+    // private void addLambdaMembers() {
+    //    // classes.addVariables(variables);
+    //     lambdas.addLambdas(lambdas);
+    //     lambdas.addClasses(classes);
+    //     //classes.addInterfaces(interfaces);
+    //     //classes.addReferences(references);
+    //     //classes.addMethods(methods);
+    // }
 
     // private void addVariableMembers(){
     // variables.addVariables(variables);

@@ -4,13 +4,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.google.errorprone.annotations.Var;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -29,28 +27,26 @@ public class JSONWriterGson {
         this.fileInfo = fileInfo;
     }
 
-
     public void write(String directory) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         addCustomSerialisers(gsonBuilder);
 
         Gson gson = gsonBuilder.create();
         String fileInfoAsJson = gson.toJson(fileInfo);
-        String fileName = fileInfo.getFileNameBase()+".json";
-
+        String fileName = fileInfo.getFileNameBase() + ".json";
 
         try {
 
-            String jsonDirPath = directory+"\\json_files";
+            String jsonDirPath = directory + "\\json_files";
             File dir = new File(jsonDirPath);
             if (!dir.exists()) {
-                if(!dir.mkdirs()){
+                if (!dir.mkdirs()) {
                     System.out.println("Could not create output directories!");
                     return;
                 }
             }
 
-            String jsonFilePath = dir.getAbsolutePath() +"\\"+fileName;
+            String jsonFilePath = dir.getAbsolutePath() + "\\" + fileName;
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
             writer.append(fileInfoAsJson);
@@ -72,7 +68,7 @@ public class JSONWriterGson {
 
         serialiseLambda(gb);
         serialiseMethodReference(gb);
-       // serialiseVariable(gb);
+        // serialiseVariable(gb);
     }
 
     private void serialiseFile(GsonBuilder gb) {
@@ -95,7 +91,7 @@ public class JSONWriterGson {
                 if (src.getClasses() != null) {
                     ArrayList<Class> cls = src.getClasses().getClasses();
                     cls.forEach(x -> {
-                        if(!x.isInnerClass() && !x.isLocalClass()){
+                        if (x.getClassCategory() == ClassCategory.STANDARD) {
                             JsonElement cl = context.serialize(x, Class.class);
                             classCollectionJsonObject.add(x.getName(), cl);
                         }
@@ -113,11 +109,11 @@ public class JSONWriterGson {
                     jsonFile.add("interfaces", interfaceCollectionJsonObject);
                 }
 
-                if(src.getMain().hasMain()){
+                if (src.getMain().hasMain()) {
                     JsonElement mainElement = context.serialize(src.getMain(), MainInfo.class);
                     jsonFile.add("main_info", mainElement);
                 }
-              
+
                 return jsonFile;
             }
 
@@ -137,6 +133,7 @@ public class JSONWriterGson {
                 JsonObject jsonDetails = new JsonObject();
 
                 jsonDetails.addProperty("doc", src.getJavaDoc());
+                
 
                 JsonArray methodsJsonArray = new JsonArray();
 
@@ -160,43 +157,36 @@ public class JSONWriterGson {
                     superJsonArray.add(new JsonPrimitive(superC.toString()));
                 }
 
-                JsonArray classesJsonArray = new JsonArray();
+                JsonArray innerClassJsonArray = new JsonArray();
+                JsonArray staticNestedClassJsonArray = new JsonArray();
                 for (Class cl : src.getClasses()) {
-                    if(cl.isInnerClass()){
+                    JsonObject nestedClassesJsonObject = new JsonObject();
+                    if (cl.getClassCategory() == ClassCategory.INNER) {
                         JsonElement methodElement = context.serialize(cl, Class.class);
-                        classesJsonArray.add(methodElement);
+                        nestedClassesJsonObject.add(cl.getName(), methodElement);
+                        innerClassJsonArray.add(nestedClassesJsonObject);
+                    } else if (cl.getClassCategory() == ClassCategory.STATIC_NESTED) {
+                        JsonElement methodElement = context.serialize(cl, Class.class);
+                        nestedClassesJsonObject.add(cl.getName(), methodElement);
+                        staticNestedClassJsonArray.add(nestedClassesJsonObject);
                     }
                 }
 
-                jsonDetails.add("methods", methodsJsonArray);
-                jsonDetails.add("type_params", typeParamsJsonArray);
+                jsonDetails.addProperty("access_modifier", src.getAccessModifer().toString().toLowerCase());
+                jsonDetails.addProperty("non_access_modifier", src.getNonAccessModifer().toString().toLowerCase());
                 jsonDetails.add("extend", superJsonArray);
                 jsonDetails.add("implement", implJsonArray);
-
-                jsonDetails.add("inner_classes", classesJsonArray);
+                jsonDetails.add("type_params", typeParamsJsonArray);
 
                 JsonObject lineNumbers = new JsonObject();
                 lineNumbers.addProperty("min_lineno", src.getLineMin());
                 lineNumbers.addProperty("max_lineno", src.getLineMax());
                 jsonDetails.add("min_max_lineno", lineNumbers);
 
+                jsonDetails.add("methods", methodsJsonArray);
+                jsonDetails.add("inner_classes", innerClassJsonArray);
+                jsonDetails.add("static_nested_classes", staticNestedClassJsonArray);
 
-                // jsonClass.add(src.getName(), jsonDetails);
-                // if (src.isInnerClass()) {
-                //     JsonObject jsonInnerClass = new JsonObject();
-                //     JsonObject detailsCopy = new JsonObject();
-                //     detailsCopy.add(src.getName(), jsonDetails);
-                //     jsonInnerClass.add("inner_classes", detailsCopy);
-                //     jsonDetails = jsonInnerClass;
-                // }
-
-                // if (src.isLocalClass()) {
-                //     JsonObject jsonLocalClass = new JsonObject();
-                //     JsonObject detailsCopy = new JsonObject();
-                //     detailsCopy.add(src.getName(), jsonDetails);
-                //     jsonLocalClass.add("local_classes", detailsCopy);
-                //     jsonDetails = jsonLocalClass;
-                // }
                 return jsonDetails;
             }
 
@@ -214,11 +204,10 @@ public class JSONWriterGson {
             public JsonElement serialize(Method src, Type typeOfSrc, JsonSerializationContext context) {
                 JsonObject jsonMethod = new JsonObject();
                 JsonObject jsonDetails = new JsonObject();
-                // jsonObject.addProperty("declarationAsString", src.getDeclarationAsString());
 
                 JsonArray returnStmtsJsonArray = new JsonArray();
                 if (src.getReturnStmts() != null) {
-                    src.getReturnStmts().forEach(x -> returnStmtsJsonArray.add(new JsonPrimitive(x)));
+                    src.getReturnStmts().forEach(x -> returnStmtsJsonArray.add(new JsonPrimitive(x.toString())));
                 }
 
                 JsonArray paramNamesJsonArray = new JsonArray();
@@ -249,18 +238,20 @@ public class JSONWriterGson {
                     }
                 }
 
-    
-                JsonArray classesJsonArray = new JsonArray();
-                
+                JsonArray localClassesJsonArray = new JsonArray();
+
                 for (Class cl : src.getClasses()) {
-                    //System.out.println("Class "+cl.getName()+ " is local:" +cl.isLocalClass());
-                    if(cl.isLocalClass()){
-                        //System.out.println("Local Class - json: ");
+                    // System.out.println("Class "+cl.getName()+ " is local:" +cl.isLocalClass());
+                    if (cl.getClassCategory() == ClassCategory.LOCAL) {
+                        // System.out.println("Local Class - json: ");
+                        JsonObject localClassesJsonObject = new JsonObject();
                         JsonElement methodElement = context.serialize(cl, Class.class);
-                        classesJsonArray.add(methodElement);
+                        localClassesJsonObject.add(cl.getName(), methodElement);
+                        localClassesJsonArray.add(localClassesJsonObject);
                     }
                 }
 
+                System.out.print("GSON doc:"+src.getJavaDoc());
                 jsonDetails.addProperty("doc", src.getJavaDoc());
                 jsonDetails.add("args", paramNamesJsonArray);
                 jsonDetails.add("arg_types", paramTypesJsonObject);
@@ -278,9 +269,9 @@ public class JSONWriterGson {
                 jsonDetails.add("store_vars_calls", jsonVariables);
                 jsonDetails.add("lambdas", lambdasJsonArray);
                 jsonDetails.add("method_references", referencesJsonArray);
-                
+
                 // jsonDetails.add("references", lambdasJsonArray);#
-                jsonDetails.add("local_classes", classesJsonArray);
+                jsonDetails.add("local_classes", localClassesJsonArray);
                 // jsonDetails.add("interfaces", intefacesJsonArray);
 
                 jsonMethod.add(src.getName(), jsonDetails);
@@ -301,9 +292,6 @@ public class JSONWriterGson {
             @Override
             public JsonElement serialize(Lambda src, Type typeOfSrc, JsonSerializationContext context) {
                 JsonObject jsonLambda = new JsonObject();
-                // JsonObject jsonDetails = new JsonObject();
-
-                // jsonObject.addProperty("declarationAsString", src.getDeclarationAsString());
 
                 JsonArray returnStmtsJsonArray = new JsonArray();
                 if (src.getReturnStmts() != null) {
@@ -339,42 +327,28 @@ public class JSONWriterGson {
     }
 
     private void serialiseMethodReference(GsonBuilder gb) {
-         Type parameterType = new TypeToken<MethodReference>() {
-         }.getType();
+        Type parameterType = new TypeToken<MethodReference>() {
+        }.getType();
 
-         JsonSerializer<MethodReference> serialiser = new JsonSerializer<MethodReference>() {
+        JsonSerializer<MethodReference> serialiser = new JsonSerializer<MethodReference>() {
             @Override
             public JsonElement serialize(MethodReference src, Type typeOfSrc, JsonSerializationContext context) {
                 JsonObject jsonReference = new JsonObject();
-                // JsonObject jsonDetails = new JsonObject();
-
-                // jsonObject.addProperty("declarationAsString", src.getDeclarationAsString())
-
-
-                // JsonArray paramNamesJsonArray = new JsonArray();
-                // JsonObject paramTypesJsonObject = new JsonObject();
-                // if (src.getParams() != null) {
-                //     HashMap<String, String> params = src.getParams();
-                //     params.forEach((a, b) -> {
-                //         paramNamesJsonArray.add(new JsonPrimitive(a));
-                //         paramTypesJsonObject.addProperty(a, b);
-                //     });
-                // }
 
                 jsonReference.addProperty("containing_entity", src.getContainingEntity());
                 jsonReference.addProperty("identifier", src.getIdentifier());
-                //jsonReference.addProperty("arg_type", src.getBodyAsString());
 
                 return jsonReference;
-             }
-         };
+            }
+        };
 
-     gb.registerTypeAdapter(parameterType, serialiser);
+        gb.registerTypeAdapter(parameterType, serialiser);
 
     }
 
     private void serialiseInterface(GsonBuilder gb) {
-        Type parameterType = new TypeToken<Interface>() {}.getType();
+        Type parameterType = new TypeToken<Interface>() {
+        }.getType();
 
         JsonSerializer<Interface> serialiser = new JsonSerializer<Interface>() {
             @Override
@@ -421,19 +395,16 @@ public class JSONWriterGson {
     }
 
     private void serialiseMainInfo(GsonBuilder gb) {
-        Type parameterType = new TypeToken<MainInfo>() {}.getType();
+        Type parameterType = new TypeToken<MainInfo>() {
+        }.getType();
 
         JsonSerializer<MainInfo> serialiser = new JsonSerializer<MainInfo>() {
             @Override
             public JsonElement serialize(MainInfo src, Type typeOfSrc, JsonSerializationContext context) {
                 JsonObject jsonMainInfo = new JsonObject();
-                //JsonObject jsonDetails = new JsonObject();
-
 
                 jsonMainInfo.addProperty("main_flag", src.hasMain());
                 jsonMainInfo.addProperty("main_method", src.getMainMethod());
-
-                
 
                 return jsonMainInfo;
             }
@@ -443,23 +414,23 @@ public class JSONWriterGson {
 
     }
 
-
     // private void serialiseVariable(GsonBuilder gb) {
-    //     Type parameterType = new TypeToken<Variable>() {
-    //     }.getType();
+    // Type parameterType = new TypeToken<Variable>() {
+    // }.getType();
 
-    //     JsonSerializer<Variable> serialiser = new JsonSerializer<Variable>() {
-    //         @Override
-    //         public JsonElement serialize(Variable src, Type typeOfSrc, JsonSerializationContext context) {
-    //             JsonObject jsonVariable = new JsonObject();
-             
-    //             jsonVariable.addProperty(src.getName(),  src.getMethodCalled());
-                
-    //             return jsonVariable;
-    //         }
-    //     };
+    // JsonSerializer<Variable> serialiser = new JsonSerializer<Variable>() {
+    // @Override
+    // public JsonElement serialize(Variable src, Type typeOfSrc,
+    // JsonSerializationContext context) {
+    // JsonObject jsonVariable = new JsonObject();
 
-    //     gb.registerTypeAdapter(parameterType, serialiser);
+    // jsonVariable.addProperty(src.getName(), src.getMethodCalled());
+
+    // return jsonVariable;
+    // }
+    // };
+
+    // gb.registerTypeAdapter(parameterType, serialiser);
 
     // }
 }

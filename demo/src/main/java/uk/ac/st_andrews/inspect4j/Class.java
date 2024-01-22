@@ -3,6 +3,7 @@ package uk.ac.st_andrews.inspect4j;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -11,8 +12,9 @@ import com.github.javaparser.ast.type.TypeParameter;
 
 public class Class {
     private String name;
-    private boolean isInnerClass;
-    private boolean isLocalClass;
+    private ClassCategory classCategory;
+    private AccessModifierType accessModifer;
+    private NonAccessModifierType nonAccessModifer;
     private int lineMin;
     private int lineMax;
     private List<Method> methods;
@@ -27,23 +29,24 @@ public class Class {
     private ClassOrInterfaceDeclaration declaration;
     private List<Variable> storedVarCalls;
     private String javaDoc;
-    
+
     public Class(ClassOrInterfaceDeclaration classDecl) {
         NodeList<TypeParameter> typeParams = classDecl.getTypeParameters();
         NodeList<ClassOrInterfaceType> implementedInterfaces = classDecl.getImplementedTypes();
         NodeList<ClassOrInterfaceType> superClasses = classDecl.getExtendedTypes();
 
         this.name = classDecl.getNameAsString();
-        this.isInnerClass = classDecl.isInnerClass();    //isInnerClass only picks up on non-static nested classes
-        this.isLocalClass = classDecl.isLocalClassDeclaration();
         this.lineMin = classDecl.getBegin().get().line;
         this.lineMax = classDecl.getEnd().get().line;
         this.declaration = classDecl;
-     
+        extractAccessModifier();
+        extractNonAccessModifier();
+        extractClassCategory();
+
         this.typeParams = new ArrayList<String>();
         this.implementedInterfaces = new ArrayList<String>();
         this.superClasses = new ArrayList<String>();
-    
+
         this.javaDoc = getJavaDoc(classDecl);
         this.parent = findParent(classDecl);
 
@@ -56,6 +59,66 @@ public class Class {
         typesToString(typeParams);
         interfacesToString(implementedInterfaces);
         superClassesToString(superClasses);
+    }
+
+    private void extractAccessModifier() {
+        switch (declaration.getAccessSpecifier()) {
+            case PUBLIC:
+                accessModifer = AccessModifierType.PUBLIC;
+                break;
+            case PROTECTED:
+                accessModifer = AccessModifierType.PROTECTED;
+                break;
+            case PRIVATE:
+                accessModifer = AccessModifierType.PRIVATE;
+                break;
+            case NONE:
+                accessModifer = AccessModifierType.DEFAULT;
+                break;
+        }
+    }
+
+    private void extractNonAccessModifier() {
+
+        for (Modifier mod : declaration.getModifiers()) {
+            if (nonAccessModifer == null || nonAccessModifer == NonAccessModifierType.NONE) {
+                switch (mod.getKeyword()) {
+                    case STATIC:
+                        nonAccessModifer = NonAccessModifierType.STATIC;
+                        break;
+                    case ABSTRACT:
+                        nonAccessModifer = NonAccessModifierType.ABSTRACT;
+                        break;
+                    case FINAL:
+                        nonAccessModifer = NonAccessModifierType.FINAL;
+                        break;
+                    default:
+                        nonAccessModifer = NonAccessModifierType.NONE;
+                        break;
+                }
+            }
+
+        }
+
+        if (nonAccessModifer == null) {
+            nonAccessModifer = NonAccessModifierType.NONE;
+        }
+
+    }
+
+    private void extractClassCategory() {
+        if (declaration.isInnerClass()) {
+            classCategory = ClassCategory.INNER;
+            return;
+        }else if (declaration.isLocalClassDeclaration()) {
+            classCategory = ClassCategory.LOCAL;
+            return;
+        }else if (declaration.isNestedType()) {
+            classCategory = ClassCategory.STATIC_NESTED;
+            return;
+        }else {
+            classCategory = ClassCategory.STANDARD;
+        }
 
     }
 
@@ -67,69 +130,67 @@ public class Class {
         this.javaDoc = javaDoc;
     }
 
-
-    private String getJavaDoc(ClassOrInterfaceDeclaration cl){
-        if (cl.getJavadoc().isPresent()){
-            return cl.getJavadocComment().get().getContent().strip();   
+    private String getJavaDoc(ClassOrInterfaceDeclaration cl) {
+        if (cl.getJavadoc().isPresent()) {
+            return cl.getJavadocComment().get().getContent().strip().toString();
         }
         return null;
     }
 
-
-    public void typesToString(NodeList<TypeParameter> t){
+    public void typesToString(NodeList<TypeParameter> t) {
         t.forEach(x -> typeParams.add(x.getNameAsString().trim()));
     }
 
-    public void interfacesToString(NodeList<ClassOrInterfaceType> i){
-      
+    public void interfacesToString(NodeList<ClassOrInterfaceType> i) {
+
         i.forEach(x -> implementedInterfaces.add(x.getNameAsString().trim()));
-        
+
     }
 
-    public void superClassesToString(NodeList<ClassOrInterfaceType> s){
-        
+    public void superClassesToString(NodeList<ClassOrInterfaceType> s) {
+
         s.forEach(x -> superClasses.add(x.getNameAsString().trim()));
-        
-    }
 
+    }
 
     private ParentEntity<?> findParent(ClassOrInterfaceDeclaration decl) {
 
         ParentEntity<ClassOrInterfaceDeclaration> parentIC = findParentClassInterface(decl);
         ParentEntity<MethodDeclaration> parentMethod = findParentMethod(decl);
 
-        if(parentIC == null && parentMethod == null) return null;
-        if(parentIC == null && parentMethod != null) return parentMethod;
-        if(parentIC != null && parentMethod == null) return parentIC;
-        
+        if (parentIC == null && parentMethod == null)
+            return null;
+        if (parentIC == null && parentMethod != null)
+            return parentMethod;
+        if (parentIC != null && parentMethod == null)
+            return parentIC;
+
         if (parentIC.getDeclaration().isAncestorOf(parentMethod.getDeclaration())) {
             return parentMethod;
         }
         return parentIC;
     }
 
-    private ParentEntity< ClassOrInterfaceDeclaration> findParentClassInterface( ClassOrInterfaceDeclaration decl) {
+    private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(ClassOrInterfaceDeclaration decl) {
         if (decl.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = decl.findAncestor(ClassOrInterfaceDeclaration.class).get();
-            if(parentIC.isInterface()){
-                return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.INTERFACE);
-            }else{
-                return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.CLASS);
+            if (parentIC.isInterface()) {
+                return new ParentEntity<ClassOrInterfaceDeclaration>(parentIC, EntityType.INTERFACE);
+            } else {
+                return new ParentEntity<ClassOrInterfaceDeclaration>(parentIC, EntityType.CLASS);
             }
-     
+
         }
         return null;
     }
 
-
-
-    private ParentEntity<MethodDeclaration> findParentMethod(ClassOrInterfaceDeclaration decl){
-        if(decl.findAncestor(MethodDeclaration.class).isPresent()){
-            MethodDeclaration parentMethod = decl.findAncestor(MethodDeclaration.class).get();  
-            if(parentMethod != null){
+    private ParentEntity<MethodDeclaration> findParentMethod(ClassOrInterfaceDeclaration decl) {
+        if (decl.findAncestor(MethodDeclaration.class).isPresent()) {
+            MethodDeclaration parentMethod = decl.findAncestor(MethodDeclaration.class).get();
+            if (parentMethod != null) {
                 return new ParentEntity<MethodDeclaration>(parentMethod, EntityType.METHOD);
             }
-           
+
         }
         return null;
     }
@@ -166,22 +227,6 @@ public class Class {
         this.superClasses = superClasses;
     }
 
-    public boolean isInnerClass() {
-        return isInnerClass;
-    }
-
-    public void setInnerClass(boolean isInnerClass) {
-        this.isInnerClass = isInnerClass;
-    }
-
-    public boolean isLocalClass() {
-        return isLocalClass;
-    }
-
-    public void setLocalClass(boolean isLocalClass) {
-        this.isLocalClass = isLocalClass;
-    }
-
     public int getLineMin() {
         return lineMin;
     }
@@ -197,7 +242,6 @@ public class Class {
     public void setLineMax(int lineMax) {
         this.lineMax = lineMax;
     }
-
 
     public List<Method> getMethods() {
         return methods;
@@ -215,86 +259,81 @@ public class Class {
         this.implementedInterfaces = implementedInterfaces;
     }
 
-    public void findMethods(MethodCollection mds){
+    public void findMethods(MethodCollection mds) {
         for (Method md : mds.getMethods()) {
             ParentEntity<?> methodParent = md.getParent();
-            if (methodParent != null &&  methodParent.getEntityType() == EntityType.CLASS) {
-                if(methodParent.getDeclaration() == declaration){
+            if (methodParent != null && methodParent.getEntityType() == EntityType.CLASS) {
+                if (methodParent.getDeclaration() == declaration) {
                     methods.add(md);
                 }
-                
+
             }
         }
     }
 
-    public void findVariables(VariableCollection vars){
+    public void findVariables(VariableCollection vars) {
         for (Variable v : vars.getVariables()) {
             ParentEntity<?> varParent = v.getParent();
-            if (varParent != null &&  varParent.getEntityType() == EntityType.CLASS) {
-                if(varParent.getDeclaration() == declaration){
+            if (varParent != null && varParent.getEntityType() == EntityType.CLASS) {
+                if (varParent.getDeclaration() == declaration) {
                     storedVarCalls.add(v);
                 }
-                
+
             }
         }
     }
 
-    public void findLambdas(LambdaCollection ls){
+    public void findLambdas(LambdaCollection ls) {
         for (Lambda l : ls.getLambdas()) {
             ParentEntity<?> lambdaParent = l.getParent();
-            if (lambdaParent != null &&  lambdaParent.getEntityType() == EntityType.CLASS) {
-                if(lambdaParent.getDeclaration() == declaration){
+            if (lambdaParent != null && lambdaParent.getEntityType() == EntityType.CLASS) {
+                if (lambdaParent.getDeclaration() == declaration) {
                     lambdas.add(l);
                 }
-                
+
             }
         }
     }
 
-    public void findClasses(ClassCollection cls){
+    public void findClasses(ClassCollection cls) {
         for (Class cl : cls.getClasses()) {
             ParentEntity<?> classParent = cl.getParent();
-            if (classParent != null && 
-                classParent.getEntityType() == EntityType.CLASS && cl.isInnerClass()) {
-                    if(classParent.getDeclaration() == declaration){
-                        classes.add(cl);
-                    }
+            if (classParent != null && classParent.getEntityType() == EntityType.CLASS &&
+             (cl.getClassCategory() == ClassCategory.INNER ||  cl.getClassCategory() == ClassCategory.STATIC_NESTED )) {
+                if (classParent.getDeclaration() == declaration) {
+                    classes.add(cl);
+                }
             }
         }
     }
 
-    public void findInterfaces(InterfaceCollection intfs){
-        for (Interface intf: intfs.getInterfaces()) {
+    public void findInterfaces(InterfaceCollection intfs) {
+        for (Interface intf : intfs.getInterfaces()) {
             ParentEntity<?> interfaceParent = intf.getParent();
-            if (interfaceParent != null &&  interfaceParent.getEntityType() == EntityType.CLASS) {
-                if(interfaceParent.getDeclaration() == declaration){
+            if (interfaceParent != null && interfaceParent.getEntityType() == EntityType.CLASS) {
+                if (interfaceParent.getDeclaration() == declaration) {
                     interfaces.add(intf);
                 }
-                
+
             }
         }
     }
 
-
-    public void findReferences(MethodReferenceCollection refs){
+    public void findReferences(MethodReferenceCollection refs) {
         for (MethodReference ref : refs.getMethodReferences()) {
             ParentEntity<?> referenceParent = ref.getParent();
-            if (referenceParent != null &&  referenceParent.getEntityType() == EntityType.CLASS) {
-                if(referenceParent.getDeclaration() == declaration){
+            if (referenceParent != null && referenceParent.getEntityType() == EntityType.CLASS) {
+                if (referenceParent.getDeclaration() == declaration) {
                     references.add(ref);
                 }
-                
+
             }
         }
     }
 
-
-
-    public Class returnInstance(){
+    public Class returnInstance() {
         return this;
     }
-
-    
 
     public List<Class> getClasses() {
         return classes;
@@ -328,8 +367,6 @@ public class Class {
         this.parent = parent;
     }
 
-  
-
     public List<Lambda> getLambdas() {
         return lambdas;
     }
@@ -354,13 +391,42 @@ public class Class {
         this.storedVarCalls = storedVarCalls;
     }
 
+
+    public AccessModifierType getAccessModifer() {
+        return accessModifer;
+    }
+
+    public void setAccessModifer(AccessModifierType accessModifer) {
+        this.accessModifer = accessModifer;
+    }
+
+    public ClassCategory getClassCategory() {
+        return classCategory;
+    }
+
+    public void setClassCategory(ClassCategory classCategory) {
+        this.classCategory = classCategory;
+    }
+
+    public NonAccessModifierType getNonAccessModifer() {
+        return nonAccessModifer;
+    }
+
+    public void setNonAccessModifer(NonAccessModifierType nonAccessModifer) {
+        this.nonAccessModifer = nonAccessModifer;
+    }
+
+
     @Override
     public String toString() {
-        return "Class [name=" + name + ", isInnerClass=" + isInnerClass + ", isLocalClass=" + isLocalClass
-                + ", lineMin=" + lineMin + ", lineMax=" + lineMax + ", methods=" + methods + ", typeParams="
-                + typeParams + ", implementedInterfaces=" + implementedInterfaces + ", superClasses=" + superClasses
-                + ", classes=" + classes + ", interfaces=" + interfaces + ", references=" + references + ", parent="
-                + parent + ", declaration=" + declaration + ", javaDoc=" + javaDoc + "]";
+        return "Class [name=" + name + ", classCategory=" + classCategory + ", accessModifer=" + accessModifer
+                + ", nonAccessModifer=" + nonAccessModifer + ", lineMin=" + lineMin + ", lineMax=" + lineMax
+                + ", methods=" + methods + ", typeParams=" + typeParams + ", implementedInterfaces="
+                + implementedInterfaces + ", superClasses=" + superClasses + ", classes=" + classes + ", interfaces="
+                + interfaces + ", references=" + references + ", lambdas=" + lambdas + ", parent=" + parent
+                + ", declaration=" + declaration + ", storedVarCalls=" + storedVarCalls + ", javaDoc=" + javaDoc + "]";
     }
+
+    
 
 }

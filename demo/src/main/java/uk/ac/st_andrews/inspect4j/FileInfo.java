@@ -39,7 +39,9 @@ public class FileInfo {
 
     private String getFileDoc(){
         Class publicClass = classes.getClasses().stream()
-                                .filter(x -> !x.isInnerClass() && !x.isLocalClass())
+                                .filter(x -> x.getClassCategory() == ClassCategory.STANDARD &&
+                                        (x.getAccessModifer() == AccessModifierType.PUBLIC || 
+                                            x.getAccessModifer() == AccessModifierType.PROTECTED))
                                 .findAny()
                                 .orElse(null);
     

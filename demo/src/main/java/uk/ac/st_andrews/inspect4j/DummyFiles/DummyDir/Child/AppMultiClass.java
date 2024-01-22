@@ -89,24 +89,37 @@ public class AppMultiClass {
 
     }
 
-    private class InnerClass {
+    private static class InnerClass {
         private String horseName;
     
         public InnerClass(String hn) { 
             this.horseName = hn;
-           
-            
         }
     
         private void hiya(){
             System.out.println("hi");
-            String c = null;
-            c = printAddress("addr");
+            String c = "hi";
+            //c = printAddress("addr");
         }
     
     }
 
 }
 
+
+class DefaultClass {
+    private String horseName;
+
+    public DefaultClass(String hn) { 
+        this.horseName = hn;
+    }
+
+    private void hiya(){
+        System.out.println("hi");
+        String c = "hi";
+        //c = printAddress("addr");
+    }
+
+}
 
 
