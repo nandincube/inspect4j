@@ -23,6 +23,10 @@ public class AST {
     private VariableCollection variables;
     private MainInfo main;
 
+    /**
+     * 
+     * @param path
+     */
     public AST(String path) {
         this.fullTree = parseFile(path);
         this.classes = new ClassCollection(fullTree);
@@ -34,16 +38,11 @@ public class AST {
         this.main = null;
     }
 
-    public AST(CompilationUnit cu, String path) {
-        this.fullTree = cu;
-        this.classes = new ClassCollection(fullTree);
-        this.methods = new MethodCollection(fullTree);
-        this.interfaces = new InterfaceCollection(fullTree);
-        this.references = new MethodReferenceCollection(fullTree);
-        this.lambdas = new LambdaCollection(fullTree);
-        this.variables = new VariableCollection(fullTree);
-    }
-
+    /**
+     * 
+     * @param path
+     * @return
+     */
     private CompilationUnit parseFile(String path) {
         try {
             Path file = Paths.get(path);
@@ -63,6 +62,10 @@ public class AST {
         return null;
     }
 
+    /**
+     * 
+     * @return
+     */
     public MainInfo findMainMethod() {
         Method mainMd = methods.getMethods()
                 .stream()
@@ -88,6 +91,9 @@ public class AST {
         }
     }
 
+    /**
+     * 
+     */
     public void extractMetadata() {
         variables.extractVariablesFromAST();
         lambdas.extractLambdasFromAST();
@@ -102,6 +108,9 @@ public class AST {
         main = findMainMethod();
     }
 
+    /**
+     * 
+     */
     private void addMethodMembers() {
         methods.addVariables(variables);
         methods.addLambdas(lambdas);
@@ -110,6 +119,9 @@ public class AST {
         methods.addReferences(references);
     }
 
+    /**
+     * 
+     */
     private void addClassMembers() {
         classes.addVariables(variables);
         classes.addLambdas(lambdas);
@@ -119,116 +131,167 @@ public class AST {
         classes.addMethods(methods);
     }
 
-    // private void addLambdaMembers() {
-    //    // classes.addVariables(variables);
-    //     lambdas.addLambdas(lambdas);
-    //     lambdas.addClasses(classes);
-    //     //classes.addInterfaces(interfaces);
-    //     //classes.addReferences(references);
-    //     //classes.addMethods(methods);
-    // }
-
-    // private void addVariableMembers(){
-    // variables.addVariables(variables);
-    // variables.addLambdas(lambdas);
-    // variables.addClasses(classes);
-    // variables.addInterfaces(interfaces);
-    // variables.addReferences(references);
-    // variables.addMethods(methods);
-    // }
-
+    /**
+     * 
+     */
     private void addInterfaceMembers() {
         interfaces.addMethods(methods);
     }
 
+    /**
+     * 
+     */
     public void printMetadata() {
-        System.out.println("Classes: \n");
+        System.out.println("Extracting Classes...\n");
         classes.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Interfaces: \n");
+        System.out.println("Extracting Interfaces...\n");
         interfaces.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Methods: \n");
+        System.out.println("Extracting Methods... \n");
         methods.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Stored Variables: \n");
+        System.out.println("Extracting Variables...\n");
         variables.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Lambdas: \n");
+        System.out.println("Extracting Lambdas...\n");
         lambdas.printMetadata();
-        System.out.println("--------------------------------------");
-        System.out.println("Method References: \n");
+        System.out.println("Extracting Method References...\n");
         references.printMetadata();
-        System.out.println("--------------------------------------");
 
     }
 
+    /**
+     * 
+     * @param path
+     * @param directory
+     */
     public void writeToJson(String path, String directory) {
         FileInfo fileInfo = new FileInfo(path, classes, interfaces, main);
         JSONWriterGson json = new JSONWriterGson(fileInfo);
         json.write(directory);
     }
 
+    /**
+     * 
+     * @return
+     */
     public CompilationUnit getFullTree() {
         return fullTree;
     }
 
+    /**
+     * 
+     * @param fullTree
+     */
     public void setFullTree(CompilationUnit fullTree) {
         this.fullTree = fullTree;
     }
 
+    /**
+     * 
+     * @return
+     */
     public ClassCollection getClasses() {
         return classes;
     }
 
+    /**
+     * 
+     * @param classes
+     */
     public void setClasses(ClassCollection classes) {
         this.classes = classes;
     }
 
+    /**
+     * 
+     * @return
+     */
     public MethodCollection getMethods() {
         return methods;
     }
 
+    /**
+     * 
+     * @param methods
+     */
     public void setMethods(MethodCollection methods) {
         this.methods = methods;
     }
 
+    /**
+     * 
+     * @return
+     */
     public InterfaceCollection getInterfaces() {
         return interfaces;
     }
 
+    /**
+     * 
+     * @param interfaces
+     */
     public void setInterfaces(InterfaceCollection interfaces) {
         this.interfaces = interfaces;
     }
 
+    /**
+     * 
+     * @return
+     */
     public MethodReferenceCollection getReferences() {
         return references;
     }
 
+    /**
+     * 
+     * @param references
+     */
     public void setReferences(MethodReferenceCollection references) {
         this.references = references;
     }
 
+    /**
+     * 
+     * @return
+     */
     public LambdaCollection getLambdas() {
         return lambdas;
     }
 
+    /**
+     * 
+     * @param lambdas
+     */
     public void setLambdas(LambdaCollection lambdas) {
         this.lambdas = lambdas;
     }
 
+    /**
+     * 
+     * @return
+     */
     public VariableCollection getVariables() {
         return variables;
     }
 
+    /**
+     * 
+     * @param variables
+     */
     public void setVariables(VariableCollection variables) {
         this.variables = variables;
     }
 
+    /**
+     * 
+     * @return
+     */
     public MainInfo getMain() {
         return main;
     }
 
+    /**
+     * 
+     * @param main
+     */
     public void setMain(MainInfo main) {
         this.main = main;
     }

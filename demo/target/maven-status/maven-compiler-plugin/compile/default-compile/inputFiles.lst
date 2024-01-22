@@ -1,27 +1,30 @@
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\Interface.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\Lambda.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\DummyFiles\DummyDir\Child\AppMultiClass.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\DummyFiles\DummyDir\App.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\Class.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\DummyFiles\AppInterfaceParent.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\EntityType.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\FileInfo.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\DummyFiles\AppMultiClass.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\LambdaCollection.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\DummyFiles\App.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\MethodReferenceCollection.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\DummyFiles\AppGeneric.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\Method.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\DummyFiles\DummyDir\Child\Child2\App2.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\MainInfo.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\Cli.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\InterfaceCollection.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\VariableCollection.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\AST.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\ClassCollection.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\Variable.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\ParentEntity.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\DummyFiles\AppInterface.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\MethodReference.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\JSONWriterGson.java
-C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\main\java\uk\ac\st_andrews\inspect4j\MethodCollection.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/Interface.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles/DummyDir/Child/Child2/App2.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles/App.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/AccessModifierType.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/Class.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/Method.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/EntityType.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/AST.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/NonAccessModifierType.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/VariableCollection.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles/AppInterface.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles/AppInterfaceParent.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/ClassCategory.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/ClassCollection.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/LambdaCollection.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles/DummyDir/App.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/Lambda.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles/AppGeneric.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/MainInfo.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/JSONWriterGson.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/MethodReference.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles/AppMultiClass.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/Variable.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/ParentEntity.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/Cli.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles/DummyDir/Child/AppMultiClass.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/MethodCollection.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/InterfaceCollection.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/MethodReferenceCollection.java
+/cs/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/FileInfo.java

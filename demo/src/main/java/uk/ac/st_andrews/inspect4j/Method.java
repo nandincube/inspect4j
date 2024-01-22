@@ -9,7 +9,9 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 
-
+/**
+ * 
+ */
 public class Method {
     private String javaDoc;
     private String name;
@@ -27,6 +29,11 @@ public class Method {
     private MethodDeclaration declaration;
     private boolean isMain;
    
+    /**
+     * 
+     * @param method
+     * @param returnStmts
+     */
     public Method(MethodDeclaration method, HashSet<String> returnStmts) {
         this.name = method.getNameAsString();
         this.params = new HashMap<String, String>();
@@ -47,13 +54,11 @@ public class Method {
         this.javaDoc = getJavaDoc(method);
     }
 
-    // public JsonObject lineRange() {
-    //     JsonObject range = new JsonObject();
-    //     range.addProperty("min_lineno", lineMin);
-    //     range.addProperty("max_lineno", lineMax);
-    //     return range;
-    // }
-
+    /**
+     * 
+     * @param md
+     * @return
+     */
     private boolean checkIfMain(MethodDeclaration md){
         if(md.isPublic() && md.isStatic() && md.getType().isVoidType()){
             if(name.equals("main") && params.size() == 1){
@@ -66,6 +71,10 @@ public class Method {
         return false;
     }
 
+    /**
+     * 
+     * @param md
+     */
     private void extractParameterInformation(MethodDeclaration md) {
         if (md.getParameters() != null) {
             for (Parameter param : md.getParameters()) {
@@ -74,22 +83,43 @@ public class Method {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Lambda> getLambdas() {
         return lambdas;
     }
 
+    /**
+     * 
+     * @param lambdas
+     */
     public void setLambdas(List<Lambda> lambdas) {
         this.lambdas = lambdas;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getJavaDoc() {
         return javaDoc;
     }
 
+    /**
+     * 
+     * @param javaDoc
+     */
     public void setJavaDoc(String javaDoc) {
         this.javaDoc = javaDoc;
     }
 
+    /**
+     * 
+     * @param md
+     * @return
+     */
     private String getJavaDoc(MethodDeclaration md) {
         if (md.getJavadoc().isPresent()) {
             return md.getJavadocComment().get().getContent().strip();
@@ -97,6 +127,11 @@ public class Method {
         return null;
     }
 
+    /**
+     * 
+     * @param md
+     * @return
+     */
     private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(MethodDeclaration md) {
         if (md.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = md.findAncestor(ClassOrInterfaceDeclaration.class).get();
@@ -110,31 +145,58 @@ public class Method {
         return null;
     }
 
-
+    /**
+     * 
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getLineMin() {
         return lineMin;
     }
 
+    /**
+     * 
+     * @param lineMin
+     */
     public void setLineMin(int lineMin) {
         this.lineMin = lineMin;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getLineMax() {
         return lineMax;
     }
 
+    /**
+     * 
+     * @param lineMax
+     */
     public void setLineMax(int lineMax) {
         this.lineMax = lineMax;
     }
 
+    /**
+     * 
+     * @param vars
+     */
     public void findVariables(VariableCollection vars){
         for (Variable v : vars.getVariables()) {
             ParentEntity<?> varParent = v.getParent();
@@ -147,6 +209,10 @@ public class Method {
         }
     }
 
+    /**
+     * 
+     * @param ls
+     */
     public void findLambdas(LambdaCollection ls){
         for (Lambda l : ls.getLambdas()) {
             ParentEntity<?> lambdaParent = l.getParent();
@@ -159,6 +225,10 @@ public class Method {
         }
     }
 
+    /**
+     * 
+     * @param cls
+     */
     public void findClasses(ClassCollection cls){
         for (Class cl : cls.getClasses()) {
             ParentEntity<?> classParent = cl.getParent();
@@ -171,6 +241,10 @@ public class Method {
         }
     }
 
+    /**
+     * 
+     * @param intfs
+     */
     public void findInterfaces(InterfaceCollection intfs){
         for (Interface intf: intfs.getInterfaces()) {
             ParentEntity<?> interfaceParent = intf.getParent();
@@ -183,6 +257,10 @@ public class Method {
         }
     }
 
+    /**
+     * 
+     * @param refs
+     */
     public void findReferences(MethodReferenceCollection refs){
         for (MethodReference ref : refs.getMethodReferences()) {
             ParentEntity<?> referenceParent = ref.getParent();
@@ -194,6 +272,9 @@ public class Method {
         }
     }
 
+    /**
+     * 
+     */
     @Override
     public String toString() {
         return "Method [javaDoc=" + javaDoc + ", name=" + name + ", params=" + params + ", returnStmts=" + returnStmts
@@ -202,82 +283,162 @@ public class Method {
                 + ", references=" + references + ", parent=" + parent + ", declaration=" + declaration + "]";
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Variable> getStoredVarCalls() {
         return storedVarCalls;
     }
 
+    /**
+     * 
+     * @param storedVarCalls
+     */
     public void setStoredVarCalls(List<Variable> storedVarCalls) {
         this.storedVarCalls = storedVarCalls;
     }
 
+    /**
+     * 
+     * @return
+     */
     public HashMap<String, String> getParams() {
         return params;
     }
 
+    /**
+     * 
+     * @param params
+     */
     public void setParams(HashMap<String, String> params) {
         this.params = params;
     }
 
+    /**
+     * 
+     * @return
+     */
     public HashSet<String> getReturnStmts() {
         return returnStmts;
     }
 
+    /**
+     * 
+     * @param returnStmts
+     */
     public void setReturnStmts(HashSet<String> returnStmts) {
         this.returnStmts = returnStmts;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getReturnType() {
         return returnType;
     }
 
+    /**
+     * 
+     * @param returnType
+     */
     public void setReturnType(String returnType) {
         this.returnType = returnType;
     }
 
+    /**
+     * 
+     * @return
+     */
     public ParentEntity<?> getParent() {
         return parent;
     }
 
+    /**
+     * 
+     * @param parent
+     */
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Class> getClasses() {
         return classes;
     }
 
+    /**
+     * 
+     * @param classes
+     */
     public void setClasses(List<Class> classes) {
         this.classes = classes;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Interface> getInterfaces() {
         return interfaces;
     }
 
+    /**
+     * 
+     * @param interfaces
+     */
     public void setInterfaces(List<Interface> interfaces) {
         this.interfaces = interfaces;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<MethodReference> getReferences() {
         return references;
     }
 
+    /**
+     * 
+     * @param references
+     */
     public void setReferences(List<MethodReference> references) {
         this.references = references;
     }
 
+    /**
+     * 
+     * @return
+     */
     public MethodDeclaration getDeclaration() {
         return declaration;
     }
 
+    /**
+     * 
+     * @param declaration
+     */
     public void setDeclaration(MethodDeclaration declaration) {
         this.declaration = declaration;
     }
 
+    /**
+     * 
+     * @return
+     */
     public boolean isMain() {
         return isMain;
     }
 
+    /**
+     * 
+     * @param isMain
+     */
     public void setMain(boolean isMain) {
         this.isMain = isMain;
     }

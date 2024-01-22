@@ -10,6 +10,9 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.LambdaExpr;
 
+/**
+ * 
+ */
 public class Lambda {
     private String bodyAsString;
     private HashMap<String, String> params;
@@ -23,6 +26,11 @@ public class Lambda {
     private List<Lambda> lambdas;
     private List<Variable> storedVarCalls;
 
+    /**
+     * 
+     * @param lambdaDecl
+     * @param returnStmts
+     */
     public Lambda(LambdaExpr lambdaDecl, HashSet<String> returnStmts) {
 
         this.bodyAsString = lambdaDecl.getBody().toString();
@@ -38,10 +46,18 @@ public class Lambda {
         this.parent = findParent(lambdaDecl);
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getBodyAsString() {
         return bodyAsString;
     }
 
+    /**
+     * 
+     * @param md
+     */
     private void extractParameterInformation(LambdaExpr md) {
         if (md.getParameters() != null) {
             for (Parameter param : md.getParameters()) {
@@ -50,26 +66,51 @@ public class Lambda {
         }
     }
 
+    /**
+     * 
+     * @param expressionAsString
+     */
     public void setExpressionAsString(String expressionAsString) {
         this.bodyAsString = expressionAsString;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getLineMin() {
         return lineMin;
     }
 
+    /**
+     * 
+     * @param lineMin
+     */
     public void setLineMin(int lineMin) {
         this.lineMin = lineMin;
     }
 
+
+    /**
+     * 
+     * @return
+     */
     public int getLineMax() {
         return lineMax;
     }
 
+    /**
+     * 
+     * @param lineMax
+     */
     public void setLineMax(int lineMax) {
         this.lineMax = lineMax;
     }
 
+    /**
+     * 
+     * @param cls
+     */
     public void findClasses(ClassCollection cls) {
         for (Class cl : cls.getClasses()) {
             ParentEntity<?> classParent = cl.getParent();
@@ -81,6 +122,10 @@ public class Lambda {
         }
     }
 
+    /**
+     * 
+     * @param lbds
+     */
     public void findLambdas(LambdaCollection lbds) {
         for (Lambda lm : lbds.getLambdas()) {
             ParentEntity<?> classParent = lm.getParent();
@@ -92,6 +137,10 @@ public class Lambda {
         }
     }
 
+    /**
+     * 
+     * @param refs
+     */
     public void findReferences(MethodReferenceCollection refs) {
         for (MethodReference ref : refs.getMethodReferences()) {
             ParentEntity<?> classParent = ref.getParent();
@@ -103,6 +152,10 @@ public class Lambda {
         }
     }
 
+    /**
+     * 
+     * @param vars
+     */
     public void findVariables(VariableCollection vars) {
         for (Variable var : vars.getVariables()) {
             ParentEntity<?> classParent = var.getParent();
@@ -114,6 +167,11 @@ public class Lambda {
         }
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity<?> findParent(LambdaExpr expr) {
 
         ParentEntity<ClassOrInterfaceDeclaration> parentIC = findParentClassInterface(expr);
@@ -131,6 +189,11 @@ public class Lambda {
         return parentIC;
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(LambdaExpr expr) {
         if (expr.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = expr.findAncestor(ClassOrInterfaceDeclaration.class).get();
@@ -144,6 +207,11 @@ public class Lambda {
 
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity<MethodDeclaration> findParentMethod(LambdaExpr expr) {
         if (expr.findAncestor(MethodDeclaration.class).isPresent()) {
             MethodDeclaration parentMethod = expr.findAncestor(MethodDeclaration.class).get();
@@ -154,32 +222,59 @@ public class Lambda {
         return null;
     }
 
+    /**
+     * 
+     */
     @Override
     public String toString() {
         return "Lambda [expressionAsString=" + bodyAsString + ", params=" + params + ", returnStmts="
                 + returnStmts + ", parent=" + parent + ", lineMin=" + lineMin + ", lineMax=" + lineMax + "]";
     }
 
+    /**
+     * 
+     * @return
+     */
     public HashSet<String> getReturnStmts() {
         return returnStmts;
     }
 
+    /**
+     * 
+     * @param returnStmts
+     */
     public void setReturnStmts(HashSet<String> returnStmts) {
         this.returnStmts = returnStmts;
     }
 
+    /**
+     * 
+     * @return
+     */
     public HashMap<String, String> getParams() {
         return params;
     }
 
+    /**
+     * 
+     * @param params
+     */
     public void setParams(HashMap<String, String> params) {
         this.params = params;
     }
 
+    /**
+     * 
+     * @return
+     */
     public ParentEntity<?> getParent() {
         return parent;
     }
 
+    /**
+     * 
+     * @param parent
+     */
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;
     }

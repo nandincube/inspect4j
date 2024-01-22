@@ -37,7 +37,7 @@ public class JSONWriterGson {
 
         try {
 
-            String jsonDirPath = directory + "\\json_files";
+            String jsonDirPath = directory + "/json_files"; //linux specific path syntax
             File dir = new File(jsonDirPath);
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
@@ -46,7 +46,7 @@ public class JSONWriterGson {
                 }
             }
 
-            String jsonFilePath = dir.getAbsolutePath() + "\\" + fileName;
+            String jsonFilePath = dir.getAbsolutePath() + "/" + fileName;
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
             writer.append(fileInfoAsJson);
@@ -250,8 +250,7 @@ public class JSONWriterGson {
                         localClassesJsonArray.add(localClassesJsonObject);
                     }
                 }
-
-                System.out.print("GSON doc:"+src.getJavaDoc());
+                
                 jsonDetails.addProperty("doc", src.getJavaDoc());
                 jsonDetails.add("args", paramNamesJsonArray);
                 jsonDetails.add("arg_types", paramTypesJsonObject);

@@ -11,45 +11,74 @@ import com.github.javaparser.ast.visitor.GenericListVisitorAdapter;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
+/**
+ * 
+ */
 public class LambdaCollection {
     private ArrayList<Lambda> lambdas;
     private CompilationUnit ast;
 
+    /**
+     * 
+     * @param ast
+     */
     public LambdaCollection(CompilationUnit ast) {
         this.lambdas = new ArrayList<>();
         this.ast = ast;
     }
 
-    public void getMetadata() {
-        extractLambdasFromAST();
-        printMetadata();
-    }
-
+    /**
+     * 
+     */
     public void extractLambdasFromAST() {
         VoidVisitor<List<Lambda>> lambdaDeclCollector = new LambdaExprCollector();
         lambdaDeclCollector.visit(ast, lambdas);
     }
 
+    /**
+     * 
+    * @param classes
+    */
     public void addClasses(ClassCollection classes) {
         lambdas.forEach(x -> x.findClasses(classes));
     }
 
+    /**
+     * 
+     * @param lmbds
+     */
     public void addLambdas(LambdaCollection lmbds) {
         lambdas.forEach(x -> x.findLambdas(lmbds));
     }
 
+    /**
+     * 
+     * @param refs
+     */
     public void addReferences(MethodReferenceCollection refs) {
         lambdas.forEach(x -> x.findReferences(refs));
     }
 
+    /**
+     * 
+     * @param vars
+     */
     public void addVariable(VariableCollection vars) {
         lambdas.forEach(x -> x.findVariables(vars));
     }
 
+    /**
+     * 
+     * @return
+     */
     public ArrayList<Lambda> getLambdas() {
         return lambdas;
     }
 
+    /**
+     * 
+     * @param lambdas
+     */
     public void setLambdas(ArrayList<Lambda> lambdas) {
         this.lambdas = lambdas;
     }
@@ -58,15 +87,23 @@ public class LambdaCollection {
         return ast;
     }
 
+    /**
+     * 
+     */
     public void setAst(CompilationUnit ast) {
         this.ast = ast;
     }
 
+    /**
+     * 
+     */
     public void printMetadata() {
         lambdas.forEach(x -> System.out.println(x.toString()));
-
     }
 
+    /**
+     * 
+     */
     private class LambdaExprCollector extends VoidVisitorAdapter<List<Lambda>> {
         @Override
         public void visit(LambdaExpr le, List<Lambda> collection) {
@@ -76,12 +113,20 @@ public class LambdaCollection {
 
     }
 
+    /**
+     * 
+     * @param le
+     * @return
+     */
     private HashSet<String> getReturnStatements(LambdaExpr le) {
         List<String> rtns = new ArrayList<String>();
         GenericListVisitorAdapter<String, List<String>> returnPrinter = new ReturnStatementCollector();
         return new HashSet<String>(returnPrinter.visit(le, rtns));
     }
 
+    /**
+     * 
+     */
     private class ReturnStatementCollector extends GenericListVisitorAdapter<String, List<String>> {
         @Override
         public List<String> visit(ReturnStmt rs, List<String> arg) {

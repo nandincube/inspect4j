@@ -6,12 +6,19 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 
+/**
+ * 
+ */
 public class MethodReference {
     private String containingEntity;
     private String identifier;
     private List<String> argumentTypes;
     private ParentEntity<?> parent;
 
+    /**
+     * 
+     * @param methodRef
+     */
     public MethodReference(MethodReferenceExpr methodRef){
         this.containingEntity = methodRef.getScope().toString();
         this.identifier = methodRef.getIdentifier();
@@ -20,36 +27,69 @@ public class MethodReference {
         addArgumentTypes(methodRef);
     }
 
+    /**
+     * 
+     * @param methodRef
+     */
     private void addArgumentTypes(MethodReferenceExpr methodRef){
         if (methodRef.getTypeArguments().isPresent()) {
             methodRef.getTypeArguments().get().stream().forEach(x -> argumentTypes.add(x.asString()));
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getContainingEntity() {
         return containingEntity;
     }
 
+    /**
+     * 
+     * @param containingEntity
+     */
     public void setContainingEntity(String containingEntity) {
         this.containingEntity = containingEntity;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     * 
+     * @param identifier
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<String> getArgumentTypes() {
         return argumentTypes;
     }
 
+    /**
+     * 
+     * @param argumentTypes
+     */
     public void setArgumentTypes(List<String> argumentTypes) {
         this.argumentTypes = argumentTypes;
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity<?> findParent(MethodReferenceExpr expr) {
 
         ParentEntity<ClassOrInterfaceDeclaration> parentIC = findParentClassInterface(expr);
@@ -65,6 +105,11 @@ public class MethodReference {
         return parentIC;
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity< ClassOrInterfaceDeclaration> findParentClassInterface(MethodReferenceExpr expr) {
         if (expr.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = expr.findAncestor(ClassOrInterfaceDeclaration.class).get();
@@ -77,6 +122,11 @@ public class MethodReference {
         return null;
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity<MethodDeclaration> findParentMethod(MethodReferenceExpr expr){
         if(expr.findAncestor(MethodDeclaration.class).isPresent()){
             MethodDeclaration parentMethod = expr.findAncestor(MethodDeclaration.class).get();
@@ -87,16 +137,27 @@ public class MethodReference {
         return null;
     }
 
+    /**
+     * 
+     */
     @Override
     public String toString() {
         return "MethodReference [containingEntity=" + containingEntity + ", identifier=" + identifier
                 + ", argumentTypes=" + argumentTypes + ", parent=" + parent + "]";
     }
 
+    /**
+     * 
+     * @return
+     */
     public ParentEntity<?> getParent() {
         return parent;
     }
 
+    /**
+     * 
+     * @param parent
+     */
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;
     }

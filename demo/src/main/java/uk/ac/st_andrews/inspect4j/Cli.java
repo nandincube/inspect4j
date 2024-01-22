@@ -14,6 +14,10 @@ import picocli.CommandLine.Option;
 
 @Command(name = "inspect4j", version = "inspect4j 1.0", mixinStandardHelpOptions = true)
 
+/**
+ * 
+ */
+
 //public class Cli implements Runnable {
 public class Cli {
 
@@ -24,25 +28,33 @@ public class Cli {
     @Option(names = { "-o", "--output_path" }, type = String.class,  defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
     private String outputDir;
 
-    private static final String FILE_PATH = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\main\\java\\uk\\ac\\st_andrews\\inspect4j\\DummyFiles\\DummyDir"; 
-    private static final String OUTPUTDIR_PATH = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\OutputDir";
+    private static final String FILE_PATH = "/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles"; 
+    private static final String OUTPUTDIR_PATH = "/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/OutputDir";
    
     @Option(names = { "--help" }, description = "Show this message and exit.")
 
     public static void main(String[] args) throws Exception {
+        System.out.println("hi!");
         Cli c = new Cli(FILE_PATH, OUTPUTDIR_PATH);
     }
 
-    public Cli(){
-    }
 
+    /**
+     * 
+     * @param path
+     * @param outputDir
+     */
     public Cli(String path, String outputDir){
         this.path = path;
         this.outputDir = outputDir;
         analyse();
+        System.out.println("Analysis completed! ");
        
     }
  
+    /**
+     * 
+     */
     public void analyse(){
         Path pathObj = Paths.get(path);
         if(Files.exists(pathObj)){
@@ -55,6 +67,12 @@ public class Cli {
             System.out.println("Could not find source file/directory!");
         }
     }
+
+    /**
+     * 
+     * @param dirPath
+     * @param outDir
+     */
     public void analyseDirectory(String dirPath, String outDir){
         try{
 
@@ -66,8 +84,8 @@ public class Cli {
 
             if(directories.size() > 0){
                 directories.forEach(x-> {
-                    String outPath = outDir+"\\"+x.getName();
-                    String dir =  dirPath+"\\"+x.getName();
+                    String outPath = outDir+"/"+x.getName();
+                    String dir =  dirPath+"/"+x.getName();
                     
                     analyseDirectory(dir, outPath);
                 });
@@ -83,9 +101,6 @@ public class Cli {
                     analyseFile(filePath, outDir);
                 });
             }
-
-   
-            
         }catch(IOException i){
             System.out.println("Couldn't analyse this directory! "+ i);
         }
@@ -93,12 +108,18 @@ public class Cli {
     }
 
 
+    /**
+     * 
+     * @param filePath
+     * @param outDir
+     */
     public void analyseFile(String filePath, String outDir){
         if(filePath.length() > 0  && filePath != null){
             AST ast = new AST(filePath);
             ast.extractMetadata();
-            ast.printMetadata();
+           // ast.printMetadata();
             ast.writeToJson(filePath, outDir);
+            System.out.println("Data Extracted for file: " + filePath + "\n");
         } 
         
 

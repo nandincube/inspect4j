@@ -5,12 +5,19 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 
+/**
+ * 
+ */
 public class Variable {
     private String name;
     private ParentEntity<?> parent;
     private String methodCalled;
     private String javaDoc;
 
+    /**
+     * 
+     * @param assignment
+     */
     public Variable(AssignExpr assignment) {
         this.name = assignment.getTarget().asNameExpr().getNameAsString();
         this.parent = findParent(assignment);
@@ -18,14 +25,27 @@ public class Variable {
         this.javaDoc = findJavaDoc(assignment.getTarget().asNameExpr());
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getJavaDoc() {
         return javaDoc;
     }
 
+    /**
+     * 
+     * @param javaDoc
+     */
     public void setJavaDoc(String javaDoc) {
         this.javaDoc = javaDoc;
     }
 
+    /**
+     * 
+     * @param var
+     * @return
+     */
     private String findJavaDoc(NameExpr var) {
         if (var.getComment().isPresent()) {
             if (var.getComment().get().isJavadocComment()) {
@@ -35,6 +55,11 @@ public class Variable {
         return null;
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity<?> findParent(AssignExpr expr) {
 
         ParentEntity<ClassOrInterfaceDeclaration> parentIC = findParentClassInterface(expr);
@@ -49,6 +74,11 @@ public class Variable {
         return parentIC;
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity< ClassOrInterfaceDeclaration> findParentClassInterface(AssignExpr expr) {
         if (expr.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = expr.findAncestor(ClassOrInterfaceDeclaration.class).get();
@@ -62,6 +92,11 @@ public class Variable {
         return null;
     }
 
+    /**
+     * 
+     * @param expr
+     * @return
+     */
     private ParentEntity<MethodDeclaration> findParentMethod(AssignExpr expr){
         if(expr.findAncestor(MethodDeclaration.class).isPresent()){
             MethodDeclaration parentMethod = expr.findAncestor(MethodDeclaration.class).get();   
@@ -72,26 +107,50 @@ public class Variable {
         return null;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getMethodCalled() {
         return methodCalled;
     }
 
+    /**
+     * 
+     * @param methodCalled
+     */
     public void setMethodCalled(String methodCalled) {
         this.methodCalled = methodCalled;
     }
 
+    /**
+     * 
+     * @return
+     */
     public ParentEntity<?> getParent() {
         return parent;
     }
 
+    /**
+     * 
+     * @param parent
+     */
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;
     }

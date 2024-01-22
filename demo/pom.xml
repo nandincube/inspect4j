@@ -6,7 +6,7 @@
 
   <groupId>uk.ac.st_andrews.inspect4j</groupId>
   <artifactId>inspect4j</artifactId>
-  <version>1</version>
+  <version>1.0</version>
 
   <name>inspect4j</name>
   <!-- FIXME change it to the project's website -->
@@ -65,7 +65,7 @@
   
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <!-- <pluginManagement> lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
@@ -195,9 +195,8 @@
               </descriptorRefs>
           </configuration>
         </plugin>
-
+<!--</pluginManagement> -->
       </plugins>
-    </pluginManagement>
   </build>
 
 

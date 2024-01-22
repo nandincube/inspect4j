@@ -10,6 +10,9 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.TypeParameter;
 
+/**
+ * 
+ */
 public class Class {
     private String name;
     private ClassCategory classCategory;
@@ -30,6 +33,10 @@ public class Class {
     private List<Variable> storedVarCalls;
     private String javaDoc;
 
+    /**
+     * 
+     * @param classDecl
+     */
     public Class(ClassOrInterfaceDeclaration classDecl) {
         NodeList<TypeParameter> typeParams = classDecl.getTypeParameters();
         NodeList<ClassOrInterfaceType> implementedInterfaces = classDecl.getImplementedTypes();
@@ -61,6 +68,9 @@ public class Class {
         superClassesToString(superClasses);
     }
 
+    /**
+     * 
+     */
     private void extractAccessModifier() {
         switch (declaration.getAccessSpecifier()) {
             case PUBLIC:
@@ -78,6 +88,9 @@ public class Class {
         }
     }
 
+    /**
+     * 
+     */
     private void extractNonAccessModifier() {
 
         for (Modifier mod : declaration.getModifiers()) {
@@ -106,6 +119,9 @@ public class Class {
 
     }
 
+    /**
+     * 
+     */
     private void extractClassCategory() {
         if (declaration.isInnerClass()) {
             classCategory = ClassCategory.INNER;
@@ -122,14 +138,28 @@ public class Class {
 
     }
 
+
+    /**
+     * 
+     * @return
+     */
     public String getJavaDoc() {
         return javaDoc;
     }
 
+    /**
+     * 
+     * @param javaDoc
+     */
     public void setJavaDoc(String javaDoc) {
         this.javaDoc = javaDoc;
     }
 
+    /**
+     * 
+     * @param cl
+     * @return
+     */
     private String getJavaDoc(ClassOrInterfaceDeclaration cl) {
         if (cl.getJavadoc().isPresent()) {
             return cl.getJavadocComment().get().getContent().strip().toString();
@@ -137,22 +167,39 @@ public class Class {
         return null;
     }
 
+    /**
+     * 
+     * @param t
+     */
     public void typesToString(NodeList<TypeParameter> t) {
         t.forEach(x -> typeParams.add(x.getNameAsString().trim()));
     }
 
+    /**
+     * 
+     * @param i
+     */
     public void interfacesToString(NodeList<ClassOrInterfaceType> i) {
 
         i.forEach(x -> implementedInterfaces.add(x.getNameAsString().trim()));
 
     }
 
+    /**
+     * 
+     * @param s
+     */
     public void superClassesToString(NodeList<ClassOrInterfaceType> s) {
 
         s.forEach(x -> superClasses.add(x.getNameAsString().trim()));
 
     }
 
+    /**
+     * 
+     * @param decl
+     * @return
+     */
     private ParentEntity<?> findParent(ClassOrInterfaceDeclaration decl) {
 
         ParentEntity<ClassOrInterfaceDeclaration> parentIC = findParentClassInterface(decl);
@@ -171,6 +218,11 @@ public class Class {
         return parentIC;
     }
 
+    /**
+     * 
+     * @param decl
+     * @return
+     */
     private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(ClassOrInterfaceDeclaration decl) {
         if (decl.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = decl.findAncestor(ClassOrInterfaceDeclaration.class).get();
@@ -184,6 +236,11 @@ public class Class {
         return null;
     }
 
+    /**
+     * 
+     * @param decl
+     * @return
+     */
     private ParentEntity<MethodDeclaration> findParentMethod(ClassOrInterfaceDeclaration decl) {
         if (decl.findAncestor(MethodDeclaration.class).isPresent()) {
             MethodDeclaration parentMethod = decl.findAncestor(MethodDeclaration.class).get();
@@ -195,70 +252,138 @@ public class Class {
         return null;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<String> getTypeParams() {
         return typeParams;
     }
 
+    /**
+     * 
+     * @param typeParams
+     */
     public void setTypeParams(List<String> typeParams) {
         this.typeParams = typeParams;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<String> getimplementedInterfaces() {
         return implementedInterfaces;
     }
 
+    /**
+     * 
+     * @param implementedInterfaces
+     */
     public void setimplementedInterfaces(List<String> implementedInterfaces) {
         this.implementedInterfaces = implementedInterfaces;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<String> getSuperClasses() {
         return superClasses;
     }
 
+    /**
+     * 
+     * @param superClasses
+     */
     public void setSuperClasses(List<String> superClasses) {
         this.superClasses = superClasses;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getLineMin() {
         return lineMin;
     }
 
+    /**
+     * 
+     * @param lineMin
+     */
     public void setLineMin(int lineMin) {
         this.lineMin = lineMin;
     }
 
+    /**
+     * 
+     * @return
+     */
     public int getLineMax() {
         return lineMax;
     }
 
+    /**
+     * 
+     * @param lineMax
+     */
     public void setLineMax(int lineMax) {
         this.lineMax = lineMax;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Method> getMethods() {
         return methods;
     }
 
+    /**
+     * 
+     * @param methods
+     */
     public void setMethods(List<Method> methods) {
         this.methods = methods;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<String> getImplementedInterfaces() {
         return implementedInterfaces;
     }
 
+    /**
+     * 
+     * @param implementedInterfaces
+     */
     public void setImplementedInterfaces(List<String> implementedInterfaces) {
         this.implementedInterfaces = implementedInterfaces;
     }
 
+    /**
+     * 
+     * @param mds
+     */
     public void findMethods(MethodCollection mds) {
         for (Method md : mds.getMethods()) {
             ParentEntity<?> methodParent = md.getParent();
@@ -271,6 +396,10 @@ public class Class {
         }
     }
 
+    /**
+     * 
+     * @param vars
+     */
     public void findVariables(VariableCollection vars) {
         for (Variable v : vars.getVariables()) {
             ParentEntity<?> varParent = v.getParent();
@@ -283,6 +412,10 @@ public class Class {
         }
     }
 
+    /**
+     * 
+     * @param ls
+     */
     public void findLambdas(LambdaCollection ls) {
         for (Lambda l : ls.getLambdas()) {
             ParentEntity<?> lambdaParent = l.getParent();
@@ -295,6 +428,10 @@ public class Class {
         }
     }
 
+    /**
+     * 
+     * @param cls
+     */
     public void findClasses(ClassCollection cls) {
         for (Class cl : cls.getClasses()) {
             ParentEntity<?> classParent = cl.getParent();
@@ -307,6 +444,10 @@ public class Class {
         }
     }
 
+    /**
+     * 
+     * @param intfs
+     */
     public void findInterfaces(InterfaceCollection intfs) {
         for (Interface intf : intfs.getInterfaces()) {
             ParentEntity<?> interfaceParent = intf.getParent();
@@ -319,6 +460,10 @@ public class Class {
         }
     }
 
+    /**
+     * 
+     * @param refs
+     */
     public void findReferences(MethodReferenceCollection refs) {
         for (MethodReference ref : refs.getMethodReferences()) {
             ParentEntity<?> referenceParent = ref.getParent();
@@ -331,92 +476,178 @@ public class Class {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public Class returnInstance() {
         return this;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Class> getClasses() {
         return classes;
     }
 
+    /**
+     * 
+     * @param classes
+     */
     public void setClasses(List<Class> classes) {
         this.classes = classes;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Interface> getInterfaces() {
         return interfaces;
     }
 
+    /**
+     * 
+     * @param interfaces
+     */
     public void setInterfaces(List<Interface> interfaces) {
         this.interfaces = interfaces;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<MethodReference> getReferences() {
         return references;
     }
 
+    /**
+     * 
+     * @param references
+     */
     public void setReferences(List<MethodReference> references) {
         this.references = references;
     }
 
+    /**
+     * 
+     * @return
+     */
     public ParentEntity<?> getParent() {
         return parent;
     }
 
+    /**
+     * 
+     * @param parent
+     */
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Lambda> getLambdas() {
         return lambdas;
     }
 
+    /**
+     * 
+     * @param lambdas
+     */
     public void setLambdas(List<Lambda> lambdas) {
         this.lambdas = lambdas;
     }
 
+    /**
+     * 
+     * @return
+     */
     public ClassOrInterfaceDeclaration getDeclaration() {
         return declaration;
     }
 
+    /**
+     * 
+     * @param declaration
+     */
     public void setDeclaration(ClassOrInterfaceDeclaration declaration) {
         this.declaration = declaration;
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<Variable> getStoredVarCalls() {
         return storedVarCalls;
     }
 
+    /**
+     * 
+     * @param storedVarCalls
+     */
     public void setStoredVarCalls(List<Variable> storedVarCalls) {
         this.storedVarCalls = storedVarCalls;
     }
 
-
+/**
+ * 
+ * @return
+ */
     public AccessModifierType getAccessModifer() {
         return accessModifer;
     }
 
+    /**
+     * 
+     * @param accessModifer
+     */
     public void setAccessModifer(AccessModifierType accessModifer) {
         this.accessModifer = accessModifer;
     }
 
+    /**
+     * 
+     * @return
+     */
     public ClassCategory getClassCategory() {
         return classCategory;
     }
 
+    /**
+     * 
+     * @param classCategory
+     */
     public void setClassCategory(ClassCategory classCategory) {
         this.classCategory = classCategory;
     }
 
+    /**
+     * 
+     * @return
+     */
     public NonAccessModifierType getNonAccessModifer() {
         return nonAccessModifer;
     }
 
+    /**
+     * 
+     * @param nonAccessModifer
+     */
     public void setNonAccessModifer(NonAccessModifierType nonAccessModifer) {
         this.nonAccessModifer = nonAccessModifer;
     }
 
 
+    /**
+     * 
+     */
     @Override
     public String toString() {
         return "Class [name=" + name + ", classCategory=" + classCategory + ", accessModifer=" + accessModifer
@@ -426,7 +657,4 @@ public class Class {
                 + interfaces + ", references=" + references + ", lambdas=" + lambdas + ", parent=" + parent
                 + ", declaration=" + declaration + ", storedVarCalls=" + storedVarCalls + ", javaDoc=" + javaDoc + "]";
     }
-
-    
-
 }
