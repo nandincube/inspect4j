@@ -21,7 +21,6 @@ import picocli.CommandLine.Option;
 //public class Cli implements Runnable {
 public class Cli {
 
-  
     //private AST ast;
     @Option(names = { "-i", "--input_path" },type = String.class, required = true, description = "input path of the file or directory to inspect.")
     private String path;
@@ -34,7 +33,6 @@ public class Cli {
     @Option(names = { "--help" }, description = "Show this message and exit.")
 
     public static void main(String[] args) throws Exception {
-        System.out.println("hi!");
         Cli c = new Cli(FILE_PATH, OUTPUTDIR_PATH);
     }
 
