@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 
@@ -26,33 +28,80 @@ public class Method {
     private List<Interface> interfaces;
     private List<MethodReference> references;
     private ParentEntity<?> parent;
-    private MethodDeclaration declaration;
+   // private MethodDeclaration declaration;
+    private CallableDeclaration<?> declaration;
     private boolean isMain;
-   
+ 
+       
     /**
      * 
      * @param method
      * @param returnStmts
      */
     public Method(MethodDeclaration method, HashSet<String> returnStmts) {
-        this.name = method.getNameAsString();
-        this.params = new HashMap<String, String>();
+        init(method);
         this.returnType = method.getTypeAsString();
-        extractParameterInformation(method);
         this.returnStmts = returnStmts;
+        this.isMain = checkIfMain(method);
+    }
+
+
+       
+    /**
+     * 
+     * @param method
+     * @param returnStmts
+     */
+    public Method(ConstructorDeclaration method) {
+        init(method);
+        this.returnType = "void";
+        this.returnStmts = new HashSet<String>();
+        this.isMain = false;
+    }
+
+    public void init(CallableDeclaration<?> method){
+        this.name = method.getNameAsString();
+        this.declaration = method;
+        this.parent = findParentClassInterface(method);
         this.lineMin = method.getBegin().get().line;
         this.lineMax = method.getEnd().get().line;
-        this.parent = findParentClassInterface(method);
-        this.declaration = method;
-        this.isMain = checkIfMain(method);
-
+        this.params = new HashMap<String, String>();
+        extractParameterInformation(method);
         this.classes = new ArrayList<Class>();
         this.interfaces = new ArrayList<Interface>();
         this.references = new ArrayList<MethodReference>();
         this.lambdas = new ArrayList<Lambda>();
         this.storedVarCalls = new ArrayList<Variable>();
         this.javaDoc = getJavaDoc(method);
+
     }
+
+      
+    // /**
+    //  * 
+    //  * @param method
+    //  * @param returnStmts
+    //  */
+    // public Method(MethodDeclaration method, HashSet<String> returnStmts) {
+    //     this.name = method.getNameAsString();*
+    //     this.params = new HashMap<String, String>();*
+    //     this.returnType = method.getTypeAsString();
+    //     extractParameterInformation(method);*
+    //     this.returnStmts = returnStmts;
+    //     this.lineMin = method.getBegin().get().line;*
+    //     this.lineMax = method.getEnd().get().line;*
+    //     this.parent = findParentClassInterface(method);*
+    //     this.declaration = method;*
+    //     this.isMain = checkIfMain(method);
+
+    //     this.classes = new ArrayList<Class>();*
+    //     this.interfaces = new ArrayList<Interface>();*
+    //     this.references = new ArrayList<MethodReference>();*
+    //     this.lambdas = new ArrayList<Lambda>();*
+    //     this.storedVarCalls = new ArrayList<Variable>();*
+    //     this.javaDoc = getJavaDoc(method);*
+    // }
+
 
     /**
      * 
@@ -75,7 +124,7 @@ public class Method {
      * 
      * @param md
      */
-    private void extractParameterInformation(MethodDeclaration md) {
+    private void extractParameterInformation(CallableDeclaration<?> md) {
         if (md.getParameters() != null) {
             for (Parameter param : md.getParameters()) {
                 params.put(param.getNameAsString(), param.getTypeAsString());
@@ -120,7 +169,7 @@ public class Method {
      * @param md
      * @return
      */
-    private String getJavaDoc(MethodDeclaration md) {
+    private String getJavaDoc(CallableDeclaration<?> md) {
         if (md.getJavadoc().isPresent()) {
             return md.getJavadocComment().get().getContent().strip();
         }
@@ -132,7 +181,7 @@ public class Method {
      * @param md
      * @return
      */
-    private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(MethodDeclaration md) {
+    private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(CallableDeclaration<?> md) {
         if (md.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = md.findAncestor(ClassOrInterfaceDeclaration.class).get();
             if(parentIC == null) System.out.println("Could not find parent for this method");
@@ -415,7 +464,7 @@ public class Method {
      * 
      * @return
      */
-    public MethodDeclaration getDeclaration() {
+    public CallableDeclaration<?> getDeclaration() {
         return declaration;
     }
 

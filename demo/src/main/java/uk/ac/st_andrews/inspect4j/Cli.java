@@ -27,13 +27,16 @@ public class Cli {
     @Option(names = { "-o", "--output_path" }, type = String.class,  defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
     private String outputDir;
 
-    private static final String FILE_PATH = "/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles"; 
-    private static final String OUTPUTDIR_PATH = "/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/OutputDir";
+    private static final String FILE_PATH_1 = "/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles"; 
+    private static final String OUTPUTDIR_PATH_1 = "/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/OutputDir";
+   
+    private static final String FILE_PATH_2 = "demo\\src\\main\\java\\uk\\ac\\st_andrews\\inspect4j\\DummyFiles\\DummyDir\\Child\\AppMultiClass.java"; 
+    private static final String OUTPUTDIR_PATH_2 = "OutputDir";
    
     @Option(names = { "--help" }, description = "Show this message and exit.")
 
     public static void main(String[] args) throws Exception {
-        Cli c = new Cli(FILE_PATH, OUTPUTDIR_PATH);
+        Cli c = new Cli(FILE_PATH_2, OUTPUTDIR_PATH_2);
     }
 
 

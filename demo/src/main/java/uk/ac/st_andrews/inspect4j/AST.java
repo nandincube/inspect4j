@@ -76,7 +76,7 @@ public class AST {
         if (mainMd == null) {
             return new MainInfo(false, null);
         } else {
-            NodeList<Statement> stmts = mainMd.getDeclaration().getBody().get().getStatements();
+            NodeList<Statement> stmts = mainMd.getDeclaration().asMethodDeclaration().getBody().get().getStatements();
             String mainMdCall = null;
             for (Statement stmt : stmts) {
                 Expression expr = stmt.asExpressionStmt().getExpression();

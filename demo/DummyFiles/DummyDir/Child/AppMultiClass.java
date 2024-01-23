@@ -11,6 +11,12 @@ import java.util.stream.Collectors;
  */
 public class AppMultiClass {
 
+
+    public AppMultiClass(String name, int age, String breed, List<String> list){
+        System.out.println("Bat name:"+name);
+        System.out.println("Bat age:"+age);
+        System.out.println("Bat bree:"+breed);
+    }
     /**
     * Returns an Image object that can then be painted on the screen. 
     * The url argument must specify an absolute <a href="#{@link}">{@link URL}</a>. The name

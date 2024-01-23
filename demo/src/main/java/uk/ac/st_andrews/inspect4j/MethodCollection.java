@@ -1,10 +1,13 @@
 package uk.ac.st_andrews.inspect4j;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.AnnotationDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.visitor.GenericListVisitorAdapter;
@@ -124,6 +127,13 @@ public class MethodCollection {
             public void visit(MethodDeclaration methodDecl, List<Method> collection) { 
                 super.visit(methodDecl, collection);
                 collection.add(new Method(methodDecl, getReturnStatements(methodDecl)));
+            }
+
+            //collects constructors
+            @Override
+            public void visit(ConstructorDeclaration constructorDecl, List<Method> collection) { 
+                super.visit(constructorDecl, collection);
+                collection.add(new Method(constructorDecl));
             }
     }
 
