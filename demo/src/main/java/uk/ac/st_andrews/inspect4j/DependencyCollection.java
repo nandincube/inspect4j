@@ -114,6 +114,11 @@ public class DependencyCollection {
                 searchPackage(fromPackage, packagePath, collection);
             }else{
                // collection.add();
+               
+               //TODO:
+                String fromPackage = imp.getName().getQualifier().get().asString();
+                String importName = imp.getName().getIdentifier();
+                //collection.add(new Dependency(fromPackage, importName, "external", "class"));
             }
 
             //String importName = imp.getName().getIdentifier
@@ -133,6 +138,13 @@ public class DependencyCollection {
     public String isInternal(ImportDeclaration imp){
         //TODO:
         return "";
+    }
+
+    public static String getParentPackageName(){
+
+        if (imp.getName().getQualifier()){
+            
+        }
     }
 
     public static String getPackagePath(String packageName){
@@ -166,6 +178,51 @@ public class DependencyCollection {
        
 
     // }
+
+
+    //used for class/interface that is directly refered to as in import (i.e. not .*)
+    public String type_module(String , String importName){
+        String fullImportPath = "";
+
+        String repo = (new File(path)).getParentFile().getAbsolutePath();
+        
+        if(fullPackageName != null){
+            packageName = packageName.replace(".","/");
+            fullImportPath = repo + 
+
+        }
+        if m:
+            m = m.replace(".", "/")
+            file_module = abs_repo_path + "/" + m + "/" + i + ".py"
+        else:
+            file_module = abs_repo_path + "/" + i + ".py"
+
+        file_module_path = Path(file_module)
+        if file_module_path.is_file():
+            return "internal"
+        else:
+            if m:
+                m = m.replace(".", "/")
+                file_module = abs_repo_path + "/" + m + ".py"
+                file_module_path = Path(file_module)
+                if file_module_path.is_file():
+                    return "internal"
+                else:
+                    file_module = abs_repo_path + "/" + m + "/main.py"
+                    file_module_path = Path(file_module)
+                    if file_module_path.is_file():
+                        return "internal"
+                    else:
+                        return "external"
+            else:
+                dir_module = abs_repo_path + "/" + i
+                if os.path.exists(dir_module):
+                    return "internal"
+                else:
+                    return "external"
+    }
+
+
      /**
       * 
       * @param packagePath
