@@ -44,8 +44,4 @@ public class Dependency {
     public void setTypeElement(String typeElement) {
         this.typeElement = typeElement;
     }
-
-    
-
-
 }

@@ -19,8 +19,8 @@ public class DependencyCollection {
     private CompilationUnit ast;
     private String path;
 
-    public DependencyCollection(ArrayList<Dependency> dependencies, CompilationUnit ast, String path) {
-        this.dependencies = dependencies;
+    public DependencyCollection( CompilationUnit ast, String path) {
+        this.dependencies = new ArrayList<Dependency>();
         this.ast = ast;
         this.path = path;
     }
@@ -81,6 +81,14 @@ public class DependencyCollection {
         this.ast = ast;
     }
 
+     /**
+     * 
+     */
+    public void printMetadata(){
+        dependencies.forEach(x -> System.out.println(x.toString()));
+
+    }
+
     /**
      * 
      */
@@ -92,7 +100,7 @@ public class DependencyCollection {
     /**
      * 
      */
-    private static class ImportDeclarationCollector extends VoidVisitorAdapter<List<Dependency>> {
+    private class ImportDeclarationCollector extends VoidVisitorAdapter<List<Dependency>> {
             @Override
             public void visit(ImportDeclaration importDecl, List<Dependency> collection) { 
                 super.visit(importDecl, collection);
@@ -106,131 +114,165 @@ public class DependencyCollection {
      * @param imp
      * @param collection
      */
-    public  static void extractDependencyInfo(ImportDeclaration imp, List<Dependency> collection){
-        if (imp.isAsterisk()){
-            String fromPackage = imp.getName().getQualifier().get().asString();
-            String packagePath = getPackagePath(fromPackage);
-            if(packagePath != null ){
-                searchPackage(fromPackage, packagePath, collection);
-            }else{
-               // collection.add();
-               
-               //TODO:
-                String fromPackage = imp.getName().getQualifier().get().asString();
-                String importName = imp.getName().getIdentifier();
-                //collection.add(new Dependency(fromPackage, importName, "external", "class"));
-            }
+    public void extractDependencyInfo(ImportDeclaration imp, List<Dependency> collection){
+        String fromPackageName, importName,importType, typeElement;
+        fromPackageName =  getParentPackageName(imp);
 
-            //String importName = imp.getName().getIdentifier
-            
+        if (imp.isAsterisk()){
+            boolean foundPackage = searchPackage(fromPackageName, collection);
+            if(!foundPackage){
+                importName = "";
+                importType = "external";
+                typeElement =  "unknown";
+                collection.add(new Dependency(fromPackageName, importName, importType, typeElement));
+            }
+           
         }else{
-           String fromPackage = (imp.getName().getQualifier().isPresent()) ? 
-                                imp.getName().getQualifier().get().asString() : imp.getName().getIdentifier();
-            // String importType = isInternal(imp);
-            // String importName = imp.getName().getIdentifier();
-            // String typeElement = extractType(imp);
+            importName = imp.getName().getIdentifier();
+            importType = importOrigin(fromPackageName,importName);
+            typeElement =  importTypeElement(importType, imp, fromPackageName, importName);
+            collection.add(new Dependency(fromPackageName, importName, importType, typeElement));
         }
 
     }
 
     //Adaptation of code from inspect4py: REWRITE THISSSS!!
 
-    public String isInternal(ImportDeclaration imp){
-        //TODO:
-        return "";
+  
+    //same as module = node.module
+    public String getParentPackageName(ImportDeclaration imp){
+        return imp.getName().getQualifier().get().asString();
     }
 
-    public static String getParentPackageName(){
-
-        if (imp.getName().getQualifier()){
-            
-        }
-    }
-
-    public static String getPackagePath(String packageName){
-        String packageString = packageName.replace(".","/");
-        
-        if((new File(packageString)).getParentFile() != null) {
-            return (new File(packageString)).getParentFile().getAbsolutePath();
-        }else{
-            return null;
-        }
+    public String getPackageAbsolutePath(String packageName){
+         if((new File(path)).getParentFile() != null) {
+            String repoPath = (new File(path)).getParentFile().getAbsolutePath();
+            String packageRelativePath =  packageName.replace(".","/");
+            return repoPath + "/" + packageRelativePath;
+          }else{
+              return null;
+         }
        
     }
 
-    public String importedEntityPath(ImportDeclaration imp){
-        //TODO:
-        String importString2  = imp.getNameAsString();
-        importString2 = importString2.replace(".","/");
-
-        String importString  = imp.getNameAsString();
-        importString = importString.replace(".","\\");
-
-        String repo = (new File(path)).getParentFile().getAbsolutePath();
-        return repo + "\\"+".java";
+    public String getImportAbsolutePath(String packageName, String importName){
+        String absPackagePath = getPackageAbsolutePath(packageName);
+        if(absPackagePath == null) return null;
+        return absPackagePath+ "/" + importName +".java";
 
     }
-
-    // public boolean findClasses(String importedEntity){
-        
-      
-    //         //we want to extract all public, protected and default classes;
-       
-
-    // }
 
 
     //used for class/interface that is directly refered to as in import (i.e. not .*)
-    public String type_module(String , String importName){
-        String fullImportPath = "";
-
-        String repo = (new File(path)).getParentFile().getAbsolutePath();
-        
-        if(fullPackageName != null){
-            packageName = packageName.replace(".","/");
-            fullImportPath = repo + 
-
+    public String importOrigin(String packageName , String importName){
+        String absPackagePath = getPackageAbsolutePath(packageName);
+        if(absPackagePath == null) {
+            System.out.println("Could not extract parent package/directory for :"+packageName);
+            return null;
         }
-        if m:
-            m = m.replace(".", "/")
-            file_module = abs_repo_path + "/" + m + "/" + i + ".py"
-        else:
-            file_module = abs_repo_path + "/" + i + ".py"
+        String fullImportPath = getImportAbsolutePath(packageName, importName);
 
-        file_module_path = Path(file_module)
-        if file_module_path.is_file():
-            return "internal"
-        else:
-            if m:
-                m = m.replace(".", "/")
-                file_module = abs_repo_path + "/" + m + ".py"
-                file_module_path = Path(file_module)
-                if file_module_path.is_file():
-                    return "internal"
-                else:
-                    file_module = abs_repo_path + "/" + m + "/main.py"
-                    file_module_path = Path(file_module)
-                    if file_module_path.is_file():
-                        return "internal"
-                    else:
-                        return "external"
-            else:
-                dir_module = abs_repo_path + "/" + i
-                if os.path.exists(dir_module):
-                    return "internal"
-                else:
-                    return "external"
+        if(fullImportPath == null) {
+            System.out.println("Could not extract import path for :"+packageName);
+            return null;
+        }
+
+        File importFile = new File(fullImportPath);
+
+        if (importFile.exists()){
+            return "internal";
+        }else if (packageName.length() > 0 ){
+            //should be able to deal with static imports/ importing of static members
+            String p = absPackagePath + ".java";
+            if ((new File(p)).exists()){
+                return "internal";
+            }else{
+                return "external";
+            }
+        }else{
+            return "external";
+        }
     }
+
+    /**
+     * 
+     * @param importType
+     * @param imp
+     * @param packageName
+     * @param importName
+     * @return
+     */
+    public String importTypeElement(String importType, ImportDeclaration imp, String packageName, String importName){
+        // if internal - try to match import name with non private classes or interfaces
+        //if internale - check import declation is static or is importing static member ()
+
+        if(importType.equals("internal")){
+            if(imp.isStatic()) return "static member";
+
+            String fullPackagePath = getPackageAbsolutePath(packageName);
+
+            if(fullPackagePath == null) {
+                System.out.println("Could not extract package path for :"+path);
+                return null;
+            }
+    
+            File packageDir = new File(fullPackagePath);
+            if (packageDir.exists()){
+                Path packageObj =  Paths.get(fullPackagePath);
+            
+                List<File> files = new ArrayList<File>();
+                try {
+                    files = Files.list(packageObj)
+                        .map(Path::toFile)
+                        .filter(File::isFile)
+                        .collect(Collectors.toList());
+                } catch (IOException e) {
+                    System.out.println("Unable to retrieve files from package "+packageName);
+                }
+    
+                if(files.size() > 0){
+                   for(File f: files ){
+                        String filePath = f.getAbsolutePath();
+                        ArrayList<Class> classes = searchFileForClasses(filePath);
+                        if(classes != null){
+                           for(Class cl: classes){
+                                if(cl.getName().equals(importName)) return "class";
+                           }
+                        }
+                    
+                        ArrayList<Interface> intfs = searchFileForInterfaces(filePath);
+                        if(intfs != null){
+                            for(Interface intf: intfs){
+                                if(intf.getName().equals(importName)) return "interface";
+                           }
+                        }
+                    
+                   }
+                }
+                
+            }
+
+        }else{
+            if(imp.isStatic()) return "static member";
+            return "unknown";
+        }
+
+        return null;
+
+    }
+
+
 
 
      /**
       * 
       * @param packagePath
       */
-    public static void searchPackage(String fromPackage, String packagePath, List<Dependency> collection){
+    public boolean searchPackage(String fromPackageName, List<Dependency> collection){
         try{
-
-            Path packageObj =  Paths.get(packagePath);
+            String fromPackagePath =  getPackageAbsolutePath(fromPackageName);
+            if(fromPackagePath == null) return false;
+            Path packageObj =  Paths.get(fromPackagePath);
             
             List<File> files = Files.list(packageObj)
                 .map(Path::toFile)
@@ -243,22 +285,27 @@ public class DependencyCollection {
                     ArrayList<Class> classes = searchFileForClasses(filePath);
                     if(classes != null){
                         classes.forEach(a -> {
-                            collection.add(new Dependency(fromPackage, a.getName(), "internal", "class"));
+                            collection.add(new Dependency(fromPackageName, a.getName(), "internal", "class"));
                         });
                     }
                 
                     ArrayList<Interface> intfs = searchFileForInterfaces(filePath);
                     if(intfs != null){
                         intfs.forEach(b -> {
-                            collection.add(new Dependency(fromPackage, b.getName(), "internal", "interface"));
+                            collection.add(new Dependency(fromPackageName, b.getName(), "internal", "interface"));
                         });
                     }
                 });
+            }else{
+                return false;
             }
+
+            return true;
         }catch(IOException i){
             System.out.println("Couldn't analyse this package! "+ i);
+            
         }
-
+        return false;
     }
 
 

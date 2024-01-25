@@ -70,7 +70,7 @@ public class JSONWriterGson {
 
         serialiseLambda(gb);
         serialiseMethodReference(gb);
-        // serialiseVariable(gb);
+        serialiseDependency(gb);
     }
 
     private void serialiseFile(GsonBuilder gb) {
@@ -88,6 +88,16 @@ public class JSONWriterGson {
                 jsonDetails.addProperty("extension", src.getExtension());
                 jsonDetails.addProperty("doc", src.getJavaDoc());
                 jsonFile.add("file", jsonDetails);
+
+                JsonArray dependencyCollectionJsonArray = new JsonArray();
+                if (src.getDependencies() != null) {
+                    ArrayList<Dependency> deps = src.getDependencies().getDependencies();
+                    deps.forEach(x -> {
+                            JsonElement dep = context.serialize(x, Dependency.class);
+                            dependencyCollectionJsonArray.add(dep);  
+                    });
+                    jsonFile.add("dependencies", dependencyCollectionJsonArray);
+                }
 
                 JsonObject classCollectionJsonObject = new JsonObject();
                 if (src.getClasses() != null) {
@@ -434,6 +444,25 @@ public class JSONWriterGson {
         };
         gb.registerTypeAdapter(parameterType, serialiser);
 
+    }
+
+    private void serialiseDependency(GsonBuilder gb) {
+        Type parameterType = new TypeToken<Dependency>() {
+        }.getType();
+
+        JsonSerializer<Dependency> serialiser = new JsonSerializer<Dependency>() {
+            @Override
+            public JsonElement serialize(Dependency src, Type typeOfSrc, JsonSerializationContext context) {
+                JsonObject jsonDep = new JsonObject();
+                jsonDep.addProperty("from_package", src.getFromPackage());
+                jsonDep.addProperty("import", src.getImportName());
+                jsonDep.addProperty("type", src.getImportType());
+                jsonDep.addProperty("type_element", src.getTypeElement());
+                return jsonDep;
+            }
+
+        };
+        gb.registerTypeAdapter(parameterType, serialiser);
     }
 
     // private void serialiseVariable(GsonBuilder gb) {

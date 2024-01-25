@@ -21,6 +21,7 @@ public class AST {
     private MethodReferenceCollection referenceCollection;
     private LambdaCollection lambdaCollection;
     private VariableCollection variableCollection;
+    private DependencyCollection dependencyCollection;
     private MainInfo main;
     private String path;
 
@@ -37,6 +38,7 @@ public class AST {
         this.referenceCollection = new MethodReferenceCollection(fullTree);
         this.lambdaCollection = new LambdaCollection(fullTree);
         this.variableCollection = new VariableCollection(fullTree);
+        this.dependencyCollection = new DependencyCollection(fullTree, path);
         this.main = null;
     }
 
@@ -103,6 +105,7 @@ public class AST {
         classCollection.extractClassesFromAST();
         interfaceCollection.extractInterfacesFromAST();
         referenceCollection.extractReferencesFromAST();
+        dependencyCollection.extractDependenciesFromAST();
         addMethodMembers();
         addClassMembers();
         addInterfaceMembers();
@@ -157,6 +160,9 @@ public class AST {
         lambdaCollection.printMetadata();
         System.out.println("Extracting Method References...\n");
         referenceCollection.printMetadata();
+        System.out.println("Extracting Dependencies References...\n");
+        dependencyCollection.printMetadata();
+
 
     }
 
@@ -166,7 +172,7 @@ public class AST {
      * @param directory
      */
     public void writeToJson(String path, String directory) {
-        FileInfo fileInfo = new FileInfo(path, classCollection, interfaceCollection, main);
+        FileInfo fileInfo = new FileInfo(path, classCollection, interfaceCollection, main, dependencyCollection);
         JSONWriterGson json = new JSONWriterGson(fileInfo);
         json.write(directory);
     }
@@ -306,4 +312,13 @@ public class AST {
     public void setPath(String path) {
         this.path = path;
     }
+
+    public DependencyCollection getDependencyCollection() {
+        return dependencyCollection;
+    }
+
+    public void setDependencyCollection(DependencyCollection dependencyCollection) {
+        this.dependencyCollection = dependencyCollection;
+    }
+
 }
