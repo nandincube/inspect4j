@@ -15,26 +15,28 @@ import com.github.javaparser.ast.stmt.Statement;
 
 public class AST {
     private CompilationUnit fullTree;
-    private ClassCollection classes;
-    private MethodCollection methods;
-    private InterfaceCollection interfaces;
-    private MethodReferenceCollection references;
-    private LambdaCollection lambdas;
-    private VariableCollection variables;
+    private ClassCollection classCollection;
+    private MethodCollection methodCollection;
+    private InterfaceCollection interfaceCollection;
+    private MethodReferenceCollection referenceCollection;
+    private LambdaCollection lambdaCollection;
+    private VariableCollection variableCollection;
     private MainInfo main;
+    private String path;
 
     /**
      * 
      * @param path
      */
     public AST(String path) {
+        this.path = path;
         this.fullTree = parseFile(path);
-        this.classes = new ClassCollection(fullTree);
-        this.methods = new MethodCollection(fullTree);
-        this.interfaces = new InterfaceCollection(fullTree);
-        this.references = new MethodReferenceCollection(fullTree);
-        this.lambdas = new LambdaCollection(fullTree);
-        this.variables = new VariableCollection(fullTree);
+        this.classCollection = new ClassCollection(fullTree);
+        this.methodCollection = new MethodCollection(fullTree);
+        this.interfaceCollection = new InterfaceCollection(fullTree);
+        this.referenceCollection = new MethodReferenceCollection(fullTree);
+        this.lambdaCollection = new LambdaCollection(fullTree);
+        this.variableCollection = new VariableCollection(fullTree);
         this.main = null;
     }
 
@@ -67,7 +69,7 @@ public class AST {
      * @return
      */
     public MainInfo findMainMethod() {
-        Method mainMd = methods.getMethods()
+        Method mainMd = methodCollection.getMethods()
                 .stream()
                 .filter(x -> x.isMain() == true)
                 .findAny()
@@ -95,12 +97,12 @@ public class AST {
      * 
      */
     public void extractMetadata() {
-        variables.extractVariablesFromAST();
-        lambdas.extractLambdasFromAST();
-        methods.extractMethodsFromAST();
-        classes.extractClassesFromAST();
-        interfaces.extractInterfacesFromAST();
-        references.extractReferencesFromAST();
+        variableCollection.extractVariablesFromAST();
+        lambdaCollection.extractLambdasFromAST();
+        methodCollection.extractMethodsFromAST();
+        classCollection.extractClassesFromAST();
+        interfaceCollection.extractInterfacesFromAST();
+        referenceCollection.extractReferencesFromAST();
         addMethodMembers();
         addClassMembers();
         addInterfaceMembers();
@@ -112,48 +114,49 @@ public class AST {
      * 
      */
     private void addMethodMembers() {
-        methods.addVariables(variables);
-        methods.addLambdas(lambdas);
-        methods.addClasses(classes);
-        methods.addInterfaces(interfaces);
-        methods.addReferences(references);
+        methodCollection.addVariables(variableCollection);
+        methodCollection.addLambdas(lambdaCollection);
+        methodCollection.addClasses(classCollection);
+        methodCollection.addInterfaces(interfaceCollection);
+        methodCollection.addReferences(referenceCollection);
     }
 
     /**
      * 
      */
     private void addClassMembers() {
-        classes.addVariables(variables);
-        classes.addLambdas(lambdas);
-        classes.addClasses(classes);
-        classes.addInterfaces(interfaces);
-        classes.addReferences(references);
-        classes.addMethods(methods);
+        classCollection.addVariables(variableCollection);
+        classCollection.addLambdas(lambdaCollection);
+        classCollection.addClasses(classCollection);
+        classCollection.addInterfaces(interfaceCollection);
+        classCollection.addReferences(referenceCollection);
+        classCollection.addMethods(methodCollection);
     }
 
     /**
      * 
      */
     private void addInterfaceMembers() {
-        interfaces.addMethods(methods);
+        interfaceCollection.addMethods(methodCollection);
+        interfaceCollection.addInterfaces(interfaceCollection);
     }
 
     /**
      * 
      */
     public void printMetadata() {
-        System.out.println("Extracting Classes...\n");
-        classes.printMetadata();
-        System.out.println("Extracting Interfaces...\n");
-        interfaces.printMetadata();
+        System.out.println("Extracting classes...\n");
+        classCollection.printMetadata();
+        System.out.println("Extracting interfaces...\n");
+        interfaceCollection.printMetadata();
         System.out.println("Extracting Methods... \n");
-        methods.printMetadata();
+        methodCollection.printMetadata();
         System.out.println("Extracting Variables...\n");
-        variables.printMetadata();
+        variableCollection.printMetadata();
         System.out.println("Extracting Lambdas...\n");
-        lambdas.printMetadata();
+        lambdaCollection.printMetadata();
         System.out.println("Extracting Method References...\n");
-        references.printMetadata();
+        referenceCollection.printMetadata();
 
     }
 
@@ -163,7 +166,7 @@ public class AST {
      * @param directory
      */
     public void writeToJson(String path, String directory) {
-        FileInfo fileInfo = new FileInfo(path, classes, interfaces, main);
+        FileInfo fileInfo = new FileInfo(path, classCollection, interfaceCollection, main);
         JSONWriterGson json = new JSONWriterGson(fileInfo);
         json.write(directory);
     }
@@ -188,96 +191,96 @@ public class AST {
      * 
      * @return
      */
-    public ClassCollection getClasses() {
-        return classes;
+    public ClassCollection getClassCollection() {
+        return classCollection;
     }
 
     /**
      * 
-     * @param classes
+     * @param classCollection
      */
-    public void setClasses(ClassCollection classes) {
-        this.classes = classes;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public MethodCollection getMethods() {
-        return methods;
-    }
-
-    /**
-     * 
-     * @param methods
-     */
-    public void setMethods(MethodCollection methods) {
-        this.methods = methods;
+    public void setClassCollection(ClassCollection classCollection) {
+        this.classCollection = classCollection;
     }
 
     /**
      * 
      * @return
      */
-    public InterfaceCollection getInterfaces() {
-        return interfaces;
+    public MethodCollection getMethodCollection() {
+        return methodCollection;
     }
 
     /**
      * 
-     * @param interfaces
+     * @param methodCollection
      */
-    public void setInterfaces(InterfaceCollection interfaces) {
-        this.interfaces = interfaces;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public MethodReferenceCollection getReferences() {
-        return references;
-    }
-
-    /**
-     * 
-     * @param references
-     */
-    public void setReferences(MethodReferenceCollection references) {
-        this.references = references;
+    public void setMethodCollection(MethodCollection methodCollection) {
+        this.methodCollection = methodCollection;
     }
 
     /**
      * 
      * @return
      */
-    public LambdaCollection getLambdas() {
-        return lambdas;
+    public InterfaceCollection getInterfaceCollection() {
+        return interfaceCollection;
     }
 
     /**
      * 
-     * @param lambdas
+     * @param interfaceCollection
      */
-    public void setLambdas(LambdaCollection lambdas) {
-        this.lambdas = lambdas;
+    public void setInterfaceCollection(InterfaceCollection interfaceCollection) {
+        this.interfaceCollection = interfaceCollection;
     }
 
     /**
      * 
      * @return
      */
-    public VariableCollection getVariables() {
-        return variables;
+    public MethodReferenceCollection getReferenceCollection() {
+        return referenceCollection;
     }
 
     /**
      * 
-     * @param variables
+     * @param referenceCollection
      */
-    public void setVariables(VariableCollection variables) {
-        this.variables = variables;
+    public void setReferenceCollection(MethodReferenceCollection referenceCollection) {
+        this.referenceCollection = referenceCollection;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public LambdaCollection getLambdaCollection() {
+        return lambdaCollection;
+    }
+
+    /**
+     * 
+     * @param lambdaCollection
+     */
+    public void setLambdaCollection(LambdaCollection lambdaCollection) {
+        this.lambdaCollection = lambdaCollection;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public VariableCollection getVariableCollection() {
+        return variableCollection;
+    }
+
+    /**
+     * 
+     * @param variableCollection
+     */
+    public void setVariableCollection(VariableCollection variableCollection) {
+        this.variableCollection = variableCollection;
     }
 
     /**
@@ -294,5 +297,13 @@ public class AST {
      */
     public void setMain(MainInfo main) {
         this.main = main;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

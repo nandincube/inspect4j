@@ -9,7 +9,7 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class InterfaceCollection {
-    private ArrayList<Interface> interfaces;
+    private ArrayList<Interface> interfaceList;
     private CompilationUnit ast;
 
     /**
@@ -17,7 +17,7 @@ public class InterfaceCollection {
      * @param ast
      */
     public InterfaceCollection(CompilationUnit ast){
-        this.interfaces = new ArrayList<>();
+        this.interfaceList = new ArrayList<>();
         this.ast = ast;
     }
 
@@ -26,7 +26,7 @@ public class InterfaceCollection {
      * @return
      */
     public ArrayList<Interface> getInterfaces() {
-        return interfaces;
+        return interfaceList;
     }
 
     /**
@@ -34,7 +34,7 @@ public class InterfaceCollection {
      * @param interfaces
      */
     public void setInterfaces(ArrayList<Interface> interfaces) {
-        this.interfaces = interfaces;
+        this.interfaceList = interfaces;
     }
 
     /**
@@ -59,7 +59,7 @@ public class InterfaceCollection {
      */
     public void extractInterfacesFromAST(){
           VoidVisitor<List<Interface>> interfaceDefCollector = new InterfaceDefinitionCollector();
-        interfaceDefCollector.visit(ast, interfaces);
+        interfaceDefCollector.visit(ast, interfaceList);
 
     }
 
@@ -68,14 +68,23 @@ public class InterfaceCollection {
      * @param methods
      */
     public void addMethods(MethodCollection methods){
-        interfaces.forEach(x-> x.findMethods(methods));
+        interfaceList.forEach(x-> x.findMethods(methods));
    }
+
+    /**
+     * 
+     * @param interfaces
+     */
+    public void addInterfaces(InterfaceCollection interfaces){
+        interfaceList.forEach(x-> x.findInterfaces(interfaces));
+   }
+    
     
    /**
     * 
     */
     public void printMetadata(){
-        interfaces.forEach(x -> System.out.println(x.toString()));
+        interfaceList.forEach(x -> System.out.println(x.toString()));
     }
 
     /**
@@ -86,6 +95,7 @@ public class InterfaceCollection {
         public void visit(ClassOrInterfaceDeclaration intDecl, List<Interface> collection) { 
             super.visit(intDecl, collection);
             if(intDecl.isInterface()){
+                System.out.println("intName: "+intDecl.getNameAsString());
                 collection.add(new Interface(intDecl));
             }
         }

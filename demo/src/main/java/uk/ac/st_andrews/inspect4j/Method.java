@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -31,6 +32,9 @@ public class Method {
    // private MethodDeclaration declaration;
     private CallableDeclaration<?> declaration;
     private boolean isMain;
+    private AccessModifierType accessModifer;
+   
+    private NonAccessModifierType nonAccessModifer;
  
        
     /**
@@ -44,8 +48,6 @@ public class Method {
         this.returnStmts = returnStmts;
         this.isMain = checkIfMain(method);
     }
-
-
        
     /**
      * 
@@ -73,6 +75,8 @@ public class Method {
         this.lambdas = new ArrayList<Lambda>();
         this.storedVarCalls = new ArrayList<Variable>();
         this.javaDoc = getJavaDoc(method);
+        extractAccessModifier();
+        extractNonAccessModifier();
 
     }
 
@@ -103,6 +107,56 @@ public class Method {
     // }
 
 
+        /**
+     * 
+     */
+    private void extractAccessModifier() {
+        switch (declaration.getAccessSpecifier()) {
+            case PUBLIC:
+                accessModifer = AccessModifierType.PUBLIC;
+                break;
+            case PROTECTED:
+                accessModifer = AccessModifierType.PROTECTED;
+                break;
+            case PRIVATE:
+                accessModifer = AccessModifierType.PRIVATE;
+                break;
+            case NONE:
+                accessModifer = AccessModifierType.DEFAULT;
+                break;
+        }
+    }
+
+    /**
+     * 
+     */
+    private void extractNonAccessModifier() {
+
+        for (Modifier mod : declaration.getModifiers()) {
+            if (nonAccessModifer == null || nonAccessModifer == NonAccessModifierType.NONE) {
+                switch (mod.getKeyword()) {
+                    case STATIC:
+                        nonAccessModifer = NonAccessModifierType.STATIC;
+                        break;
+                    case ABSTRACT:
+                        nonAccessModifer = NonAccessModifierType.ABSTRACT;
+                        break;
+                    case FINAL:
+                        nonAccessModifer = NonAccessModifierType.FINAL;
+                        break;
+                    default:
+                        nonAccessModifer = NonAccessModifierType.NONE;
+                        break;
+                }
+            }
+
+        }
+
+        if (nonAccessModifer == null) {
+            nonAccessModifer = NonAccessModifierType.NONE;
+        }
+
+    }
     /**
      * 
      * @param md
@@ -490,6 +544,46 @@ public class Method {
      */
     public void setMain(boolean isMain) {
         this.isMain = isMain;
+    }
+
+    /**
+     * 
+     * @param declaration
+     */
+    public void setDeclaration(CallableDeclaration<?> declaration) {
+        this.declaration = declaration;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public AccessModifierType getAccessModifer() {
+        return accessModifer;
+    }
+
+    /**
+     * 
+     * @param accessModifer
+     */
+    public void setAccessModifer(AccessModifierType accessModifer) {
+        this.accessModifer = accessModifer;
+    }
+
+    /***
+     * 
+     * @return
+     */
+    public NonAccessModifierType getNonAccessModifer() {
+        return nonAccessModifer;
+    }
+
+    /**
+     * 
+     * @param nonAccessModifer
+     */
+    public void setNonAccessModifer(NonAccessModifierType nonAccessModifer) {
+        this.nonAccessModifer = nonAccessModifer;
     }
 
 

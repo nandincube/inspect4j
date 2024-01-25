@@ -12,7 +12,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
  * 
  */
 public class ClassCollection {
-    private ArrayList<Class> classes;
+    private ArrayList<Class> classList;
     private CompilationUnit ast;
 
     /**
@@ -20,7 +20,7 @@ public class ClassCollection {
      * @param ast
      */
     public ClassCollection(CompilationUnit ast) {
-        this.classes = new ArrayList<>();
+        this.classList = new ArrayList<>();
         this.ast = ast;
     }
 
@@ -29,7 +29,7 @@ public class ClassCollection {
      */
     public void extractClassesFromAST() {
         VoidVisitor<List<Class>> classDefCollector = new ClassDefinitionCollector();
-        classDefCollector.visit(ast, classes);
+        classDefCollector.visit(ast, classList);
 
     }
 
@@ -37,7 +37,7 @@ public class ClassCollection {
      * 
      */
     public void printMetadata() {
-        classes.forEach(x -> System.out.println(x.toString()));
+        classList.forEach(x -> System.out.println(x.toString()));
     }
 
     /**
@@ -45,7 +45,7 @@ public class ClassCollection {
      * @param vars
      */
     public void addVariables(VariableCollection vars) {
-        classes.forEach(x -> x.findVariables(vars));
+        classList.forEach(x -> x.findVariables(vars));
     }
 
     /**
@@ -53,7 +53,7 @@ public class ClassCollection {
      * @param lbdas
      */
     public void addLambdas(LambdaCollection lbdas) {
-        classes.forEach(x -> x.findLambdas(lbdas));
+        classList.forEach(x -> x.findLambdas(lbdas));
     }
 
     /**
@@ -61,7 +61,7 @@ public class ClassCollection {
      * @param methods
      */
     public void addMethods(MethodCollection methods) {
-        classes.forEach(x -> x.findMethods(methods));
+        classList.forEach(x -> x.findMethods(methods));
     }
 
     /**
@@ -69,7 +69,7 @@ public class ClassCollection {
      * @param intfs
      */
     public void addInterfaces(InterfaceCollection intfs) {
-        classes.forEach(x -> x.findInterfaces(intfs));
+        classList.forEach(x -> x.findInterfaces(intfs));
     }
 
     /**
@@ -77,7 +77,7 @@ public class ClassCollection {
      * @param refs
      */
     public void addReferences(MethodReferenceCollection refs) {
-        classes.forEach(x -> x.findReferences(refs));
+        classList.forEach(x -> x.findReferences(refs));
     }
 
     /**
@@ -85,7 +85,7 @@ public class ClassCollection {
      * @param refs
      */
     public void addClasses(ClassCollection refs) {
-        classes.forEach(x -> x.findClasses(refs));
+        classList.forEach(x -> x.findClasses(refs));
     }
 
     /**
@@ -93,15 +93,15 @@ public class ClassCollection {
      * @return
      */
     public ArrayList<Class> getClasses() {
-        return classes;
+        return classList;
     }
 
     /**
      * 
-     * @param classes
+     * @param classList
      */
-    public void setClasses(ArrayList<Class> classes) {
-        this.classes = classes;
+    public void setClasses(ArrayList<Class> classList) {
+        this.classList = classList;
     }
 
     /**

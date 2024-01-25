@@ -30,7 +30,7 @@ public class Cli {
     private static final String FILE_PATH_1 = "/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/demo/src/main/java/uk/ac/st_andrews/inspect4j/DummyFiles"; 
     private static final String OUTPUTDIR_PATH_1 = "/home/nmn2/Documents/CS4099/Dissertation/inspect4j/inspect4j/OutputDir";
    
-    private static final String FILE_PATH_2 = "demo\\src\\main\\java\\uk\\ac\\st_andrews\\inspect4j\\DummyFiles\\DummyDir\\Child\\AppMultiClass.java"; 
+    private static final String FILE_PATH_2 = "demo\\DummyFiles\\DummyDir"; 
     private static final String OUTPUTDIR_PATH_2 = "OutputDir";
    
     @Option(names = { "--help" }, description = "Show this message and exit.")

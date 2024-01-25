@@ -15,7 +15,7 @@ import com.github.javaparser.ast.type.TypeParameter;
  */
 public class Class {
     private String name;
-    private ClassCategory classCategory;
+    private ClassInterfaceCategory classCategory;
     private AccessModifierType accessModifer;
     private NonAccessModifierType nonAccessModifer;
     private int lineMin;
@@ -124,16 +124,13 @@ public class Class {
      */
     private void extractClassCategory() {
         if (declaration.isInnerClass()) {
-            classCategory = ClassCategory.INNER;
-            return;
+            classCategory = ClassInterfaceCategory.INNER;
         }else if (declaration.isLocalClassDeclaration()) {
-            classCategory = ClassCategory.LOCAL;
-            return;
+            classCategory = ClassInterfaceCategory.LOCAL;
         }else if (declaration.isNestedType()) {
-            classCategory = ClassCategory.STATIC_NESTED;
-            return;
+            classCategory = ClassInterfaceCategory.STATIC_NESTED;
         }else {
-            classCategory = ClassCategory.STANDARD;
+            classCategory = ClassInterfaceCategory.STANDARD;
         }
 
     }
@@ -436,7 +433,7 @@ public class Class {
         for (Class cl : cls.getClasses()) {
             ParentEntity<?> classParent = cl.getParent();
             if (classParent != null && classParent.getEntityType() == EntityType.CLASS &&
-             (cl.getClassCategory() == ClassCategory.INNER ||  cl.getClassCategory() == ClassCategory.STATIC_NESTED )) {
+             (cl.getClassCategory() == ClassInterfaceCategory.INNER ||  cl.getClassCategory() == ClassInterfaceCategory.STATIC_NESTED )) {
                 if (classParent.getDeclaration() == declaration) {
                     classes.add(cl);
                 }
@@ -451,7 +448,8 @@ public class Class {
     public void findInterfaces(InterfaceCollection intfs) {
         for (Interface intf : intfs.getInterfaces()) {
             ParentEntity<?> interfaceParent = intf.getParent();
-            if (interfaceParent != null && interfaceParent.getEntityType() == EntityType.CLASS) {
+            if (interfaceParent != null && intf.getInterfaceCategory() == ClassInterfaceCategory.NESTED &&
+             interfaceParent.getEntityType() == EntityType.CLASS) {
                 if (interfaceParent.getDeclaration() == declaration) {
                     interfaces.add(intf);
                 }
@@ -616,7 +614,7 @@ public class Class {
      * 
      * @return
      */
-    public ClassCategory getClassCategory() {
+    public ClassInterfaceCategory getClassCategory() {
         return classCategory;
     }
 
@@ -624,7 +622,7 @@ public class Class {
      * 
      * @param classCategory
      */
-    public void setClassCategory(ClassCategory classCategory) {
+    public void setClassCategory(ClassInterfaceCategory classCategory) {
         this.classCategory = classCategory;
     }
 

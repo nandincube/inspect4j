@@ -3,6 +3,7 @@ package uk.ac.st_andrews.inspect4j;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -14,6 +15,7 @@ import com.github.javaparser.ast.type.TypeParameter;
 public class Interface {
     private String name;
     private List<Method> methods;
+    private List<Interface> interfaces;
     private String javaDoc;
     private ParentEntity<?> parent;
     private List<String> typeParams;
@@ -21,6 +23,18 @@ public class Interface {
     private ClassOrInterfaceDeclaration declaration;
     private int lineMin;
     private int lineMax;
+    private ClassInterfaceCategory interfaceCategory;
+   // private NonAccessModifierType nonAccessModifer; - all interfaces are implicitly abstract
+   private AccessModifierType accessModifer;
+
+
+    // private List<String> implementedInterfaces;
+    // private List<String> superClasses;
+    // private List<Class> classes;
+    // private List<Interface> interfaces;
+    // private List<MethodReference> references;
+    // private List<Lambda> lambdas;
+    // private List<Variable> storedVarCalls;
 
     /**
      * 
@@ -31,11 +45,15 @@ public class Interface {
         this.extendedInterfaces = new ArrayList<String>();
         this.typeParams = new ArrayList<String>();
         this.methods = new ArrayList<Method>();
+        this.interfaces = new ArrayList<Interface>();
         this.javaDoc = getJavaDoc(interfaceDecl);
         this.parent = findParentClassInterface(interfaceDecl);
         this.declaration = interfaceDecl;
         this.lineMin = interfaceDecl.getBegin().get().line;
         this.lineMax = interfaceDecl.getEnd().get().line;
+
+        extractInterfaceCategory();
+        extractAccessModifier();
 
         typeParamsToString(interfaceDecl.getTypeParameters());
         extendedInterfacesToString(interfaceDecl.getExtendedTypes());
@@ -43,12 +61,55 @@ public class Interface {
 
     /**
      * 
-     * @param cl
+     */
+    private void extractAccessModifier() {
+        
+        System.out.println("ACCESS SPECIFIER FOR INTERFACE: "+ name +" - " + declaration.getAccessSpecifier());
+        if(declaration.getAccessSpecifier() == AccessSpecifier.PUBLIC){
+            accessModifer = AccessModifierType.PUBLIC;
+        }else{
+            accessModifer = AccessModifierType.DEFAULT;
+        }
+    }
+
+
+    /**
+     * 
+     */
+    private void extractInterfaceCategory() {
+        if (declaration.isNestedType()) {
+            interfaceCategory = ClassInterfaceCategory.NESTED;
+        }else {
+            interfaceCategory = ClassInterfaceCategory.STANDARD;
+        }
+
+    }
+
+        /**
+     * 
+     * @param intfs
+     */
+    public void findInterfaces(InterfaceCollection intfs) {
+        for (Interface intf : intfs.getInterfaces()) {
+            ParentEntity<?> interfaceParent = intf.getParent();
+            if (interfaceParent != null && intf.getInterfaceCategory() == ClassInterfaceCategory.NESTED
+                && interfaceParent.getEntityType() == EntityType.INTERFACE) {
+                if (interfaceParent.getDeclaration() == declaration) {
+                    interfaces.add(intf);
+                }
+
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param intf
      * @return
      */
-    private String getJavaDoc(ClassOrInterfaceDeclaration cl){
-        if (cl.getJavadoc().isPresent()){
-            return cl.getJavadocComment().get().getContent().strip();   
+    private String getJavaDoc(ClassOrInterfaceDeclaration intf){
+        if (intf.getJavadoc().isPresent()){
+            return intf.getJavadocComment().get().getContent().strip();   
         }
         return null;
     }
@@ -256,5 +317,29 @@ public class Interface {
      */
     public void setLineMax(int lineMax) {
         this.lineMax = lineMax;
+    }
+
+    public ClassInterfaceCategory getInterfaceCategory() {
+        return interfaceCategory;
+    }
+    
+    public void setInterfaceCategory(ClassInterfaceCategory interfaceCategory) {
+        this.interfaceCategory = interfaceCategory;
+    }
+    
+    public AccessModifierType getAccessModifer() {
+        return accessModifer;
+    }
+    
+    public void setAccessModifer(AccessModifierType accessModifer) {
+        this.accessModifer = accessModifer;
+    }
+
+    public List<Interface> getInterfaces() {
+        return interfaces;
+    }
+
+    public void setInterfaces(List<Interface> interfaces) {
+        this.interfaces = interfaces;
     }
 }

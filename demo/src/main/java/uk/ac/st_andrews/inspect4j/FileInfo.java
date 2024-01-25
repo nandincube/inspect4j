@@ -59,7 +59,7 @@ public class FileInfo {
      */
     private String getFileDoc(){
         Class publicClass = classes.getClasses().stream()
-                                .filter(x -> x.getClassCategory() == ClassCategory.STANDARD &&
+                                .filter(x -> x.getClassCategory() == ClassInterfaceCategory.STANDARD &&
                                         (x.getAccessModifer() == AccessModifierType.PUBLIC || 
                                             x.getAccessModifer() == AccessModifierType.PROTECTED))
                                 .findAny()

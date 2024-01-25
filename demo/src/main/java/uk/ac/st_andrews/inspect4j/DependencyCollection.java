@@ -1,7 +1,13 @@
 package uk.ac.st_andrews.inspect4j;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -9,34 +15,78 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class DependencyCollection {
-    private ArrayList<Dependency> dependences;
+    private ArrayList<Dependency> dependencies;
     private CompilationUnit ast;
+    private String path;
 
-    public DependencyCollection(ArrayList<Dependency> dependency, CompilationUnit ast) {
-        this.dependences = dependency;
+    public DependencyCollection(ArrayList<Dependency> dependencies, CompilationUnit ast, String path) {
+        this.dependencies = dependencies;
         this.ast = ast;
+        this.path = path;
     }
 
-    public ArrayList<Dependency> getDependency() {
-        return dependences;
+    /**
+     * 
+     * @return
+     */
+    public ArrayList<Dependency> getDependencies() {
+        return dependencies;
     }
 
-    public void setDependency(ArrayList<Dependency> dependences) {
-        this.dependences = dependences;
+    /**
+     * 
+     * @param dependencies
+     */
+    public void setDependences(ArrayList<Dependency> dependencies) {
+        this.dependencies = dependencies;
     }
 
+    /**
+     * 
+     * @return
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * 
+     * @param path
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    /**
+     * 
+     * @param dependencies
+     */
+    public void setDependency(ArrayList<Dependency> dependencies) {
+        this.dependencies = dependencies;
+    }
+
+    /**
+     * 
+     * @return
+     */
     public CompilationUnit getAst() {
         return ast;
     }
 
+    /**
+     * 
+     * @param ast
+     */
     public void setAst(CompilationUnit ast) {
         this.ast = ast;
     }
 
-
-    public void extractMethodsFromAST(){
-        VoidVisitor<List<Dependency>> methodDeclCollector = new ImportDeclarationCollector();
-        methodDeclCollector.visit(ast, dependences);
+    /**
+     * 
+     */
+    public void extractDependenciesFromAST(){
+        VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
+        depDeclCollector.visit(ast, dependencies);
     }
     
     /**
@@ -46,8 +96,151 @@ public class DependencyCollection {
             @Override
             public void visit(ImportDeclaration importDecl, List<Dependency> collection) { 
                 super.visit(importDecl, collection);
-                collection.add(new Dependency(importDecl));
+                extractDependencyInfo(importDecl, collection);
             }
     }
+
+
+    /**
+     * 
+     * @param imp
+     * @param collection
+     */
+    public  static void extractDependencyInfo(ImportDeclaration imp, List<Dependency> collection){
+        if (imp.isAsterisk()){
+            String fromPackage = imp.getName().getQualifier().get().asString();
+            String packagePath = getPackagePath(fromPackage);
+            if(packagePath != null ){
+                searchPackage(fromPackage, packagePath, collection);
+            }else{
+               // collection.add();
+            }
+
+            //String importName = imp.getName().getIdentifier
+            
+        }else{
+           String fromPackage = (imp.getName().getQualifier().isPresent()) ? 
+                                imp.getName().getQualifier().get().asString() : imp.getName().getIdentifier();
+            // String importType = isInternal(imp);
+            // String importName = imp.getName().getIdentifier();
+            // String typeElement = extractType(imp);
+        }
+
+    }
+
+    //Adaptation of code from inspect4py: REWRITE THISSSS!!
+
+    public String isInternal(ImportDeclaration imp){
+        //TODO:
+        return "";
+    }
+
+    public static String getPackagePath(String packageName){
+        String packageString = packageName.replace(".","/");
+        
+        if((new File(packageString)).getParentFile() != null) {
+            return (new File(packageString)).getParentFile().getAbsolutePath();
+        }else{
+            return null;
+        }
+       
+    }
+
+    public String importedEntityPath(ImportDeclaration imp){
+        //TODO:
+        String importString2  = imp.getNameAsString();
+        importString2 = importString2.replace(".","/");
+
+        String importString  = imp.getNameAsString();
+        importString = importString.replace(".","\\");
+
+        String repo = (new File(path)).getParentFile().getAbsolutePath();
+        return repo + "\\"+".java";
+
+    }
+
+    // public boolean findClasses(String importedEntity){
+        
+      
+    //         //we want to extract all public, protected and default classes;
+       
+
+    // }
+     /**
+      * 
+      * @param packagePath
+      */
+    public static void searchPackage(String fromPackage, String packagePath, List<Dependency> collection){
+        try{
+
+            Path packageObj =  Paths.get(packagePath);
+            
+            List<File> files = Files.list(packageObj)
+                .map(Path::toFile)
+                .filter(File::isFile)
+                .collect(Collectors.toList());
+
+            if(files.size() > 0){
+                files.forEach(x-> {
+                    String filePath = x.getAbsolutePath();
+                    ArrayList<Class> classes = searchFileForClasses(filePath);
+                    if(classes != null){
+                        classes.forEach(a -> {
+                            collection.add(new Dependency(fromPackage, a.getName(), "internal", "class"));
+                        });
+                    }
+                
+                    ArrayList<Interface> intfs = searchFileForInterfaces(filePath);
+                    if(intfs != null){
+                        intfs.forEach(b -> {
+                            collection.add(new Dependency(fromPackage, b.getName(), "internal", "interface"));
+                        });
+                    }
+                });
+            }
+        }catch(IOException i){
+            System.out.println("Couldn't analyse this package! "+ i);
+        }
+
+    }
+
+
+   /**
+    * 
+    * @param filePath
+    */
+    public static ArrayList<Class> searchFileForClasses(String filePath){
+        if(filePath.length() > 0  && filePath != null){
+            AST ast = new AST(filePath);
+            ast.extractMetadata();
+            return (ArrayList<Class>) ast.getClassCollection()
+                                            .getClasses()
+                                            .stream()
+                                            .filter(x -> x.getClassCategory() == ClassInterfaceCategory.STANDARD)
+                                            .filter(x -> x.getAccessModifer() != AccessModifierType.PRIVATE)
+                                            .toList();
+        } 
+
+        return null;
+    }  
+
+     /**
+      * 
+      * @param filePath
+      * @return
+      */
+    public static ArrayList<Interface> searchFileForInterfaces(String filePath){
+        if(filePath.length() > 0  && filePath != null){
+            AST ast = new AST(filePath);
+            ast.extractMetadata();
+            return (ArrayList<Interface>) ast.getInterfaceCollection()
+                                        .getInterfaces()
+                                            .stream()
+                                            .filter(x -> x.getInterfaceCategory() == ClassInterfaceCategory.STANDARD)
+                                            .filter(x -> x.getAccessModifer() != AccessModifierType.PRIVATE)
+                                            .toList();
+        } 
+        return null;
+    } 
     
 }
