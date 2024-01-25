@@ -13,6 +13,9 @@ public class FileInfo {
     private String extension;
     private ClassCollection classes;
     private InterfaceCollection interfaces;
+    private DependencyCollection dependencies;
+
+
     private String javaDoc;
     private MainInfo main;
 
@@ -23,13 +26,14 @@ public class FileInfo {
      * @param interfaces
      * @param main
      */
-    public FileInfo(String filePath, ClassCollection classes, InterfaceCollection interfaces, MainInfo main) {
+    public FileInfo(String filePath, ClassCollection classes, InterfaceCollection interfaces, MainInfo main, DependencyCollection dependencies) {
         File file = new File(filePath);
         this.path = file.getAbsolutePath();
         this.fileNameBase = extractFileName(file.getName());
         this.extension = extractExtensions(file.getName());
         this.classes = classes;
         this.interfaces = interfaces;
+        this.dependencies = dependencies;
         this.javaDoc = getFileDoc();
         this.main = main;
 
@@ -205,6 +209,14 @@ public class FileInfo {
      */
     public void setMain(MainInfo main) {
         this.main = main;
+    }
+
+    public DependencyCollection getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(DependencyCollection dependencies) {
+        this.dependencies = dependencies;
     }
   
 }
