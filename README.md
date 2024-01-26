@@ -1,6 +1,14 @@
 # inspect4j
 
+## Features:
+
 ## Install
+
+### Java version
+The tool `inspect4j` uses Java SE 17.0. 
+
+### Operative System
+The tool `inspect4py` has been tested in Unix and Windows 11(22621.3007).
 
 ### Installation from code
 
@@ -10,7 +18,6 @@
 git clone https://github.com/nandincube/inspect4j.git
 
 ```
-
 You are done!
 
 ## Execution
@@ -20,9 +27,20 @@ For example, it can be used to inspect all the java files of a given GitHub repo
 
 To run:
 
-First, `cd` into `inspect4j` repository/package and run the following commands:
+First, `cd` into `demo` within the `inspect4j` repository/package and run the following commands:
 
 ```
-java -jar demo\target\inspect4j-1.0-jar-with-dependencies.jar <FILE.py | DIRECTORY>
+mvn clean package
+java -jar target/inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY>
+```
+
+### Package dependencies:
+```
+junit=4.11
+javaparser-symbol-solver-core=3.25.5
+commons-io=2.8.0
+picocli=4.7.5
+javaparser-core-serialization=3.25.5
+gson=2.10.1
 
 ```
