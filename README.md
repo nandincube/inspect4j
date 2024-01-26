@@ -2,6 +2,8 @@
 
 ## Features:
 
+Make sure you have JDK 17 installed. This can be downloaded [here](https://www.oracle.com/java/technologies/downloads/#java17).
+
 ## Install
 
 ### Java version
