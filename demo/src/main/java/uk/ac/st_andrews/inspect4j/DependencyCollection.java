@@ -85,13 +85,13 @@ public class DependencyCollection {
      * 
      */
     public void extractDependenciesFromAST(){
-        VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
-        depDeclCollector.visit(ast, dependencies);
+        //VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
+       // depDeclCollector.visit(ast, dependencies);
     }
     
     /**
      * 
-     */
+     *
     private static class ImportDeclarationCollector extends VoidVisitorAdapter<List<Dependency>> {
             @Override
             public void visit(ImportDeclaration importDecl, List<Dependency> collection) { 
@@ -101,11 +101,11 @@ public class DependencyCollection {
     }
 
 
-    /**
+    **
      * 
      * @param imp
      * @param collection
-     */
+     *
     public  static void extractDependencyInfo(ImportDeclaration imp, List<Dependency> collection){
         if (imp.isAsterisk()){
             String fromPackage = imp.getName().getQualifier().get().asString();
@@ -171,7 +171,7 @@ public class DependencyCollection {
 
     }
 
-    // public boolean findClasses(String importedEntity){
+    public boolean findClasses(String importedEntity){
         
       
     //         //we want to extract all public, protected and default classes;
@@ -221,7 +221,7 @@ public class DependencyCollection {
                 else:
                     return "external"
     }
-
+    */
 
      /**
       * 

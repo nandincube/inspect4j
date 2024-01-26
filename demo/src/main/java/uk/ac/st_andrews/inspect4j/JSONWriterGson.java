@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.google.gson.reflect.TypeToken;
 public class JSONWriterGson {
 
     private FileInfo fileInfo;
+    private final String FILE_SEPERATOR = FileSystems.getDefault().getSeparator();
 
     public JSONWriterGson(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
@@ -39,7 +41,7 @@ public class JSONWriterGson {
 
         try {
 
-            String jsonDirPath = directory + "/json_files"; //linux specific path syntax
+            String jsonDirPath = directory + FILE_SEPERATOR+"json_files"; //linux specific path syntax
             File dir = new File(jsonDirPath);
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
@@ -48,7 +50,7 @@ public class JSONWriterGson {
                 }
             }
 
-            String jsonFilePath = dir.getAbsolutePath() + "/" + fileName;
+            String jsonFilePath = dir.getAbsolutePath() + FILE_SEPERATOR + fileName;
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
             writer.append(fileInfoAsJson);
