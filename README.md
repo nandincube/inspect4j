@@ -10,10 +10,10 @@
 Make sure you have JDK 17 installed. This can be downloaded [here](https://www.oracle.com/java/technologies/downloads/#java17).
 
 ### Java version
-The tool `inspect4j` uses Java SE 17.0. 
+`inspect4j` has been tested using Java SE 17.0. 
 
 ### Operative System
-The tool `inspect4py` has been tested in Unix and Windows 11(22621.3007).
+`inspect4py` has been tested in Unix and Windows 11(22621.3007).
 
 ### Installation from code
 
