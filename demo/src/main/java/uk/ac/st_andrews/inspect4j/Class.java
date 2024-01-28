@@ -14,24 +14,24 @@ import com.github.javaparser.ast.type.TypeParameter;
  * 
  */
 public class Class {
-    private String name;
-    private ClassInterfaceCategory classCategory;
-    private AccessModifierType accessModifer;
-    private NonAccessModifierType nonAccessModifer;
-    private int lineMin;
-    private int lineMax;
-    private List<Method> methods;
-    private List<String> typeParams;
-    private List<String> implementedInterfaces;
-    private List<String> superClasses;
-    private List<Class> classes;
-    private List<Interface> interfaces;
+    private String name; //!
+    private ClassInterfaceCategory classCategory;//!
+    private AccessModifierType accessModifer; //!
+    private NonAccessModifierType nonAccessModifer; //!
+    private int lineMin;//!
+    private int lineMax;//!
+    private List<Method> methods;//!
+    private List<String> typeParams;//!
+    private List<String> implementedInterfaces;//!
+    private List<String> superClasses; //!
+    private List<Class> classes; //!
+    private List<Interface> interfaces; //!
     private List<MethodReference> references;
     private List<Lambda> lambdas;
-    private ParentEntity<?> parent;
-    private ClassOrInterfaceDeclaration declaration;
-    private List<Variable> storedVarCalls;
-    private String javaDoc;
+    private ParentEntity<?> parent;//!
+    private ClassOrInterfaceDeclaration declaration; //!
+    private List<Variable> storedVarCalls; 
+    private String javaDoc; //!
 
     /**
      * 
@@ -67,6 +67,7 @@ public class Class {
         interfacesToString(implementedInterfaces);
         superClassesToString(superClasses);
     }
+
 
     /**
      * 
@@ -125,10 +126,13 @@ public class Class {
     private void extractClassCategory() {
         if (declaration.isInnerClass()) {
             classCategory = ClassInterfaceCategory.INNER;
+            return;
         }else if (declaration.isLocalClassDeclaration()) {
             classCategory = ClassInterfaceCategory.LOCAL;
-        }else if (declaration.isNestedType()) {
+            return;
+        }else if (declaration.isNestedType() && declaration.isStatic()) {
             classCategory = ClassInterfaceCategory.STATIC_NESTED;
+            return;
         }else {
             classCategory = ClassInterfaceCategory.STANDARD;
         }

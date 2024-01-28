@@ -13,20 +13,22 @@ import com.github.javaparser.ast.type.TypeParameter;
  * 
  */
 public class Interface {
-    private String name;
-    private List<Method> methods;
-    private List<Interface> interfaces;
-    private String javaDoc;
-    private ParentEntity<?> parent;
-    private List<String> typeParams;
-    private List<String> extendedInterfaces;
-    private ClassOrInterfaceDeclaration declaration;
-    private int lineMin;
-    private int lineMax;
-    private ClassInterfaceCategory interfaceCategory;
-   // private NonAccessModifierType nonAccessModifer; - all interfaces are implicitly abstract
-   private AccessModifierType accessModifer;
+    private String name; // !
+    private ClassInterfaceCategory interfaceCategory; // !
+    private AccessModifierType accessModifer;// !
+    private int lineMin;// !
+    private int lineMax;// !
+    private List<Method> methods; // !
+    private List<Interface> interfaces;// !
+    private List<Class> classes;// !
+    private String javaDoc;// !
+    private ParentEntity<?> parent; // !
+    private List<String> typeParams; // !
+    private List<String> extendedInterfaces; // !
+    private ClassOrInterfaceDeclaration declaration; // !
 
+    // private NonAccessModifierType nonAccessModifer; - all interfaces are
+    // implicitly abstract
 
     // private List<String> implementedInterfaces;
     // private List<String> superClasses;
@@ -51,6 +53,7 @@ public class Interface {
         this.declaration = interfaceDecl;
         this.lineMin = interfaceDecl.getBegin().get().line;
         this.lineMax = interfaceDecl.getEnd().get().line;
+        this.classes = new ArrayList<Class>();
 
         extractInterfaceCategory();
         extractAccessModifier();
@@ -63,15 +66,12 @@ public class Interface {
      * 
      */
     private void extractAccessModifier() {
-        
-        System.out.println("ACCESS SPECIFIER FOR INTERFACE: "+ name +" - " + declaration.getAccessSpecifier());
-        if(declaration.getAccessSpecifier() == AccessSpecifier.PUBLIC){
+        if (declaration.getAccessSpecifier() == AccessSpecifier.PUBLIC) {
             accessModifer = AccessModifierType.PUBLIC;
-        }else{
+        } else {
             accessModifer = AccessModifierType.DEFAULT;
         }
     }
-
 
     /**
      * 
@@ -79,13 +79,30 @@ public class Interface {
     private void extractInterfaceCategory() {
         if (declaration.isNestedType()) {
             interfaceCategory = ClassInterfaceCategory.NESTED;
-        }else {
+        } else {
             interfaceCategory = ClassInterfaceCategory.STANDARD;
         }
 
     }
 
-        /**
+    /**
+     * 
+     * @param cls
+     */
+    public void findClasses(ClassCollection cls) {
+        for (Class cl : cls.getClasses()) {
+            ParentEntity<?> classParent = cl.getParent();
+            if (classParent != null && classParent.getEntityType() == EntityType.INTERFACE &&
+                    (cl.getClassCategory() == ClassInterfaceCategory.INNER)) {
+
+                if (classParent.getDeclaration() == declaration) {
+                    classes.add(cl);
+                }
+            }
+        }
+    }
+
+    /**
      * 
      * @param intfs
      */
@@ -93,7 +110,7 @@ public class Interface {
         for (Interface intf : intfs.getInterfaces()) {
             ParentEntity<?> interfaceParent = intf.getParent();
             if (interfaceParent != null && intf.getInterfaceCategory() == ClassInterfaceCategory.NESTED
-                && interfaceParent.getEntityType() == EntityType.INTERFACE) {
+                    && interfaceParent.getEntityType() == EntityType.INTERFACE) {
                 if (interfaceParent.getDeclaration() == declaration) {
                     interfaces.add(intf);
                 }
@@ -107,9 +124,9 @@ public class Interface {
      * @param intf
      * @return
      */
-    private String getJavaDoc(ClassOrInterfaceDeclaration intf){
-        if (intf.getJavadoc().isPresent()){
-            return intf.getJavadocComment().get().getContent().strip();   
+    private String getJavaDoc(ClassOrInterfaceDeclaration intf) {
+        if (intf.getJavadoc().isPresent()) {
+            return intf.getJavadocComment().get().getContent().strip();
         }
         return null;
     }
@@ -122,10 +139,10 @@ public class Interface {
     private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(ClassOrInterfaceDeclaration expr) {
         if (expr.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
             ClassOrInterfaceDeclaration parentIC = expr.findAncestor(ClassOrInterfaceDeclaration.class).get();
-            if(parentIC.isInterface()){
-                return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.INTERFACE);
-            }else{
-                return new ParentEntity<ClassOrInterfaceDeclaration>( parentIC, EntityType.CLASS);
+            if (parentIC.isInterface()) {
+                return new ParentEntity<ClassOrInterfaceDeclaration>(parentIC, EntityType.INTERFACE);
+            } else {
+                return new ParentEntity<ClassOrInterfaceDeclaration>(parentIC, EntityType.CLASS);
             }
         }
         return null;
@@ -135,7 +152,7 @@ public class Interface {
      * 
      * @param types
      */
-    private void typeParamsToString(NodeList<TypeParameter> types){
+    private void typeParamsToString(NodeList<TypeParameter> types) {
         types.forEach(x -> typeParams.add(x.getNameAsString().trim()));
     }
 
@@ -143,23 +160,22 @@ public class Interface {
      * 
      * @param interfaces
      */
-    private void extendedInterfacesToString(NodeList<ClassOrInterfaceType> interfaces){
+    private void extendedInterfacesToString(NodeList<ClassOrInterfaceType> interfaces) {
         interfaces.forEach(x -> extendedInterfaces.add(x.getNameAsString().trim()));
     }
-
 
     /**
      * 
      * @param mds
      */
-    public void findMethods(MethodCollection mds){
+    public void findMethods(MethodCollection mds) {
         for (Method md : mds.getMethods()) {
             ParentEntity<?> methodParent = md.getParent();
-            if (methodParent != null &&  methodParent.getEntityType() == EntityType.INTERFACE) {
-                if(methodParent.getDeclaration() == declaration){
+            if (methodParent != null && methodParent.getEntityType() == EntityType.INTERFACE) {
+                if (methodParent.getDeclaration() == declaration) {
                     methods.add(md);
                 }
-                
+
             }
         }
     }
@@ -218,7 +234,7 @@ public class Interface {
     @Override
     public String toString() {
         return "Interface [name=" + name + ", extendedInterfaces=" + extendedInterfaces + ", typeParams=" + typeParams
-                + ", methods=" + methods+ "]";
+                + ", methods=" + methods + "]";
     }
 
     /**
@@ -237,7 +253,6 @@ public class Interface {
         this.methods = methods;
     }
 
-
     /**
      * 
      * @return
@@ -245,7 +260,6 @@ public class Interface {
     public String getJavaDoc() {
         return javaDoc;
     }
-
 
     /**
      * 
@@ -322,15 +336,15 @@ public class Interface {
     public ClassInterfaceCategory getInterfaceCategory() {
         return interfaceCategory;
     }
-    
+
     public void setInterfaceCategory(ClassInterfaceCategory interfaceCategory) {
         this.interfaceCategory = interfaceCategory;
     }
-    
+
     public AccessModifierType getAccessModifer() {
         return accessModifer;
     }
-    
+
     public void setAccessModifer(AccessModifierType accessModifer) {
         this.accessModifer = accessModifer;
     }
@@ -341,5 +355,13 @@ public class Interface {
 
     public void setInterfaces(List<Interface> interfaces) {
         this.interfaces = interfaces;
+    }
+
+    public List<Class> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<Class> classes) {
+        this.classes = classes;
     }
 }

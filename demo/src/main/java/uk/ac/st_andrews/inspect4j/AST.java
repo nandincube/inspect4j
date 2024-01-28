@@ -139,6 +139,7 @@ public class AST {
     private void addInterfaceMembers() {
         interfaceCollection.addMethods(methodCollection);
         interfaceCollection.addInterfaces(interfaceCollection);
+        interfaceCollection.addClasses(classCollection);
     }
 
     /**

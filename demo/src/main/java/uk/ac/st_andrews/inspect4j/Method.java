@@ -149,13 +149,15 @@ public class Method {
                         break;
                 }
             }
-
         }
 
-        if (nonAccessModifer == null) {
+
+        if(parent.getEntityType() == EntityType.INTERFACE &&  (nonAccessModifer == NonAccessModifierType.NONE || nonAccessModifer == null) ){
+            nonAccessModifer = NonAccessModifierType.ABSTRACT;
+        }else if (nonAccessModifer == null) {
             nonAccessModifer = NonAccessModifierType.NONE;
         }
-
+       
     }
     /**
      * 

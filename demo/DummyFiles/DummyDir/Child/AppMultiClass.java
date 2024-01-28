@@ -95,7 +95,22 @@ public class AppMultiClass {
 
     }
 
-    private static class InnerClass {
+    private static class StaticInnerClass {
+        private String horseName;
+    
+        public InnerClass(String hn) { 
+            this.horseName = hn;
+        }
+    
+        private void hiya(){
+            System.out.println("hi");
+            String c = "hi";
+            //c = printAddress("addr");
+        }
+    
+    }
+
+    private class StaticInnerClass {
         private String horseName;
     
         public InnerClass(String hn) { 
@@ -124,6 +139,10 @@ class DefaultClass {
         System.out.println("hi");
         String c = "hi";
         //c = printAddress("addr");
+    }
+
+    interface Yes {
+        void show();
     }
 
 }
