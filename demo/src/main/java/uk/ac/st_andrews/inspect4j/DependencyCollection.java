@@ -2,6 +2,7 @@ package uk.ac.st_andrews.inspect4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +19,7 @@ public class DependencyCollection {
     private ArrayList<Dependency> dependencies;
     private CompilationUnit ast;
     private String path;
+    private static String fileSeperator = FileSystems.getDefault().getSeparator();
 
     public DependencyCollection( CompilationUnit ast, String path) {
         this.dependencies = new ArrayList<Dependency>();
@@ -93,8 +95,8 @@ public class DependencyCollection {
      * 
      */
     public void extractDependenciesFromAST(){
-        //VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
-       // depDeclCollector.visit(ast, dependencies);
+        VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
+        depDeclCollector.visit(ast, dependencies);
     }
     
     /**
@@ -147,8 +149,8 @@ public class DependencyCollection {
     public String getPackageAbsolutePath(String packageName){
          if((new File(path)).getParentFile() != null) {
             String repoPath = (new File(path)).getParentFile().getAbsolutePath();
-            String packageRelativePath =  packageName.replace(".","/");
-            return repoPath + "/" + packageRelativePath;
+            String packageRelativePath =  packageName.replace(".",fileSeperator);
+            return repoPath + fileSeperator + packageRelativePath;
           }else{
               return null;
          }
@@ -158,7 +160,7 @@ public class DependencyCollection {
     public String getImportAbsolutePath(String packageName, String importName){
         String absPackagePath = getPackageAbsolutePath(packageName);
         if(absPackagePath == null) return null;
-        return absPackagePath+ "/" + importName +".java";
+        return absPackagePath+ fileSeperator + importName +".java";
 
     }
 

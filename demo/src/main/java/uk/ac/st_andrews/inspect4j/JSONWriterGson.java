@@ -5,13 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;

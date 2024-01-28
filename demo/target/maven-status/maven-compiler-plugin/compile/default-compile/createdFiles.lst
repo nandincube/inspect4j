@@ -11,6 +11,7 @@ uk\ac\st_andrews\inspect4j\JSONWriterGson.class
 uk\ac\st_andrews\inspect4j\JSONWriterGson$5.class
 uk\ac\st_andrews\inspect4j\InterfaceCollection$InterfaceDefinitionCollector.class
 uk\ac\st_andrews\inspect4j\Method$1.class
+uk\ac\st_andrews\inspect4j\DependencyCollection$ImportDeclarationCollector.class
 uk\ac\st_andrews\inspect4j\JSONWriterGson$8.class
 uk\ac\st_andrews\inspect4j\ClassCollection.class
 uk\ac\st_andrews\inspect4j\VariableCollection$StoredVariableCallsCollector.class
@@ -22,6 +23,7 @@ uk\ac\st_andrews\inspect4j\AccessModifierType.class
 uk\ac\st_andrews\inspect4j\JSONWriterGson$13.class
 uk\ac\st_andrews\inspect4j\JSONWriterGson$4.class
 uk\ac\st_andrews\inspect4j\Variable.class
+uk\ac\st_andrews\inspect4j\JSONWriterGson$16.class
 uk\ac\st_andrews\inspect4j\JSONWriterGson$1.class
 uk\ac\st_andrews\inspect4j\MethodCollection.class
 uk\ac\st_andrews\inspect4j\MethodCollection$MethodDeclarationCollector.class
@@ -34,6 +36,7 @@ uk\ac\st_andrews\inspect4j\FileInfo.class
 uk\ac\st_andrews\inspect4j\Lambda.class
 uk\ac\st_andrews\inspect4j\ClassCollection$ClassDefinitionCollector.class
 uk\ac\st_andrews\inspect4j\JSONWriterGson$12.class
+uk\ac\st_andrews\inspect4j\JSONWriterGson$15.class
 META-INF\native-image\picocli-generated\uk.ac.st_andrews.inspect4j\inspect4j\resource-config.json
 uk\ac\st_andrews\inspect4j\Class.class
 uk\ac\st_andrews\inspect4j\MethodCollection$ReturnStatementCollector.class
