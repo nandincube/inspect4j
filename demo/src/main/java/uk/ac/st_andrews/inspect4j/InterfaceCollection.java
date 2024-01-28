@@ -78,6 +78,15 @@ public class InterfaceCollection {
     public void addInterfaces(InterfaceCollection interfaces){
         interfaceList.forEach(x-> x.findInterfaces(interfaces));
    }
+
+   
+    /**
+     * 
+     * @param refs
+     */
+    public void addClasses(ClassCollection refs) {
+        interfaceList.forEach(x -> x.findClasses(refs));
+    }
     
     
    /**
@@ -95,7 +104,6 @@ public class InterfaceCollection {
         public void visit(ClassOrInterfaceDeclaration intDecl, List<Interface> collection) { 
             super.visit(intDecl, collection);
             if(intDecl.isInterface()){
-                System.out.println("intName: "+intDecl.getNameAsString());
                 collection.add(new Interface(intDecl));
             }
         }

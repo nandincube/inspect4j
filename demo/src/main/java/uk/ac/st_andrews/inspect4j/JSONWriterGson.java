@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.google.gson.reflect.TypeToken;
 public class JSONWriterGson {
 
     private FileInfo fileInfo;
+    private final String FILE_SEPERATOR = FileSystems.getDefault().getSeparator();
 
     public JSONWriterGson(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
@@ -39,7 +41,7 @@ public class JSONWriterGson {
 
         try {
 
-            String jsonDirPath = directory + "/json_files"; //linux specific path syntax
+            String jsonDirPath = directory + FILE_SEPERATOR + "json_files"; // linux specific path syntax
             File dir = new File(jsonDirPath);
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
@@ -48,7 +50,7 @@ public class JSONWriterGson {
                 }
             }
 
-            String jsonFilePath = dir.getAbsolutePath() + "/" + fileName;
+            String jsonFilePath = dir.getAbsolutePath() + FILE_SEPERATOR + fileName;
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
             writer.append(fileInfoAsJson);
@@ -115,8 +117,10 @@ public class JSONWriterGson {
                 if (src.getInterfaces() != null) {
                     ArrayList<Interface> intfs = src.getInterfaces().getInterfaces();
                     intfs.forEach(x -> {
-                        JsonElement intf = context.serialize(x, Interface.class);
-                        interfaceCollectionJsonObject.add(x.getName(), intf);
+                        if (x.getInterfaceCategory() == ClassInterfaceCategory.STANDARD) {
+                            JsonElement intf = context.serialize(x, Interface.class);
+                            interfaceCollectionJsonObject.add(x.getName(), intf);
+                        }
                     });
                     jsonFile.add("interfaces", interfaceCollectionJsonObject);
                 }
@@ -145,7 +149,6 @@ public class JSONWriterGson {
                 JsonObject jsonDetails = new JsonObject();
 
                 jsonDetails.addProperty("doc", src.getJavaDoc());
-                
 
                 JsonArray methodsJsonArray = new JsonArray();
 
@@ -171,10 +174,11 @@ public class JSONWriterGson {
 
                 JsonArray interfacesJsonArray = new JsonArray();
                 for (Interface intf : src.getInterfaces()) {
+                    JsonObject interfaceJsonObject = new JsonObject();
                     JsonElement interfaceElement = context.serialize(intf, Interface.class);
-                    interfacesJsonArray.add(interfaceElement);
+                    interfaceJsonObject.add(intf.getName(), interfaceElement);
+                    interfacesJsonArray.add(interfaceJsonObject);
                 }
-
 
                 JsonArray innerClassJsonArray = new JsonArray();
                 JsonArray staticNestedClassJsonArray = new JsonArray();
@@ -207,7 +211,7 @@ public class JSONWriterGson {
                 jsonDetails.add("nested_interfaces", interfacesJsonArray);
                 jsonDetails.add("inner_classes", innerClassJsonArray);
                 jsonDetails.add("static_nested_classes", staticNestedClassJsonArray);
-                
+
                 return jsonDetails;
             }
 
@@ -271,9 +275,9 @@ public class JSONWriterGson {
                         localClassesJsonArray.add(localClassesJsonObject);
                     }
                 }
-                
+
                 jsonDetails.addProperty("doc", src.getJavaDoc());
-                
+
                 jsonDetails.addProperty("access_modifier", src.getAccessModifer().toString().toLowerCase());
                 jsonDetails.addProperty("non_access_modifier", src.getNonAccessModifer().toString().toLowerCase());
                 jsonDetails.add("args", paramNamesJsonArray);
@@ -376,7 +380,7 @@ public class JSONWriterGson {
         JsonSerializer<Interface> serialiser = new JsonSerializer<Interface>() {
             @Override
             public JsonElement serialize(Interface src, Type typeOfSrc, JsonSerializationContext context) {
-                //JsonObject jsonInterface = new JsonObject();
+                // JsonObject jsonInterface = new JsonObject();
                 JsonObject jsonDetails = new JsonObject();
 
                 jsonDetails.addProperty("doc", src.getJavaDoc());
@@ -389,8 +393,19 @@ public class JSONWriterGson {
 
                 JsonArray interfacesJsonArray = new JsonArray();
                 for (Interface intf : src.getInterfaces()) {
+                    JsonObject interfaceCollectionJsonObject = new JsonObject();
                     JsonElement interfaceElement = context.serialize(intf, Interface.class);
-                    interfacesJsonArray.add(interfaceElement);
+                    interfaceCollectionJsonObject.add(intf.getName(), interfaceElement);
+                    interfacesJsonArray.add(interfaceCollectionJsonObject);
+                }
+
+                JsonArray classesJsonArray = new JsonArray();
+                for (Class cl : src.getClasses()) {
+                    JsonObject classCollectionJsonObject = new JsonObject();
+                    JsonElement classElement = context.serialize(cl, Class.class);
+                    classCollectionJsonObject.add(cl.getName(), classElement);
+                    classesJsonArray.add(classCollectionJsonObject);
+
                 }
 
                 JsonArray typeParamsJsonArray = new JsonArray();
@@ -405,19 +420,18 @@ public class JSONWriterGson {
                     extendJsonArray.add(new JsonPrimitive(impInt.toString()));
                 }
 
-                
                 jsonDetails.addProperty("access_modifier", src.getAccessModifer().toString().toLowerCase());
                 jsonDetails.add("type_params", typeParamsJsonArray);
                 jsonDetails.add("extend", extendJsonArray);
                 jsonDetails.add("methods", methodsJsonArray);
                 jsonDetails.add("nested_interfaces", interfacesJsonArray);
+                jsonDetails.add("nested_classes", classesJsonArray);
 
                 JsonObject lineNumbers = new JsonObject();
                 lineNumbers.addProperty("min_lineno", src.getLineMin());
                 lineNumbers.addProperty("max_lineno", src.getLineMax());
                 jsonDetails.add("min_max_lineno", lineNumbers);
 
-                
                 return jsonDetails;
             }
 

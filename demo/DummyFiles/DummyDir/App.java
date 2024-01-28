@@ -6,7 +6,7 @@ import java.util.List;
  * Hello world!
  *
  */
-public class App extends Object{
+public class App<A> extends Object implements AppInterface<A> {
 
     
     public static void main( String[] args )

@@ -93,8 +93,8 @@ public class DependencyCollection {
      * 
      */
     public void extractDependenciesFromAST(){
-        VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
-        depDeclCollector.visit(ast, dependencies);
+        //VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
+       // depDeclCollector.visit(ast, dependencies);
     }
     
     /**
