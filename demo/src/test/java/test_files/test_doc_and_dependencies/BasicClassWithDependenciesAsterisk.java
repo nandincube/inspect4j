@@ -1,11 +1,10 @@
+package test_files.test_doc_and_dependencies;
 
-package demo.src.test.test_files.test_doc_and_dependencies;
+//import test_files.test_basic.*;
+import test_files.test_basic.BasicClassWithMultipleMethods;
 
-import demo.src.test.test_files.BasicClassWithMain.java;
-import java.util.List;
-import java.security.interfaces.DSAKey;
 
-public class BasicClassWithDependencies {
+public class BasicClassWithDependenciesAsterisk{
 
     private String catName;
     public static void main( String[] args )
@@ -13,7 +12,7 @@ public class BasicClassWithDependencies {
         System.out.println( "Hello World!" );
     }
 
-    public BasicClassWithMultipleMethods(String catName ){
+    public BasicClassWithDependenciesAsterisk(String catName ){
         this.catName = catName;
     }
 

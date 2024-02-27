@@ -1,8 +1,8 @@
+package test_files.test_basic;
 
-import java.awt.color;
-import demo.src.test.test_files.test_basic.*;
+import java.util.List;
 
-public class BasicClassWithDependenciesAsterisk{
+public class BasicClassWithMultipleMethods {
 
     private String catName;
     public static void main( String[] args )
@@ -13,7 +13,15 @@ public class BasicClassWithDependenciesAsterisk{
     public BasicClassWithMultipleMethods(String catName ){
         this.catName = catName;
     }
+    
+    public String cat(String name, int age, String breed, List<String> list){
+        System.out.println("Cat name:"+name);
+        System.out.println("Cat age:"+age);
+        System.out.println("Cat bree:"+breed);
 
+        return "abdbf";
+        
+    }
 
     public static String bat(String name, int age, String breed){
         System.out.println("bat name:"+name);

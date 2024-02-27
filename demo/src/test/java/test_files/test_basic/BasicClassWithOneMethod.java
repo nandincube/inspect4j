@@ -1,3 +1,6 @@
+package test_files.test_basic;
+
+import java.util.List;
 
 public class BasicClassWithOneMethod {
 

@@ -24,12 +24,14 @@ public class AST {
     private DependencyCollection dependencyCollection;
     private MainInfo main;
     private String path;
+    private FileInfo fileInfo;
+
 
     /**
      * 
      * @param path
      */
-    public AST(String path) {
+    public AST(String path, String repoPath) {
         this.path = path;
         this.fullTree = parseFile(path);
         this.classCollection = new ClassCollection(fullTree);
@@ -38,7 +40,7 @@ public class AST {
         this.referenceCollection = new MethodReferenceCollection(fullTree);
         this.lambdaCollection = new LambdaCollection(fullTree);
         this.variableCollection = new VariableCollection(fullTree);
-        this.dependencyCollection = new DependencyCollection(fullTree, path);
+        this.dependencyCollection = new DependencyCollection(fullTree, path, repoPath);
         this.main = null;
     }
 
@@ -173,7 +175,7 @@ public class AST {
      * @param directory
      */
     public void writeToJson(String path, String directory) {
-        FileInfo fileInfo = new FileInfo(path, classCollection, interfaceCollection, main, dependencyCollection);
+        fileInfo = new FileInfo(path, classCollection, interfaceCollection, main, dependencyCollection);
         JSONWriterGson json = new JSONWriterGson(fileInfo);
         json.write(directory);
     }
@@ -320,6 +322,14 @@ public class AST {
 
     public void setDependencyCollection(DependencyCollection dependencyCollection) {
         this.dependencyCollection = dependencyCollection;
+    }
+    
+    public FileInfo getFileInfo() {
+        return fileInfo;
+    }
+
+    public void setFileInfo(FileInfo fileInfo) {
+        this.fileInfo = fileInfo;
     }
 
 }

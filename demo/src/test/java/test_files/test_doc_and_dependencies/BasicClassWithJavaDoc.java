@@ -1,3 +1,5 @@
+package test_files.test_doc_and_dependencies;
+
 /**
  * Class with java doc comments
  */
@@ -8,7 +10,7 @@ public class BasicClassWithJavaDoc {
      * Constructor
      * @param catName
      */
-    public BasicClassWithMultipleMethods(String catName ){
+    public BasicClassWithJavaDoc(String catName ){
         this.catName = catName;
     }
     

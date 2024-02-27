@@ -19,6 +19,7 @@ public class VariableCollection {
 
     /**
      * Constructor.
+     * 
      * @param ast - AST for the Class being analysed
      */
     public VariableCollection(CompilationUnit ast) {
@@ -26,13 +27,13 @@ public class VariableCollection {
         this.ast = ast;
     }
 
-
     /**
      * 
      */
     public void printMetadata() {
         variables.forEach(x -> System.out.println(x.toString()));
     }
+
     /**
      * 
      */
@@ -41,32 +42,28 @@ public class VariableCollection {
         variableCollector.visit(ast, variables);
     }
 
-    
-    /** 
+    /**
      * @return CompilationUnit
      */
     public CompilationUnit getAst() {
         return ast;
     }
 
-    
-    /** 
+    /**
      * @param ast
      */
     public void setAst(CompilationUnit ast) {
         this.ast = ast;
     }
 
-    
-    /** 
+    /**
      * @return ArrayList<Variable>
      */
     public ArrayList<Variable> getVariables() {
         return variables;
     }
 
-    
-    /** 
+    /**
      * @param variables
      */
     public void setVariables(ArrayList<Variable> variables) {
@@ -88,7 +85,7 @@ public class VariableCollection {
                 if (assignment.getTarget().isNameExpr() ||
                         assignment.getTarget().isFieldAccessExpr()) { // is the thing being assigned a variable or field
                     if (assignment.getValue().isMethodCallExpr()) {
-
+                        
                         collection.add(new Variable(assignment));
 
                     }

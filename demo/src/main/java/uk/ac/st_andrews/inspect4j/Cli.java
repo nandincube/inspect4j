@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -23,19 +22,26 @@ import picocli.CommandLine.Option;
 
 public class Cli {
 
-    @Option(names = { "-i","--input_path" }, type = String.class, required = true, description = "input path of the file or directory to inspect.")
+    @Option(names = { "-i",
+            "--input_path" }, type = String.class, required = true, description = "input path of the file or directory to inspect.")
     private String path;
-    @Option(names = { "-o","--output_path" }, type = String.class, defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
+    @Option(names = { "-o",
+            "--output_path" }, type = String.class, defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
     private String outputDir;
     private static final String OUTPUTDIR_PATH = "OutputDir";
     public static String fileSeperator = FileSystems.getDefault().getSeparator();
+
     @Option(names = { "--help" }, description = "Show this message and exit.")
 
     public static void main(String[] args) throws Exception {
-        
-        if (args.length > 0) {  
-            String out = args.length == 1?  OUTPUTDIR_PATH : args[1];
-            Cli c = new Cli(args[0], out);  // if more than 2 args are provided the additional args are ignored
+        // Cli c = new Cli("C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 -
+        // Dissertation\\Dissertation\\inspect4j\\demo\\src\\test\\java\\test_files\\debugging",
+        // OUTPUTDIR_PATH );
+        // c.analyse();
+
+        if (args.length > 0) {
+            String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
+            Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
             c.analyse();
         } else {
             System.out.println("Usage: java -jar demo" + fileSeperator + "target" + fileSeperator
@@ -53,7 +59,7 @@ public class Cli {
         this.path = path;
         this.outputDir = outputDir;
     }
- 
+
     /**
      * 
      */
@@ -65,7 +71,7 @@ public class Cli {
             } else {
                 analyseFile(path, outputDir);
             }
-            
+
             System.out.println("Analysis completed! ");
         } else {
             System.out.println("Could not find source file/directory!");
@@ -122,14 +128,14 @@ public class Cli {
     public void analyseFile(String filePath, String outDir) {
 
         if (filePath.length() > 0 && filePath != null) {
-            if(FilenameUtils.getExtension(filePath).equals("java")){   
-                AST ast = new AST(filePath);
+            if (FilenameUtils.getExtension(filePath).equals("java")) {
+                AST ast = new AST(filePath, path);
                 ast.extractMetadata();
                 ast.writeToJson(filePath, outDir);
                 System.out.println("Data Extracted for file: " + filePath + "\n");
-           }else{
+            } else {
                 System.out.println("File provided is not a java file");
-           }
+            }
         }
     }
 

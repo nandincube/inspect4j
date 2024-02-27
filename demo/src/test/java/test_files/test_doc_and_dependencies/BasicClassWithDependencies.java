@@ -1,5 +1,9 @@
+package test_files.test_doc_and_dependencies;
 
-public class BasicClassWithMultipleMethods {
+import java.util.List;
+import java.security.interfaces.DSAKey;
+
+public class BasicClassWithDependencies {
 
     private String catName;
     public static void main( String[] args )
@@ -7,18 +11,10 @@ public class BasicClassWithMultipleMethods {
         System.out.println( "Hello World!" );
     }
 
-    public BasicClassWithMultipleMethods(String catName ){
+    public BasicClassWithDependencies(String catName ){
         this.catName = catName;
     }
-    
-    public String cat(String name, int age, String breed, List<String> list){
-        System.out.println("Cat name:"+name);
-        System.out.println("Cat age:"+age);
-        System.out.println("Cat bree:"+breed);
 
-        return "abdbf";
-        
-    }
 
     public static String bat(String name, int age, String breed){
         System.out.println("bat name:"+name);
