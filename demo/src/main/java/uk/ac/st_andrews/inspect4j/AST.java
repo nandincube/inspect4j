@@ -177,7 +177,10 @@ public class AST {
     public void writeToJson(String path, String directory) {
         fileInfo = new FileInfo(path, classCollection, interfaceCollection, main, dependencyCollection);
         JSONWriterGson json = new JSONWriterGson(fileInfo);
-        json.write(directory);
+        String jsonFName = json.write(directory);
+        System.out.println(jsonFName);
+        JSONToHTML html = new JSONToHTML(jsonFName);
+
     }
 
     /**

@@ -27,14 +27,14 @@ public class JSONWriterGson {
         this.fileInfo = fileInfo;
     }
 
-    public void write(String directory) {
+    public String write(String directory) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         addCustomSerialisers(gsonBuilder);
 
         Gson gson = gsonBuilder.create();
         String fileInfoAsJson = gson.toJson(fileInfo);
         String fileName = fileInfo.getFileNameBase() + ".json";
-
+        String jsonFilePath = null;
         try {
 
             String jsonDirPath = directory + FILE_SEPERATOR + "json_files"; // linux specific path syntax
@@ -42,11 +42,11 @@ public class JSONWriterGson {
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
                     System.out.println("Could not create output directories!");
-                    return;
+                    return jsonFilePath;
                 }
             }
 
-            String jsonFilePath = dir.getAbsolutePath() + FILE_SEPERATOR + fileName;
+            jsonFilePath = dir.getAbsolutePath() + FILE_SEPERATOR + fileName;
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
             writer.append(fileInfoAsJson);
@@ -54,6 +54,7 @@ public class JSONWriterGson {
         } catch (IOException e) {
             System.out.println("Could not write to json!");
         }
+        return jsonFilePath;
 
     }
 

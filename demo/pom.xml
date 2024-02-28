@@ -60,6 +60,11 @@
       <version>2.10.1</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.python</groupId>
+      <artifactId>jython-slim</artifactId>
+      <version>2.7.3</version>
+    </dependency>
   </dependencies>
 
   
@@ -139,6 +144,7 @@
             </programs>
           </configuration>
         </plugin>
+  
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
