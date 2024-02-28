@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -85,13 +87,39 @@ public class VariableCollection {
                 if (assignment.getTarget().isNameExpr() ||
                         assignment.getTarget().isFieldAccessExpr()) { // is the thing being assigned a variable or field
                     if (assignment.getValue().isMethodCallExpr()) {
-                        
                         collection.add(new Variable(assignment));
-
                     }
-
                 }
             }
+
+            List<VariableDeclarationExpr> vds = md.findAll(VariableDeclarationExpr.class);
+            
+            vds.stream().forEach(vd -> {
+                vd.getVariables().stream().forEach(a -> {
+                    if (a.getInitializer().isPresent()) {
+                        collection.add(new Variable(a, new ParentEntity<MethodDeclaration>(md, EntityType.METHOD),
+                                a.getInitializer().get()));
+                    }
+                });
+            });
+        }
+
+        @Override
+        public void visit(ClassOrInterfaceDeclaration cd, List<Variable> collection) {
+            super.visit(cd, collection);
+            cd.getFields().stream().forEach(x -> {
+                x.getVariables().stream().forEach(a -> {
+                    if (a.getInitializer().isPresent()) {
+                        ParentEntity<ClassOrInterfaceDeclaration> par;
+                        if (cd.isInterface()) {
+                            par = new ParentEntity<ClassOrInterfaceDeclaration>(cd, EntityType.INTERFACE);
+                        } else {
+                            par = new ParentEntity<ClassOrInterfaceDeclaration>(cd, EntityType.CLASS);
+                        }
+                        collection.add(new Variable(a, par, a.getInitializer().get()));
+                    }
+                });
+            });
         }
 
     }

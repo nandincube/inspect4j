@@ -127,6 +127,7 @@ public class ClassCollection {
         @Override
         public void visit(ClassOrInterfaceDeclaration cd, List<Class> collection) {
             super.visit(cd, collection);
+          
             if (!cd.isInterface()) {
                 collection.add(new Class(cd));
             }

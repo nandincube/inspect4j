@@ -30,7 +30,7 @@ public class Class {
     private List<Lambda> lambdas;
     private ParentEntity<?> parent;//!
     private ClassOrInterfaceDeclaration declaration; //!
-    private List<Variable> storedVarCalls; 
+    private List<Variable> storedVarCalls; //!
     private String javaDoc; //!
 
     /**
@@ -57,6 +57,7 @@ public class Class {
         this.javaDoc = getJavaDoc(classDecl);
         this.parent = findParent(classDecl);
 
+        this.storedVarCalls = new ArrayList<Variable>();
         this.methods = new ArrayList<Method>();
         this.classes = new ArrayList<Class>();
         this.interfaces = new ArrayList<Interface>();

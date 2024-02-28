@@ -203,6 +203,9 @@ public class JSONWriterGson {
                 lineNumbers.addProperty("max_lineno", src.getLineMax());
                 jsonDetails.add("min_max_lineno", lineNumbers);
 
+                JsonObject jsonVariables = new JsonObject();
+                src.getStoredVarCalls().stream().forEach(x -> jsonVariables.addProperty(x.getName(), x.getMethodCalled()));
+                jsonDetails.add("store_vars_calls", jsonVariables);
                 jsonDetails.add("methods", methodsJsonArray);
                 jsonDetails.add("nested_interfaces", interfacesJsonArray);
                 jsonDetails.add("inner_classes", innerClassJsonArray);

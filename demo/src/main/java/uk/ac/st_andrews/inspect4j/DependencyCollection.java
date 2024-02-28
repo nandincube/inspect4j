@@ -174,8 +174,8 @@ public class DependencyCollection {
     }
 
 
-
-
+// "C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\test\java\test_files\test_doc_and_dependencies\test_files\test_basic\BasicClassWithMultipleMethods.java"
+//C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\test\java\test_files\test_doc_and_dependencies\BasicClassWithDependenciesAsterisk.java
     //used for class/interface that is directly refered to as in import (i.e. not .*)
     public String findOrigin(String packageName , String importName, String path2){
         String absPackagePath = getPackageAbsolutePath(packageName, path2);      
