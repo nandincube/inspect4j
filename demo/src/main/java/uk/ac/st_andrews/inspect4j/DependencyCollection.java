@@ -122,10 +122,11 @@ public class DependencyCollection {
             packageName = getPackageName(imp);
                   
             if(!imp.isStatic()){
-                // boolean addedInternal = addDependency(packageName, collection);
-                // if(!addedInternal){
-                //     collection.add(new Dependency(packageName, importName, "external",  "class/interface"));
-                // }
+                String parentPath = (new File(repositoryPath)).getAbsolutePath();
+                boolean addedInternal = addDependency(parentPath, packageName, importName, collection);
+                if(!addedInternal){
+                     collection.add(new Dependency(packageName, importName, "external",  "class/interface"));
+                 }
             }else{
                 boolean addedInternal = addStaticDependencies(repositoryPath, packageName, collection,false, importName);
                 if(!addedInternal){
@@ -178,34 +179,53 @@ public class DependencyCollection {
      * 
      * @param packagePath
      */
-    public boolean addDependency(String parentPath, String classIntf, List<Dependency> collection, boolean isAst, String impName) {
+    public boolean addDependency(String parentPath, String packageName, String importName, List<Dependency> collection) {
 
-        File file = new File(path);
-        File filePackage = file.getParentFile();
+        File pkg = new File(parentPath + fileSeperator + packageName);
+        
+        if (pkg.exists()) {
+            File file = new File(pkg.getAbsolutePath()+fileSeperator+importName+".java");
+            if(file.exists()){
+                ArrayList<Class> classes = searchFileForClasses(file.getAbsolutePath());
+                for(Class c: classes){
+                    if(c.getName().equals(importName)){
+                        collection.add(new Dependency(packageName, importName, "internal",  "class"));
+                        return true;
+                    } 
+                }
 
-        //File file = new File(parentPath + fileSeperator + classIntf);
-        if (file.exists()) {
-           
-            return true;
-        }else{
-            Path dirObj = Paths.get(parentPath);
-            List<File> directories = new ArrayList<>();
-            try {
-                directories = Files.list(dirObj)
-                        .map(Path::toFile)
-                        .filter(File::isDirectory)
-                        .collect(Collectors.toList());
-
-            } catch (IOException e) {
-                System.out.println("Could not get directories! :" + e);
-                System.exit(0);
-            }
-            if (directories.size() > 0) {
-                for (int i = 0; i < directories.size(); i++) {
-                    boolean found = addStaticDependencies(directories.get(i).getAbsolutePath(), classIntf, collection, isAst, impName);
-                    if (found) {return true;}
+                ArrayList<Interface> intfs = searchFileForInterfaces(file.getAbsolutePath());
+                for(Interface i: intfs){
+                    if(i.getName().equals(importName)){
+                        collection.add(new Dependency(packageName, importName, "internal",  "interface"));
+                        return true;
+                    }
+                    
                 }
             }
+            
+        }
+        return continueDependencySearch(parentPath, packageName, importName, collection);
+    }
+
+    public boolean continueDependencySearch(String parentPath, String packageName, String importName, List<Dependency> collection){
+        Path dirObj = Paths.get(parentPath);
+        List<File> directories = new ArrayList<>();
+        try {
+            directories = Files.list(dirObj)
+                    .map(Path::toFile)
+                    .filter(File::isDirectory)
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            System.out.println("Could not get directories! :" + e);
+            System.exit(0);
+        }
+        if (directories.size() > 0) {
+            for (int i = 0; i < directories.size(); i++) {
+                boolean found = addDependency(directories.get(i).getAbsolutePath(), packageName, importName,collection);
+                if (found) {return true;}
+            } 
         }
         return false;
     }
