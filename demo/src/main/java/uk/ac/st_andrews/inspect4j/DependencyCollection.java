@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitor;
@@ -22,7 +24,7 @@ public class DependencyCollection {
     private static String repositoryPath;
     private static String fileSeperator = FileSystems.getDefault().getSeparator();
 
-    public DependencyCollection( CompilationUnit ast, String path, String repositoryPath) {
+    public DependencyCollection(CompilationUnit ast, String path, String repositoryPath) {
         this.dependencies = new ArrayList<Dependency>();
         this.ast = ast;
         this.path = path;
@@ -85,10 +87,10 @@ public class DependencyCollection {
         this.ast = ast;
     }
 
-     /**
-     * 
-     */
-    public void printMetadata(){
+    /**
+    * 
+    */
+    public void printMetadata() {
         dependencies.forEach(x -> System.out.println(x.toString()));
 
     }
@@ -96,280 +98,306 @@ public class DependencyCollection {
     /**
      * 
      */
-    public void extractDependenciesFromAST(){
+    public void extractDependenciesFromAST() {
         VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
         depDeclCollector.visit(ast, dependencies);
     }
-    
+
     /**
      * 
      */
     private class ImportDeclarationCollector extends VoidVisitorAdapter<List<Dependency>> {
-            @Override
-            public void visit(ImportDeclaration importDecl, List<Dependency> collection) { 
-                super.visit(importDecl, collection);
-                extractDependencyInfo(importDecl, collection);
-            }
+        @Override
+        public void visit(ImportDeclaration importDecl, List<Dependency> collection) {
+            super.visit(importDecl, collection);
+            extractDependencyInfo(importDecl, collection);
+        }
     }
 
+    public void extractDependencyInfo(ImportDeclaration imp, List<Dependency> collection) {
+        String packageName, importName;
 
-    /**
-     * 
-     * @param imp
-     * @param collection
-     */
-    public void extractDependencyInfo(ImportDeclaration imp, List<Dependency> collection){
-        String fromPackageName, importName,importType, typeElement;
-        fromPackageName =  getParentPackageName(imp);
-
-        if (imp.isAsterisk()){
-            boolean foundPackage = searchPackage(fromPackageName, collection,path);
-            if(!foundPackage){
-                importName = "";
-                importType = "external";
-                typeElement =  "unknown";
-                collection.add(new Dependency(fromPackageName, importName, importType, typeElement));
-            }
-           
-        }else{
+        if (!imp.isAsterisk()) {
             importName = imp.getName().getIdentifier();
-            importType = importOrigin(fromPackageName,importName,path);
-            typeElement =  importTypeElement(importType, imp, fromPackageName, importName,path);
-            collection.add(new Dependency(fromPackageName, importName, importType, typeElement));
-        }
-
-    }
-
-    //Adaptation of code from inspect4py: REWRITE THISSSS!!
-
-  
-    //same as module = node.module
-    public String getParentPackageName(ImportDeclaration imp){
-        return imp.getName().getQualifier().get().asString();
-    }
-
-    public String getPackageAbsolutePath(String packageName, String path2){
-         if((new File(path2)).getParentFile() != null) {
-            String repoPath = (new File(path2)).getParentFile().getAbsolutePath();
-            String packageRelativePath =  packageName.replace(".",fileSeperator);
-            return repoPath + fileSeperator + packageRelativePath;
-          }else{
-              return null;
-         }
-       
-    }
-
-    public String getImportAbsolutePath(String absPackagePath, String importName){
-        return absPackagePath+ fileSeperator + importName +".java";
-
-    }
-
-    public String importOrigin(String packageName , String importName,String path2){
-
-        if(findOrigin(packageName , importName,path2).equals("internal")){ //check if import is within same package
-            return "internal";
-        }else{ //check if important is with the repository
-            return findOrigin(packageName.substring(packageName.indexOf(".")+1) , importName, repositoryPath);
-        }
-    }
-
-
-// "C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\test\java\test_files\test_doc_and_dependencies\test_files\test_basic\BasicClassWithMultipleMethods.java"
-//C:\Users\nandi\OneDrive\Documents\4th year\CS4099 - Dissertation\Dissertation\inspect4j\demo\src\test\java\test_files\test_doc_and_dependencies\BasicClassWithDependenciesAsterisk.java
-    //used for class/interface that is directly refered to as in import (i.e. not .*)
-    public String findOrigin(String packageName , String importName, String path2){
-        String absPackagePath = getPackageAbsolutePath(packageName, path2);      
-        if(absPackagePath == null) {
-            System.out.println("Could not extract parent package/directory for :"+packageName);
-            return null;
-        }
-        String fullImportPath = getImportAbsolutePath(absPackagePath,importName);
- 
-        if(fullImportPath == null) {
-            System.out.println("Could not extract import path for :"+packageName);
-            return null;
-        }
-
-        File importFile = new File(fullImportPath);
-
-        if (importFile.exists()){
-            return "internal";
-        }else if (packageName.length() > 0 ){
-            //should be able to deal with static imports/ importing of static members
-            String p = absPackagePath + ".java";
-            if ((new File(p)).exists()){
-                return "internal";
+            packageName = getPackageName(imp);
+                  
+            if(!imp.isStatic()){
+                // boolean addedInternal = addDependency(packageName, collection);
+                // if(!addedInternal){
+                //     collection.add(new Dependency(packageName, importName, "external",  "class/interface"));
+                // }
             }else{
-                return "external";
+                boolean addedInternal = addStaticDependencies(repositoryPath, packageName, collection,false, importName);
+                if(!addedInternal){
+                    collection.add(new Dependency(packageName, importName, "external",  "static member"));
+                }
             }
-        }else{
-            return "external";
-        }
+
+        } else {
+            importName = "*";
+            packageName = getPackageName(imp);
+            
+            if(!imp.isStatic()){
+                boolean addedInternal = addDependencies(packageName, collection);
+                if(!addedInternal){
+                    collection.add(new Dependency(packageName, importName, "external",  "classes/interfaces"));
+                }
+            }else{
+                boolean addedInternal = addStaticDependencies(repositoryPath, packageName, collection,true,importName);
+                if(!addedInternal){
+                    collection.add(new Dependency(packageName, importName, "external",  "static members"));
+                }
+            }
+        }    
+
     }
 
+
+
+    // Adaptation of code from inspect4py: REWRITE THISSSS!!
+
+    // same as module = node.module
+    public String getPackageName(ImportDeclaration imp) {
+        if(!imp.isAsterisk()){
+            return imp.getName().getQualifier().get().asString();
+        }else{
+            
+            String id = imp.getName().getIdentifier();
+            if (imp.getName().getQualifier().isPresent()) {
+                String qual = imp.getName().getQualifier().get().asString();
+                return qual + fileSeperator + id;
+            } else {
+                return id;
+            }
+        }
+        
+    }
 
     
-    public String importTypeElement(String importType, ImportDeclaration imp, String packageName, String importName, String path2){
-        String typeElement = findTypeElement(importType, imp, packageName, importName, path2);
-        if( typeElement != null){ //check if import is within same package
-            return typeElement;
-        }else{ //check if important is with the repository
-            return findTypeElement(importType, imp, packageName.substring(packageName.indexOf(".")+1) , importName, repositoryPath);
-        }
-    }
-
     /**
      * 
-     * @param importType
-     * @param imp
-     * @param packageName
-     * @param importName
-     * @return
+     * @param packagePath
      */
-    public String findTypeElement(String importType, ImportDeclaration imp, String packageName, String importName, String path2){
-        // if internal - try to match import name with non private classes or interfaces
-        //if internal - check import declation is static or is importing static member ()
+    public boolean addDependency(String parentPath, String classIntf, List<Dependency> collection, boolean isAst, String impName) {
 
-        if(importType.equals("internal")){
-            if(imp.isStatic()) return "static member";
+        File file = new File(path);
+        File filePackage = file.getParentFile();
 
-            String fullPackagePath = getPackageAbsolutePath(packageName, path2);
-
-            if(fullPackagePath == null) {
-                System.out.println("Could not extract package path for :"+path2);
-                return null;
-            }
-    
-            File packageDir = new File(fullPackagePath);
-            if (packageDir.exists()){
-                Path packageObj =  Paths.get(fullPackagePath);
-            
-                List<File> files = new ArrayList<File>();
-                try {
-                    files = Files.list(packageObj)
-                        .map(Path::toFile)
-                        .filter(File::isFile)
-                        .filter(f -> f.toString().endsWith(".java"))
-                        .collect(Collectors.toList());
-                } catch (IOException e) {
-                    System.out.println("Unable to retrieve files from package "+packageName);
-                }
-    
-                if(files.size() > 0){
-                   for(File f: files ){
-                        String filePath = f.getAbsolutePath();
-                        ArrayList<Class> classes = searchFileForClasses(filePath);
-                        if(classes != null){
-                           for(Class cl: classes){
-                                if(cl.getName().equals(importName)) return "class";
-                           }
-                        }
-                    
-                        ArrayList<Interface> intfs = searchFileForInterfaces(filePath);
-                        if(intfs != null){
-                            for(Interface intf: intfs){
-                                if(intf.getName().equals(importName)) return "interface";
-                           }
-                        }
-                    
-                   }
-                }
-                
-            }
-
-        }else{
-            if(imp.isStatic()) return "static member";
-            return "unknown";
-        }
-
-        return null;
-
-    }
-
-
-
-
-     /**
-      * 
-      * @param packagePath
-      */
-    public boolean searchPackage(String fromPackageName, List<Dependency> collection, String path2){
-        try{
-            String fromPackagePath =  getPackageAbsolutePath(fromPackageName, path2);
-            if(fromPackagePath == null) return false;
-            Path packageObj =  Paths.get(fromPackagePath);
-            
-            List<File> files = Files.list(packageObj)
-                .map(Path::toFile)
-                .filter(File::isFile)
-                .collect(Collectors.toList());
-
-            if(files.size() > 0){
-                files.forEach(x-> {
-                    String filePath = x.getAbsolutePath();
-                    ArrayList<Class> classes = searchFileForClasses(filePath);
-                    if(classes != null){
-                        classes.forEach(a -> {
-                            collection.add(new Dependency(fromPackageName, a.getName(), "internal", "class"));
-                        });
-                    }
-                
-                    ArrayList<Interface> intfs = searchFileForInterfaces(filePath);
-                    if(intfs != null){
-                        intfs.forEach(b -> {
-                            collection.add(new Dependency(fromPackageName, b.getName(), "internal", "interface"));
-                        });
-                    }
-                });
-            }else{
-                return false;
-            }
-
+        //File file = new File(parentPath + fileSeperator + classIntf);
+        if (file.exists()) {
+           
             return true;
-        }catch(IOException i){
-            System.out.println("Couldn't analyse this package! "+ i);
-            
+        }else{
+            Path dirObj = Paths.get(parentPath);
+            List<File> directories = new ArrayList<>();
+            try {
+                directories = Files.list(dirObj)
+                        .map(Path::toFile)
+                        .filter(File::isDirectory)
+                        .collect(Collectors.toList());
+
+            } catch (IOException e) {
+                System.out.println("Could not get directories! :" + e);
+                System.exit(0);
+            }
+            if (directories.size() > 0) {
+                for (int i = 0; i < directories.size(); i++) {
+                    boolean found = addStaticDependencies(directories.get(i).getAbsolutePath(), classIntf, collection, isAst, impName);
+                    if (found) {return true;}
+                }
+            }
         }
         return false;
     }
 
 
-   /**
-    * 
-    * @param filePath
-    */
-    public  ArrayList<Class> searchFileForClasses(String filePath){
-        if(filePath.length() > 0  && filePath != null){
-            AST ast = new AST(filePath,repositoryPath);
+    /**
+     * 
+     * @param packagePath
+     */
+    public boolean addDependencies(String packageName, List<Dependency> collection) {
+
+        File file = new File(path);
+        File filePackage = file.getParentFile();
+
+        if (inSamePackage(filePackage, packageName)) {
+            Path packageObj = filePackage.toPath();
+            List<File> files = getFiles(packageObj);
+            addImportedClasses(files, packageName, collection);
+            addImportedInterfaces(files, packageName, collection);
+        } else {
+            String parPath = (new File(repositoryPath)).getAbsolutePath();
+            boolean found = addDependencies(parPath, packageName, collection);
+            return found;
+        }
+        return false;
+    }
+
+
+    private boolean addDependencies(String parentPath, String packageName, List<Dependency> collection) {
+
+        File pkg = new File(parentPath + fileSeperator + packageName);
+        if (pkg.exists()) {
+            Path packageObj = pkg.toPath();
+            List<File> files = getFiles(packageObj);
+            addImportedClasses(files, packageName, collection);
+            addImportedInterfaces(files, packageName, collection);
+            return true;
+        } else {
+            Path dirObj = Paths.get(parentPath);
+            List<File> directories = new ArrayList<>();
+            try {
+                directories = Files.list(dirObj)
+                        .map(Path::toFile)
+                        .filter(File::isDirectory)
+                        .collect(Collectors.toList());
+
+            } catch (IOException e) {
+                System.out.println("Could not get directories! :" + e);
+                System.exit(0);
+            }
+            if (directories.size() > 0) {
+                for (int i = 0; i < directories.size(); i++) {
+                    boolean found = addDependencies(directories.get(i).getAbsolutePath(), packageName, collection);
+                    if (found) {return true;}
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean inSamePackage(File filePackage, String packageName) {
+        String fileParentPackage = filePackage.getParentFile().getAbsolutePath();
+        String importPackageFullPath = fileParentPackage + fileSeperator + packageName;
+        String filePackageAsString = filePackage.getAbsolutePath();
+        return filePackageAsString.equals(importPackageFullPath);
+    }
+
+ 
+
+    private boolean addStaticDependencies(String parentPath, String classIntf, List<Dependency> collection, boolean isAst, String impName){
+        if(!classIntf.endsWith(".java")) classIntf = classIntf+".java";
+
+        File file = new File(parentPath + fileSeperator + classIntf);
+        if (file.exists()) {
+            if(isAst){
+                collection.add(new Dependency(classIntf, impName, "internal",  "static members"));
+            }else{
+                collection.add(new Dependency(classIntf, impName, "internal",  "static member"));
+            }
+           
+            return true;
+        }else{
+            Path dirObj = Paths.get(parentPath);
+            List<File> directories = new ArrayList<>();
+            try {
+                directories = Files.list(dirObj)
+                        .map(Path::toFile)
+                        .filter(File::isDirectory)
+                        .collect(Collectors.toList());
+
+            } catch (IOException e) {
+                System.out.println("Could not get directories! :" + e);
+                System.exit(0);
+            }
+            if (directories.size() > 0) {
+                for (int i = 0; i < directories.size(); i++) {
+                    boolean found = addStaticDependencies(directories.get(i).getAbsolutePath(), classIntf, collection, isAst, impName);
+                    if (found) {return true;}
+                }
+            }
+        }
+        return false;
+    }
+
+    private void addImportedClasses(List<File> files, String packageName, List<Dependency> collection) {
+        String fileName = path.substring(path.lastIndexOf(fileSeperator)+1);
+        if (files.size() > 0) {
+            files.forEach(f -> {
+                if (!f.getName().equals(fileName)) {
+                    String filePath = f.getAbsolutePath();
+                    ArrayList<Class> classes = searchFileForClasses(filePath);
+                    if (classes != null) {
+                        classes.forEach(
+                                a -> collection.add(new Dependency(packageName, a.getName(), "internal", "class")));
+                    }
+                }
+
+            });
+        }
+    }
+
+    private void addImportedInterfaces(List<File> files, String packageName, List<Dependency> collection) {
+
+        String fileName = path.substring(path.lastIndexOf(fileSeperator)).replace(fileSeperator, "");
+        if (files.size() > 0) {
+            files.forEach(f -> {
+                if (!f.getName().equals(fileName)) {
+                    String filePath = f.getAbsolutePath();
+                    ArrayList<Interface> intfs = searchFileForInterfaces(filePath);
+                    if (intfs != null) {
+                        intfs.forEach(
+                                b -> collection.add(new Dependency(packageName, b.getName(), "internal", "interface")));
+                    }
+
+                }
+            });
+        }
+
+    }
+
+    private List<File> getFiles(Path packageObj) {
+        List<File> files = null;
+        try {
+            files = Files.list(packageObj)
+                    .map(Path::toFile)
+                    .filter(File::isFile)
+                    .filter(x -> FilenameUtils.getExtension(x.getName()).equals("java"))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            System.out.println("Could not get files! :" + e);
+            System.exit(0);
+        }
+        return files;
+
+    }
+
+    /**
+     * 
+     * @param filePath
+     */
+    public ArrayList<Class> searchFileForClasses(String filePath) {
+        if (filePath.length() > 0 && filePath != null) {
+            AST ast = new AST(filePath, repositoryPath);
             ast.extractMetadata();
             return (ArrayList<Class>) ast.getClassCollection()
-                                            .getClasses()
-                                            .stream()
-                                            .filter(x -> x.getClassCategory() == ClassInterfaceCategory.STANDARD)
-                                            .filter(x -> x.getAccessModifer() != AccessModifierType.PRIVATE)
-                                            .collect(Collectors.toList());
-        } 
+                    .getClasses()
+                    .stream()
+                    .filter(x -> x.getClassCategory() == ClassInterfaceCategory.STANDARD)
+                    .filter(x -> x.getAccessModifer() != AccessModifierType.PRIVATE)
+                    .collect(Collectors.toList());
+        }
 
         return null;
-    }  
+    }
 
-     /**
-      * 
-      * @param filePath
-      * @return
-      */
-    public ArrayList<Interface> searchFileForInterfaces(String filePath){
-        if(filePath.length() > 0  && filePath != null){
+    /**
+     * 
+     * @param filePath
+     * @return
+     */
+    public ArrayList<Interface> searchFileForInterfaces(String filePath) {
+        if (filePath.length() > 0 && filePath != null) {
             AST ast = new AST(filePath, repositoryPath);
             ast.extractMetadata();
             return (ArrayList<Interface>) ast.getInterfaceCollection()
-                                        .getInterfaces()
-                                            .stream()
-                                            .filter(x -> x.getInterfaceCategory() == ClassInterfaceCategory.STANDARD)
-                                            .filter(x -> x.getAccessModifer() != AccessModifierType.PRIVATE)
-                                            .collect(Collectors.toList());
-        } 
+                    .getInterfaces()
+                    .stream()
+                    .filter(x -> x.getInterfaceCategory() == ClassInterfaceCategory.STANDARD)
+                    .filter(x -> x.getAccessModifer() != AccessModifierType.PRIVATE)
+                    .collect(Collectors.toList());
+        }
         return null;
-    } 
-    
+    }
+
 }

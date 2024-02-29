@@ -34,7 +34,7 @@ public class Cli {
     @Option(names = { "--help" }, description = "Show this message and exit.")
 
     public static void main(String[] args) throws Exception {
-        Cli c = new Cli("C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\test\\java\\test_files\\test_basic",  OUTPUTDIR_PATH );
+         Cli c = new Cli("C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\repo",  OUTPUTDIR_PATH );
         c.analyse();
 
         // if (args.length > 0) {
