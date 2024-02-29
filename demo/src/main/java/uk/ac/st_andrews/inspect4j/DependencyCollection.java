@@ -69,6 +69,7 @@ public class DependencyCollection {
      */
     public void setDependency(ArrayList<Dependency> dependencies) {
         this.dependencies = dependencies;
+        
     }
 
     /**
