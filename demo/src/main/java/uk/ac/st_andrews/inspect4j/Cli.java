@@ -34,20 +34,15 @@ public class Cli {
     @Option(names = { "--help" }, description = "Show this message and exit.")
 
     public static void main(String[] args) throws Exception {
-        // Cli c = new Cli("\"C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\mvnRepo\"",  OUTPUTDIR_PATH );
-         
-        //c.analyse();
-        Requirements r = new Requirements("C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\mvnRepo", OUTPUTDIR_PATH);
-        
-        System.out.println("Requirements written..");
-        // if (args.length > 0) {
-        //     String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
-        //     Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
-        //     c.analyse();
-        // } else {
-        //     System.out.println("Usage: java -jar demo" + fileSeperator + "target" + fileSeperator
-        //             + "inspect4j-1.0-jar-with-dependencies.jar");
-        // }
+     
+        if (args.length > 0) {
+            String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
+            Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
+            c.analyse();
+        } else {
+            System.out.println("Usage: java -jar demo" + fileSeperator + "target" + fileSeperator
+                    + "inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY>");
+        }
 
     }
 
