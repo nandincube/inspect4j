@@ -1,250 +1,378 @@
 package junit;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
-
+import test_files.test_basic.BasicInterfaceWithMethods;
 import uk.ac.st_andrews.inspect4j.AST;
 
 /**
  * Unit test for simple App.
  */
- public class BasicTests{
-    
-//     private static final String SEP = FileSystems.getDefault().getSeparator();
-//     private static final String OUTPUTDIR_PATH = "OutputDir";
+public class BasicTests {
+        private static final String SEP = FileSystems.getDefault().getSeparator();
+        private static final String OUTPUTDIR_PATH = "OutputDir";
 
-//     private JsonObject jsonFileToObject(String path){
+        private void analyse(String path) {
+                String f = (new File(path)).getAbsolutePath();
+                if (path.endsWith(".java")) {
+                        path = (new File(f)).getParentFile().getAbsolutePath();
+                }
+                AST ast = new AST(f, path);
+                ast.extractMetadata();
+                path = f;
+                ast.writeToJson(path, (new File(f)).getParentFile().getAbsolutePath() + SEP + OUTPUTDIR_PATH);
+        }
 
+        private JSONObject readJson(String outputFile) {
 
-//         JsonObject obj = new JsonObject();
-//         Gson gson = new Gson();
-        
-//         try {
-//             JsonReader reader = new JsonReader(new FileReader(path));
-//             return gson.fromJson(reader, JsonObject.class);
-//         } catch (FileNotFoundException e) {
-//            System.out.println("File not found");
-//         } catch (IOException i){
-//             System.out.println("Could not read in json file: "+i);
-//         }
-//         return null;
+                String json = "";
+                try {
+                        File f = new File(outputFile);
+                        if (f.exists())
+                                System.out.println("File exists");
+                        json = new String(Files.readAllBytes(Paths.get(outputFile)));
+                } catch (IOException e) {
+                        System.out.println("Could not read file: " + e);
+                }
+                return new JSONObject(json);
 
-//    }
+        }
 
-//     private void analyse(String path){
-//         AST ast = new AST(path,path);
-//         ast.extractMetadata();
-//         ast.writeToJson(path, OUTPUTDIR_PATH);
-//     }
+        @Test
+        public void TestBasicClassWithMain() {
 
-//     private String addQuotations(String str){
-//         return "\""+str+"\"";
-//     }
+                String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP + "test_basic" + SEP
+                                + "BasicClassWithMain.java";
+                String outputFile = OUTPUTDIR_PATH + SEP + "json_files" + SEP + "BasicClassWithMain.json";
 
-//     private void testClass(JsonObject cl, String am,String nam, String[] exts,String[] tps, String[] impls, int min, int max){
-//         assertEquals(cl.get("access_modifier").toString(), addQuotations(am));
-//         assertEquals(cl.get("non_access_modifier").toString(), addQuotations(nam));
+               // System.out.println("inputPath: " + inputPath);
+                //System.out.println("outPath: " + outputFile);
+                analyse(inputPath);
 
-//         JsonArray extend = cl.get("extend").getAsJsonArray();
-//         JsonArray impl = cl.get("implement").getAsJsonArray();
-//         JsonArray tParams = cl.get("type_params").getAsJsonArray();
-//         JsonObject lineRange = cl.get("min_max_lineno").getAsJsonObject();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("file", new JSONObject()
+                                .put("path",
+                                                "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\test\\java\\test_files\\test_basic\\BasicClassWithMain.java")
+                                .put("fileNameBase", "BasicClassWithMain")
+                                .put("extension", "java"));
+                jsonObject.put("dependencies", new JSONArray());
+                jsonObject.put("classes", new JSONObject()
+                                .put("BasicClassWithMain", new JSONObject()
+                                                .put("access_modifier", "public")
+                                                .put("non_access_modifier", "none")
+                                                .put("extend", new JSONArray())
+                                                .put("implement", new JSONArray())
+                                                .put("type_params", new JSONArray())
+                                                .put("min_max_lineno", new JSONObject()
+                                                                .put("min_lineno", 3)
+                                                                .put("max_lineno", 9))
+                                                .put("store_vars_calls", new JSONObject())
+                                                .put("methods", new JSONArray()
+                                                                .put(new JSONObject()
+                                                                                .put("main", new JSONObject()
+                                                                                                .put("access_modifier",
+                                                                                                                "public")
+                                                                                                .put("non_access_modifier",
+                                                                                                                "static")
+                                                                                                .put("args", new JSONArray()
+                                                                                                                .put("args"))
+                                                                                                .put("arg_types",
+                                                                                                                new JSONObject().put(
+                                                                                                                                "args",
+                                                                                                                                "String[]"))
+                                                                                                .put("return_type",
+                                                                                                                "void")
+                                                                                                .put("returns", new JSONArray())
+                                                                                                .put("min_max_lineno",
+                                                                                                                new JSONObject()
+                                                                                                                                .put("min_lineno",
+                                                                                                                                                4)
+                                                                                                                                .put("max_lineno",
+                                                                                                                                                7))
+                                                                                                .put("store_vars_calls",
+                                                                                                                new JSONObject())
+                                                                                                .put("lambdas", new JSONArray())
+                                                                                                .put("method_references",
+                                                                                                                new JSONArray())
+                                                                                                .put("local_classes",
+                                                                                                                new JSONArray()))))
+                                                .put("nested_interfaces", new JSONArray())
+                                                .put("inner_classes", new JSONArray())
+                                                .put("static_nested_classes", new JSONArray())));
+                jsonObject.put("interfaces", new JSONObject());
+                jsonObject.put("main_info", new JSONObject()
+                                .put("main_flag", true)
+                                .put("main_method", "println"));
 
-//         assertEquals(extend.size(), exts.length);
-//         for(int i = 0; i < exts.length; i++){
-//             assertEquals(addQuotations(exts[i]),extend.get(i).getAsString());
-//         }
+                if(jsonObject.similar(readJson(outputFile)))System.out.println("Similar");
+                assertEquals(readJson(outputFile).toString(), jsonObject.toString());
 
-//         assertEquals(impl.size(),impls.length);
-//         for(int i = 0; i < impls.length; i++){
-//             assertEquals(addQuotations(impls[i]),impl.get(i).getAsString());
-//         }
-//         assertEquals(tParams.size(), tps.length);
-//         for(int i = 0; i < tps.length; i++){
-//             assertEquals(addQuotations(tps[i]),tParams.get(i).getAsString());
-//         }
-//         assertEquals(min, lineRange.get("min_lineno").getAsInt());
-//         assertEquals(max, lineRange.get("max_lineno").getAsInt());
-//     }
+        }
 
-//     private void testDependencies(JsonObject dep, String pkg, String imp, String type, String typeEl){
-//         assertEquals(pkg,dep.get("from_package").getAsString());
-//         assertEquals(imp,dep.get("import").getAsString());
-//         assertEquals(type, dep.get("type").getAsString());
-//         assertEquals(typeEl, dep.get("type_element").getAsString());
-//     }
+        @Test
+        public void TestBasicClassWithOneMethod() {
 
-    
-//     private void testMethod(JsonObject m, String am,String nam, String[] argsArr, HashMap<String,String> argsType, String returnType, String[] returns, int min, int max){
-//         assertEquals(m.get("access_modifier").toString(), addQuotations(am));
-//         assertEquals(m.get("non_access_modifier").toString(), addQuotations(nam));
+                String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP + "test_basic" + SEP
+                                + "BasicClassWithOneMethod.java";
+                String outputFile = OUTPUTDIR_PATH + SEP + "json_files" + SEP + "BasicClassWithOneMethod.json";
+                analyse(inputPath);
 
-//         JsonArray args = m.get("args").getAsJsonArray();
-//         for(int i = 0; i < argsArr.length; i++){
-//             assertEquals(argsArr[i], args.get(i).getAsString());
-//         }
-//         JsonObject aTypes = m.get("arg_types").getAsJsonObject();
-//         for(Entry<String,JsonElement> at: aTypes.entrySet()){
-//             String k = at.getKey().replace("\"","");
-//             String v = at.getValue().getAsString().replace("\"","");
-//             assertTrue(argsType.containsKey(k));
-//             assertEquals(argsType.get(k),v );
-//         }
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("file", new JSONObject()
+                                .put("path", "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\test\\java\\test_files\\test_basic\\BasicClassWithOneMethod.java")
+                                .put("fileNameBase", "BasicClassWithOneMethod")
+                                .put("extension", "java"));
 
-//         assertEquals(returnType, m.get("return_type").getAsString());
+                JSONArray dependenciesArray = new JSONArray();
+                JSONObject dependencyObject = new JSONObject()
+                                .put("from_package", "java.util")
+                                .put("import", "List")
+                                .put("type", "external")
+                                .put("type_element", "class/interface");
+                dependenciesArray.put(dependencyObject);
+                jsonObject.put("dependencies", dependenciesArray);
 
-//         JsonArray rets = m.get("returns").getAsJsonArray();
-//         assertEquals(rets.size(), returns.length);
-//         for(int i = 0; i < returns.length; i++){
-//             assertEquals(addQuotations(returns[i]), rets.get(i).getAsString());
-//         }
-//         JsonObject lineRange = m.get("min_max_lineno").getAsJsonObject();
-//         assertEquals(min, lineRange.get("min_lineno").getAsInt());
-//         assertEquals(max,lineRange.get("max_lineno").getAsInt());
-//     }
+                JSONObject classesObject = new JSONObject();
+                JSONObject basicClassObject = new JSONObject()
+                                .put("access_modifier", "public")
+                                .put("non_access_modifier", "none")
+                                .put("extend", new JSONArray())
+                                .put("implement", new JSONArray())
+                                .put("type_params", new JSONArray())
+                                .put("min_max_lineno", new JSONObject()
+                                                .put("min_lineno", 5)
+                                                .put("max_lineno", 16))
+                                .put("store_vars_calls", new JSONObject())
+                                .put("methods", new JSONArray()
+                                                .put(new JSONObject()
+                                                                .put("cat", new JSONObject()
+                                                                                .put("access_modifier", "public")
+                                                                                .put("non_access_modifier", "none")
+                                                                                .put("args", new JSONArray()
+                                                                                                .put("name")
+                                                                                                .put("list")
+                                                                                                .put("age")
+                                                                                                .put("breed"))
+                                                                                .put("arg_types", new JSONObject()
+                                                                                                .put("name", "String")
+                                                                                                .put("list", "List<String>")
+                                                                                                .put("age", "int")
+                                                                                                .put("breed", "String"))
+                                                                                .put("return_type", "String")
+                                                                                .put("returns", new JSONArray()
+                                                                                                .put("\"abdbf\""))
+                                                                                .put("min_max_lineno", new JSONObject()
+                                                                                                .put("min_lineno", 8)
+                                                                                                .put("max_lineno", 15))
+                                                                                .put("store_vars_calls",
+                                                                                                new JSONObject())
+                                                                                .put("lambdas", new JSONArray())
+                                                                                .put("method_references",
+                                                                                                new JSONArray())
+                                                                                .put("local_classes",
+                                                                                                new JSONArray()))))
+                                .put("nested_interfaces", new JSONArray())
+                                .put("inner_classes", new JSONArray())
+                                .put("static_nested_classes", new JSONArray());
+                classesObject.put("BasicClassWithOneMethod", basicClassObject);
+                jsonObject.put("classes", classesObject);
 
-//     @Test
-//     public void TestBasicClassWithMain() {
-//         String inputPath = "src"+SEP+"test"+SEP+"java"+SEP+"test_files"+SEP+"test_basic"+SEP+"BasicClassWithMain.java";
-//         String outputFile = "OutputDir"+SEP+"json_files"+SEP+"BasicClassWithMain.json";
-//         analyse(inputPath);
-
-//         File input = new File(inputPath);
-
-//         JsonObject file = jsonFileToObject(outputFile);
-//         JsonObject fileInfo = file.get("file").getAsJsonObject();
-//         JsonObject classes = file.get("classes").getAsJsonObject();
-//         JsonArray dependencies = file.get("dependencies").getAsJsonArray();
-//         JsonObject intfs = file.get("interfaces").getAsJsonObject();
-//         JsonObject main = file.get("main_info").getAsJsonObject();
-
-//         assertEquals(addQuotations(input.getAbsolutePath()), fileInfo.get("path").toString().replace("\\\\","\\"));
-//         assertEquals(addQuotations("BasicClassWithMain"),fileInfo.get("fileNameBase").toString() );
-//         assertEquals( addQuotations("java"),fileInfo.get("extension").toString());
-
-//         assertTrue(dependencies.size() == 1);
-
-
-//         assertTrue(classes.size() == 1);
-//         assertTrue(classes.get("BasicClassWithMain") != null);
-
-//         JsonObject cl = classes.get("BasicClassWithMain").getAsJsonObject();
-//         String[] arr = new String[0];
-//         testClass(cl, "public","none", arr, arr, arr, 3, 9);
-
-//         JsonArray methods = cl.get("methods").getAsJsonArray();
-
-//         JsonObject mainMeth = methods.get(0).getAsJsonObject().get("main").getAsJsonObject();
-//         assertTrue(mainMeth != null);
-
-//         String[] args = new String[]{"args"};
-//         HashMap<String,String> map = new HashMap<String,String>();
-//         map.put("args", "String[]");
-        
-//         testMethod(mainMeth,"public", "static", args,map,  
-//         "void", arr, 4,7);
-
-//         assertTrue(intfs.isEmpty());
-
-//         assertTrue(main.get("main_flag").getAsBoolean() == true);
-//         assertEquals(addQuotations("println"),main.get("main_method").toString());
-
-//     }
-
-
-    /**
-     * Not finished need to check other methods in this file
-     */
-    //@Test
-    // public void TestBasicClassWithMultipleMethods() {
-    //     String inputPath = "src"+SEP+"test"+SEP+"java"+SEP+"test_files"+SEP+"test_basic"+SEP+"BasicClassWithMultipleMethods.java";
-    //     String outputFile = "OutputDir"+SEP+"json_files"+SEP+"BasicClassWithMultipleMethods.json";
-    //     analyse(inputPath);
-
-    //     File input = new File(inputPath);
-
-    //     JsonObject file = jsonFileToObject(outputFile);
-    //     JsonObject fileInfo = file.get("file").getAsJsonObject();
-    //     JsonObject classes = file.get("classes").getAsJsonObject();
-    //     JsonArray dependencies = file.get("dependencies").getAsJsonArray();
-    //     JsonObject intfs = file.get("interfaces").getAsJsonObject();
-    //     JsonObject main = file.get("main_info").getAsJsonObject();
-
-    //     assertEquals(addQuotations(input.getAbsolutePath()), fileInfo.get("path").toString().replace("\\\\","\\"));
-    //     assertEquals(addQuotations("BasicClassWithMultipleMethods"),fileInfo.get("fileNameBase").toString() );
-    //     assertEquals( addQuotations("java"),fileInfo.get("extension").toString());
-
-    //     assertTrue(dependencies.size() == 1);
-    //     testDependencies(dependencies.get(0).getAsJsonObject(),"java.util","List", "external","unknown");
-
-    //     assertTrue(classes.size() == 1);
-    //     assertTrue(classes.get("BasicClassWithMultipleMethods") != null);
-
-    //     JsonObject cl = classes.get("BasicClassWithMultipleMethods").getAsJsonObject();
-    //     String[] arr = new String[0];
-    //     testClass(cl, "public","none", arr, arr, arr, 5, 42);
-
-    //     JsonArray methods = cl.get("methods").getAsJsonArray();
-
-    //     JsonObject meth = methods.get(0).getAsJsonObject().get("main").getAsJsonObject();
-    //     assertTrue(meth != null);
-
-    //     String[] args = new String[]{"args"};
-    //     HashMap<String,String> map = new HashMap<String,String>();
-    //     map.put("args", "String[]");
-        
-    //     testMethod(meth,"public", "static", args,map,  
-    //     "void", arr, 8,11);
-
-        
-    //     meth = methods.get(1).getAsJsonObject().get("BasicClassWithMultipleMethods").getAsJsonObject();
-    //     assertTrue(meth != null);
-
-    //     args = new String[]{"catName"};
-    //     map = new HashMap<String,String>();
-    //     map.put("catName", "String");
-        
-    //     testMethod(meth,"public", "none", args,map,  
-    //     "void", arr, 13,15);
-
-    //     meth = methods.get(2).getAsJsonObject().get("cat").getAsJsonObject();
-    //     assertTrue(meth != null);
-
-    //     args = new String[]{"name",
-    //     "list",
-    //     "age",
-    //     "breed"};
-    //     map = new HashMap<String,String>();
-    //     map.put("name", "String");
-    //     map.put("list", "List\u003cString\u003e");
-    //     map.put("age", "int");
-    //     map.put( "breed", "String");
-        
-    //     testMethod(meth,"public", "none", args,map,  
-    //     "String", arr, 17,25);
+                JSONObject interfacesObject = new JSONObject();
+                jsonObject.put("interfaces", interfacesObject);
 
 
-    //     assertTrue(intfs.isEmpty());
+                if (new File(outputFile).exists())
+                        System.out.println("File exists");
+                if(jsonObject.similar(readJson(outputFile)))System.out.println("Similar");
+                assertEquals(readJson(outputFile).toString(), jsonObject.toString());
 
-    //     assertTrue(main.get("main_flag").getAsBoolean() == true);
-    //     assertEquals(addQuotations("println"),main.get("main_method").toString());
+        }
 
-    // }
+        @Test
+        public void TestBasicClassWithMultipleMethods() {
 
+                String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP + "test_basic" + SEP
+                                + "BasicClassWithMultipleMethods.java";
+                String outputFile = OUTPUTDIR_PATH + SEP + "json_files" + SEP + "BasicClassWithMultipleMethods.json";
+
+                analyse(inputPath);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("file", new JSONObject()
+                                .put("path", "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\test\\java\\test_files\\test_basic\\BasicClassWithMultipleMethods.java")
+                                .put("fileNameBase", "BasicClassWithMultipleMethods")
+                                .put("extension", "java"));
+
+                JSONArray dependencies = new JSONArray();
+                JSONObject dependency = new JSONObject()
+                                .put("from_package", "java.util")
+                                .put("import", "List")
+                                .put("type", "external")
+                                .put("type_element", "class/interface");
+                dependencies.put(dependency);
+                jsonObject.put("dependencies", dependencies);
+
+                JSONObject classes = new JSONObject();
+                JSONObject basicClassWithMultipleMethods = new JSONObject()
+                                .put("access_modifier", "public")
+                                .put("non_access_modifier", "none")
+                                .put("extend", new JSONArray())
+                                .put("implement", new JSONArray())
+                                .put("type_params", new JSONArray())
+                                .put("min_max_lineno", new JSONObject()
+                                                .put("min_lineno", 5)
+                                                .put("max_lineno", 50))
+                                .put("store_vars_calls", new JSONObject()
+                                                .put("dogName", "dogNameSetter"));
+
+                JSONArray methods = new JSONArray();
+                JSONObject mainMethod = new JSONObject()
+                                .put("access_modifier", "public")
+                                .put("non_access_modifier", "static")
+                                .put("args", new JSONArray().put("args"))
+                                .put("arg_types", new JSONObject().put("args", "String[]"))
+                                .put("return_type", "void")
+                                .put("returns", new JSONArray())
+                                .put("min_max_lineno", new JSONObject()
+                                                .put("min_lineno", 10)
+                                                .put("max_lineno", 12))
+                                .put("store_vars_calls", new JSONObject())
+                                .put("lambdas", new JSONArray())
+                                .put("method_references", new JSONArray())
+                                .put("local_classes", new JSONArray());
+                methods.put(new JSONObject().put("main", mainMethod));
+
+                JSONObject basicClassWithMultipleMethodsMethod = new JSONObject()
+                                .put("access_modifier", "public")
+                                .put("non_access_modifier", "none")
+                                .put("args", new JSONArray().put("catName"))
+                                .put("arg_types", new JSONObject().put("catName", "String"))
+                                .put("return_type", "void")
+                                .put("returns", new JSONArray())
+                                .put("min_max_lineno", new JSONObject()
+                                                .put("min_lineno", 14)
+                                                .put("max_lineno", 16))
+                                .put("store_vars_calls", new JSONObject())
+                                .put("lambdas", new JSONArray())
+                                .put("method_references", new JSONArray())
+                                .put("local_classes", new JSONArray());
+                methods.put(new JSONObject().put("BasicClassWithMultipleMethods", basicClassWithMultipleMethodsMethod));
+
+                JSONObject catMethod = new JSONObject()
+                                .put("access_modifier", "public")
+                                .put("non_access_modifier", "none")
+                                .put("args", new JSONArray().put("name").put("list").put("age").put("breed"))
+                                .put("arg_types", new JSONObject()
+                                                .put("name", "String")
+                                                .put("list", "List<String>")
+                                                .put("age", "int")
+                                                .put("breed", "String"))
+                                .put("return_type", "String")
+                                .put("returns", new JSONArray().put("\"abdbf\""))
+                                .put("min_max_lineno", new JSONObject()
+                                                .put("min_lineno", 18)
+                                                .put("max_lineno", 28))
+                                .put("store_vars_calls", new JSONObject()
+                                                .put("dog", "dogNameSetter")
+                                                .put("dog2", "dogNameSetter"))
+                                .put("lambdas", new JSONArray())
+                                .put("method_references", new JSONArray())
+                                .put("local_classes", new JSONArray());
+                methods.put(new JSONObject().put("cat", catMethod));
+
+                JSONObject batMethod = new JSONObject()
+                                .put("access_modifier", "public")
+                                .put("non_access_modifier", "static")
+                                .put("args", new JSONArray().put("name").put("age").put("breed"))
+                                .put("arg_types", new JSONObject()
+                                                .put("name", "String")
+                                                .put("age", "int")
+                                                .put("breed", "String"))
+                                .put("return_type", "String")
+                                .put("returns", new JSONArray().put("\"yes\"").put("\"no\""))
+                                .put("min_max_lineno", new JSONObject()
+                                                .put("min_lineno", 30)
+                                                .put("max_lineno", 40))
+                                .put("store_vars_calls", new JSONObject())
+                                .put("lambdas", new JSONArray())
+                                .put("method_references", new JSONArray())
+                                .put("local_classes", new JSONArray());
+                methods.put(new JSONObject().put("bat", batMethod));
+
+                JSONObject matMethod = new JSONObject()
+                                .put("access_modifier", "private")
+                                .put("non_access_modifier", "none")
+                                .put("args", new JSONArray().put("size").put("name"))
+                                .put("arg_types", new JSONObject()
+                                                .put("size", "int")
+                                                .put("name", "String"))
+                                .put("return_type", "void")
+                                .put("returns", new JSONArray())
+                                .put("min_max_lineno", new JSONObject()
+                                                .put("min_lineno", 42)
+                                                .put("max_lineno", 45))
+                                .put("store_vars_calls", new JSONObject())
+                                .put("lambdas", new JSONArray())
+                                .put("method_references", new JSONArray())
+                                .put("local_classes", new JSONArray());
+                methods.put(new JSONObject().put("mat", matMethod));
+
+                JSONObject dogNameSetterMethod = new JSONObject()
+                                .put("access_modifier", "private")
+                                .put("non_access_modifier", "none")
+                                .put("args", new JSONArray())
+                                .put("arg_types", new JSONObject())
+                                .put("return_type", "String")
+                                .put("returns", new JSONArray().put("\"Sam\""))
+                                .put("min_max_lineno", new JSONObject()
+                                                .put("min_lineno", 47)
+                                                .put("max_lineno", 49))
+                                .put("store_vars_calls", new JSONObject())
+                                .put("lambdas", new JSONArray())
+                                .put("method_references", new JSONArray())
+                                .put("local_classes", new JSONArray());
+                methods.put(new JSONObject().put("dogNameSetter", dogNameSetterMethod));
+
+                basicClassWithMultipleMethods.put("methods", methods)
+                .put("nested_interfaces", new JSONArray())
+                                .put("inner_classes", new JSONArray())
+                                .put("static_nested_classes", new JSONArray());
+                classes.put("BasicClassWithMultipleMethods", basicClassWithMultipleMethods);
+                jsonObject.put("classes", classes);
+
+                JSONObject interfaces = new JSONObject();
+                jsonObject.put("interfaces", interfaces);
+
+                JSONObject mainInfo = new JSONObject()
+                                .put("main_flag", true)
+                                .put("main_method", "println");
+                jsonObject.put("main_info", mainInfo);
+
+                if(jsonObject.similar(readJson(outputFile)))System.out.println("Similar");
+                assertEquals(jsonObject.toString(), readJson(outputFile).toString());
+        }
+
+
+        @Test
+        public void TestBasicInterfaceWithMethods() {
+
+                String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP + "test_basic" + SEP+"BasicInterfaceWithMethods.java";
+                String outputFile = OUTPUTDIR_PATH + SEP + "json_files" + SEP + "BasicInterfaceWithMethods.json";
+                analyse(inputPath);
+
+                
+        }
 
 }
+
+

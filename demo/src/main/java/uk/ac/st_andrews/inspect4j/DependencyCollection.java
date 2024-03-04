@@ -29,6 +29,7 @@ public class DependencyCollection {
         this.ast = ast;
         this.path = path;
         this.repositoryPath = repositoryPath;
+        
     }
 
     /**
@@ -120,7 +121,7 @@ public class DependencyCollection {
         if (!imp.isAsterisk()) {
             importName = imp.getName().getIdentifier();
             packageName = getPackageName(imp);
-                  
+            
             if(!imp.isStatic()){
                 String parentPath = (new File(repositoryPath)).getAbsolutePath();
                 boolean addedInternal = addDependency(parentPath, packageName, importName, collection);
@@ -209,6 +210,7 @@ public class DependencyCollection {
     }
 
     public boolean continueDependencySearch(String parentPath, String packageName, String importName, List<Dependency> collection){
+        
         Path dirObj = Paths.get(parentPath);
         List<File> directories = new ArrayList<>();
         try {

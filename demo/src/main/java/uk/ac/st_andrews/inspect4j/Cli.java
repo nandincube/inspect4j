@@ -34,15 +34,18 @@ public class Cli {
     @Option(names = { "--help" }, description = "Show this message and exit.")
 
     public static void main(String[] args) throws Exception {
-     
-        if (args.length > 0) {
-            String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
-            Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
-            c.analyse();
-        } else {
-            System.out.println("Usage: java -jar demo" + fileSeperator + "target" + fileSeperator
-                    + "inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY>");
-        }
+        String f = "C:"+fileSeperator+"Users"+fileSeperator+"nandi"+fileSeperator+"OneDrive"+fileSeperator+"Documents"+fileSeperator+"4th year"+fileSeperator+"CS4099 - Dissertation"+fileSeperator+"Dissertation"+fileSeperator+"inspect4j"+fileSeperator+"demo"+fileSeperator+"src"+fileSeperator+"test"+fileSeperator+"java"+fileSeperator+"test_files"+fileSeperator+"test_basic"+fileSeperator+"BasicClassWithOneMethod.java";
+        Cli c = new Cli(f, OUTPUTDIR_PATH); // if more than 2 args are provided the additional args are ignored
+        c.analyse();
+       
+        // if (args.length > 0) {
+        //     String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
+        //     Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
+        //     c.analyse();
+        // } else {
+        //     System.out.println("Usage: java -jar demo" + fileSeperator + "target" + fileSeperator
+        //             + "inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY>");
+        // }
 
     }
 
@@ -65,7 +68,9 @@ public class Cli {
             if (Files.isDirectory(pathObj)) {
                 analyseDirectory(path, outputDir);
             } else {
-                analyseFile(path, outputDir);
+                String f = path;
+                path = (new File(f)).getParentFile().getAbsolutePath();
+                analyseFile(f, outputDir);
             }
 
             System.out.println("Analysis completed! ");
@@ -128,7 +133,7 @@ public class Cli {
                 AST ast = new AST(filePath, path);
                 ast.extractMetadata();
                 ast.writeToJson(filePath, outDir);
-                System.out.println("Data Extracted for file: " + filePath + "\n");
+                System.out.println("Data Extracted for file: " + filePath + ""+fileSeperator+"n");
             } else {
                 System.out.println("File provided is not a java file");
             }

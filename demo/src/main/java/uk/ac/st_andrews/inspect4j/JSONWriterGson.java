@@ -21,10 +21,14 @@ import com.google.gson.reflect.TypeToken;
 public class JSONWriterGson {
 
     private FileInfo fileInfo;
+    private String fileInfoAsJson;
     private final String FILE_SEPERATOR = FileSystems.getDefault().getSeparator();
 
     public JSONWriterGson(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
+    }
+    public String getFileInfoAsJson() {
+        return fileInfoAsJson;
     }
 
     public void write(String directory) {
@@ -32,7 +36,7 @@ public class JSONWriterGson {
         addCustomSerialisers(gsonBuilder);
 
         Gson gson = gsonBuilder.create();
-        String fileInfoAsJson = gson.toJson(fileInfo);
+        fileInfoAsJson = gson.toJson(fileInfo);
         String fileName = fileInfo.getFileNameBase() + ".json";
 
         try {
@@ -478,23 +482,4 @@ public class JSONWriterGson {
         gb.registerTypeAdapter(parameterType, serialiser);
     }
 
-    // private void serialiseVariable(GsonBuilder gb) {
-    // Type parameterType = new TypeToken<Variable>() {
-    // }.getType();
-
-    // JsonSerializer<Variable> serialiser = new JsonSerializer<Variable>() {
-    // @Override
-    // public JsonElement serialize(Variable src, Type typeOfSrc,
-    // JsonSerializationContext context) {
-    // JsonObject jsonVariable = new JsonObject();
-
-    // jsonVariable.addProperty(src.getName(), src.getMethodCalled());
-
-    // return jsonVariable;
-    // }
-    // };
-
-    // gb.registerTypeAdapter(parameterType, serialiser);
-
-    // }
 }
