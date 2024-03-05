@@ -1,7 +1,7 @@
 package uk.ac.st_andrews.inspect4j;
 
 /**
- * 
+ * The access modifier type of a class, method or field as ENUMs.
  */
 public enum AccessModifierType {
    PRIVATE,

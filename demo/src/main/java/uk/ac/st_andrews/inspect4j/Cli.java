@@ -17,60 +17,74 @@ import picocli.CommandLine.Option;
 @Command(name = "inspect4j", version = "inspect4j 1.0", mixinStandardHelpOptions = true)
 
 /**
- * 
+ *  Command line interface for inspect4j
+ *
  */
-
 public class Cli {
 
-    @Option(names = { "-i",
-            "--input_path" }, type = String.class, required = true, description = "input path of the file or directory to inspect.")
-    private String path;
-    @Option(names = { "-o",
-            "--output_path" }, type = String.class, defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
+    // @Option(names = { "-i",
+    //         "--input_path" }, type = String.class, required = true, description = "input path of the file or directory to inspect.")
+    private String repositoryPath;
+    // @Option(names = { "-o",
+    //         "--output_path" }, type = String.class, defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
     private String outputDir;
     private static final String OUTPUTDIR_PATH = "OutputDir";
-    public static String fileSeperator = FileSystems.getDefault().getSeparator();
+    public static final String SEP = FileSystems.getDefault().getSeparator();
 
     @Option(names = { "--help" }, description = "Show this message and exit.")
 
     public static void main(String[] args) throws Exception {
-        String f = "C:"+fileSeperator+"Users"+fileSeperator+"nandi"+fileSeperator+"OneDrive"+fileSeperator+"Documents"+fileSeperator+"4th year"+fileSeperator+"CS4099 - Dissertation"+fileSeperator+"Dissertation"+fileSeperator+"inspect4j"+fileSeperator+"demo"+fileSeperator+"src"+fileSeperator+"test"+fileSeperator+"java"+fileSeperator+"test_files"+fileSeperator+"test_basic"+fileSeperator+"BasicClassWithOneMethod.java";
-        Cli c = new Cli(f, OUTPUTDIR_PATH); // if more than 2 args are provided the additional args are ignored
-        c.analyse();
-       
+        // String f = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\little-music-player";
+        // Cli c = new Cli(f, OUTPUTDIR_PATH); // if more than 2 args are provided the additional args are ignored
+        // c.analyse();
+
+        String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
+        + "test_doc_and_dependencies" + SEP
+        + "BasicClassWithInternalDependencies.java";
+        String outputDir = ((new File(inputPath)).getParentFile().getAbsolutePath()) + SEP + OUTPUTDIR_PATH;
+        String outputFile = outputDir + SEP + "json_files" + SEP + "BasicClassWithInternalDependencies.json";
+        String repoPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files";
+
+
+        System.out.println("outputDir: " + outputDir);
+        System.out.println("inputPath: " + inputPath);
+        System.out.println("repoPath: " + repoPath);
+        AST ast = new AST(inputPath,repoPath);
+        ast.extractMetadata();
+        ast.writeToJson(inputPath, outputDir);
+     
         // if (args.length > 0) {
-        //     String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
-        //     Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
-        //     c.analyse();
+        //      String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
+        //      Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
+        //      c.analyse();
         // } else {
-        //     System.out.println("Usage: java -jar demo" + fileSeperator + "target" + fileSeperator
-        //             + "inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY>");
+        //      System.out.println("Usage: java -jar demo" + SEP + "target" + SEP
+        //             + "inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY> [OUTPUT_DIRECTORY]");
         // }
 
     }
 
     /**
-     * 
-     * @param path
-     * @param outputDir
+     *  Constructor
+     * @param repositoryPath - input path of the file or directory to inspect
+     * @param outputDir - output directory path to store results in json files
      */
-    public Cli(String path, String outputDir) {
-        this.path = path;
+    public Cli(String repositoryPath, String outputDir) {
+        this.repositoryPath = repositoryPath;
         this.outputDir = outputDir;
     }
 
     /**
-     * 
+     *  Analyse the file or directory
      */
     public void analyse() {
-        Path pathObj = Paths.get(path);
+        Path pathObj = Paths.get(repositoryPath);
         if (Files.exists(pathObj)) {
             if (Files.isDirectory(pathObj)) {
-                analyseDirectory(path, outputDir);
+                analyseDirectory(repositoryPath, outputDir);
             } else {
-                String f = path;
-                path = (new File(f)).getParentFile().getAbsolutePath();
-                analyseFile(f, outputDir);
+                String file = repositoryPath;
+                analyseFile(file, outputDir);
             }
 
             System.out.println("Analysis completed! ");
@@ -82,9 +96,9 @@ public class Cli {
     }
 
     /**
-     * 
-     * @param dirPath
-     * @param outDir
+     *  Analyse the directory
+     * @param dirPath - path of the directory that is to be analysed
+     * @param outDir - output directory path of the json results
      */
     public void analyseDirectory(String dirPath, String outDir) {
         try {
@@ -97,8 +111,8 @@ public class Cli {
 
             if (directories.size() > 0) {
                 directories.forEach(x -> {
-                    String outPath = outDir + fileSeperator + x.getName();
-                    String dir = dirPath + fileSeperator + x.getName();
+                    String outPath = outDir + SEP + x.getName();
+                    String dir = dirPath + SEP + x.getName();
                     analyseDirectory(dir, outPath);
                 });
             }
@@ -122,18 +136,18 @@ public class Cli {
     }
 
     /**
-     * 
-     * @param filePath
-     * @param outDir
+     *  Runs inspect4j on the file and writes the results in json file to the output directory
+     * @param filePath - path of the file that is to be analysed
+     * @param outDir - output directory path of the results
      */
     public void analyseFile(String filePath, String outDir) {
 
         if (filePath.length() > 0 && filePath != null) {
             if (FilenameUtils.getExtension(filePath).equals("java")) {
-                AST ast = new AST(filePath, path);
+                AST ast = new AST(filePath, repositoryPath);
                 ast.extractMetadata();
                 ast.writeToJson(filePath, outDir);
-                System.out.println("Data Extracted for file: " + filePath + ""+fileSeperator+"n");
+                System.out.println("Data Extracted for file: " + filePath + ""+SEP);
             } else {
                 System.out.println("File provided is not a java file");
             }

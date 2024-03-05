@@ -36,7 +36,7 @@ First, `cd` into `demo` within the `inspect4j` repository/package and run the fo
 
 ```
 mvn clean package
-java -jar target/inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY>
+java -jar target/inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY> [OUTPUT_DIRECTORY]
 ```
 
 ### Package dependencies:

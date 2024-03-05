@@ -2,36 +2,36 @@ package uk.ac.st_andrews.inspect4j;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
 /**
- * 
+ * Class to represent a clas
  */
 public class Class {
-    private String name; //!
-    private ClassInterfaceCategory classCategory;//!
-    private AccessModifierType accessModifer; //!
-    private NonAccessModifierType nonAccessModifer; //!
-    private int lineMin;//!
-    private int lineMax;//!
-    private List<Method> methods;//!
-    private List<String> typeParams;//!
-    private List<String> implementedInterfaces;//!
-    private List<String> superClasses; //!
-    private List<Class> classes; //!
-    private List<Interface> interfaces; //!
+    private String name; // !
+    private ClassInterfaceCategory classCategory;// !
+    private AccessModifierType accessModifer; // !
+    private List<NonAccessModifierType> nonAccessModifer; // !
+    private int lineMin;// !
+    private int lineMax;// !
+    private List<Method> methods;// !
+    private List<String> typeParams;// !
+    private List<String> implementedInterfaces;// !
+    private List<String> superClasses; // !
+    private List<Class> classes; // !
+    private List<Interface> interfaces; // !
     private List<MethodReference> references;
     private List<Lambda> lambdas;
-    private ParentEntity<?> parent;//!
-    private ClassOrInterfaceDeclaration declaration; //!
-    private List<Variable> storedVarCalls; //!
-    private String javaDoc; //!
+    private ParentEntity<?> parent;// !
+    private ClassOrInterfaceDeclaration declaration; // !
+    private List<Variable> storedVarCalls; // !
+    private String javaDoc; // !
 
     /**
      * 
@@ -46,6 +46,7 @@ public class Class {
         this.lineMin = classDecl.getBegin().get().line;
         this.lineMax = classDecl.getEnd().get().line;
         this.declaration = classDecl;
+        this.nonAccessModifer = new ArrayList<NonAccessModifierType>();
         extractAccessModifier();
         extractNonAccessModifier();
         extractClassCategory();
@@ -68,7 +69,6 @@ public class Class {
         interfacesToString(implementedInterfaces);
         superClassesToString(superClasses);
     }
-
 
     /**
      * 
@@ -96,29 +96,32 @@ public class Class {
     private void extractNonAccessModifier() {
 
         for (Modifier mod : declaration.getModifiers()) {
-            if (nonAccessModifer == null || nonAccessModifer == NonAccessModifierType.NONE) {
                 switch (mod.getKeyword()) {
                     case STATIC:
-                        nonAccessModifer = NonAccessModifierType.STATIC;
+                        nonAccessModifer.add(NonAccessModifierType.STATIC);
+                       // nonAccessModifer = NonAccessModifierType.STATIC;
                         break;
                     case ABSTRACT:
-                        nonAccessModifer = NonAccessModifierType.ABSTRACT;
+                    nonAccessModifer.add(NonAccessModifierType.ABSTRACT);
+                       // nonAccessModifer = NonAccessModifierType.ABSTRACT;
                         break;
                     case FINAL:
-                        nonAccessModifer = NonAccessModifierType.FINAL;
+                    nonAccessModifer.add(NonAccessModifierType.FINAL);
+                       // nonAccessModifer = NonAccessModifierType.FINAL;
                         break;
                     default:
-                        nonAccessModifer = NonAccessModifierType.NONE;
+                    nonAccessModifer.add(NonAccessModifierType.NONE);
+                      //  nonAccessModifer = NonAccessModifierType.NONE;
                         break;
                 }
             }
 
+        
+        if(nonAccessModifer.size()  > 1 && nonAccessModifer.contains(NonAccessModifierType.NONE)){
+            nonAccessModifer.remove(NonAccessModifierType.NONE);
+        }else if(nonAccessModifer.size()==0){
+            nonAccessModifer.add(NonAccessModifierType.NONE);
         }
-
-        if (nonAccessModifer == null) {
-            nonAccessModifer = NonAccessModifierType.NONE;
-        }
-
     }
 
     /**
@@ -140,12 +143,12 @@ public class Class {
 
     }
 
-
     /**
      * 
      * @return
      */
     public String getJavaDoc() {
+        
         return javaDoc;
     }
 
@@ -164,7 +167,8 @@ public class Class {
      */
     private String getJavaDoc(ClassOrInterfaceDeclaration cl) {
         if (cl.getJavadoc().isPresent()) {
-            return cl.getJavadocComment().get().getContent().strip().toString();
+            String doc = cl.getJavadocComment().get().getContent().strip().toString();
+            return doc.replaceFirst("^[*]+", "").strip();
         }
         return null;
     }
@@ -183,8 +187,29 @@ public class Class {
      */
     public void interfacesToString(NodeList<ClassOrInterfaceType> i) {
 
-        i.forEach(x -> implementedInterfaces.add(x.getNameAsString().trim()));
+        i.forEach(x -> implementedInterfaces.add(NameWithType(x)));
 
+    }
+
+    /**
+     *  Returns the name of the interface/class with the type parameters if it exists
+     * @param ci     The interface/Class
+     * @return    The name of the interface with the types parameters if it exists
+     */
+    public String NameWithType(ClassOrInterfaceType ci ){
+        NodeList<Type> types = ci.getTypeArguments().isPresent() ? ci.getTypeArguments().get() : new NodeList<>();
+        String typesString = "";
+        if(types.size() > 0){
+            typesString += "<";
+                for(Type t : types){
+                  typesString += t.asString() + ",";
+                }
+                typesString = typesString.substring(0, typesString.length() - 1);
+                typesString += ">";
+        }
+        String ciName =   ci.getNameWithScope().trim()+ typesString;
+
+        return ciName;
     }
 
     /**
@@ -193,7 +218,7 @@ public class Class {
      */
     public void superClassesToString(NodeList<ClassOrInterfaceType> s) {
 
-        s.forEach(x -> superClasses.add(x.getNameAsString().trim()));
+        s.forEach(x -> superClasses.add(NameWithType(x)));
 
     }
 
@@ -635,7 +660,7 @@ public class Class {
      * 
      * @return
      */
-    public NonAccessModifierType getNonAccessModifer() {
+    public List<NonAccessModifierType> getNonAccessModifer() {
         return nonAccessModifer;
     }
 
@@ -643,7 +668,7 @@ public class Class {
      * 
      * @param nonAccessModifer
      */
-    public void setNonAccessModifer(NonAccessModifierType nonAccessModifer) {
+    public void setNonAccessModifer(List<NonAccessModifierType> nonAccessModifer) {
         this.nonAccessModifer = nonAccessModifer;
     }
 

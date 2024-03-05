@@ -68,16 +68,24 @@ public class FileInfo {
                                             x.getAccessModifer() == AccessModifierType.PROTECTED))
                                 .findAny()
                                 .orElse(null);
+        if(publicClass == null){
+            publicClass = classes.getClasses().stream()
+                                .filter(x -> x.getClassCategory() == ClassInterfaceCategory.STANDARD &&
+                                        (x.getAccessModifer() == AccessModifierType.DEFAULT))
+                                .findAny()
+                                .orElse(null);
+        }
     
 
         if(publicClass != null) {
+            
             return publicClass.getJavaDoc();
         }else{
             Interface publicInterface = interfaces.getInterfaces().stream()
                                             .findAny()
                                             .orElse(null);
-            
-            return publicInterface.getJavaDoc();                                             
+            if(publicInterface == null) System.out.println("No public class or interface found in the file: " + fileNameBase);
+            return publicInterface == null? "": publicInterface.getJavaDoc();                                             
         }
 
     }

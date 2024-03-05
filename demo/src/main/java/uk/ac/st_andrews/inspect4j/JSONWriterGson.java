@@ -8,6 +8,10 @@ import java.lang.reflect.Type;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONArray;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -27,12 +31,13 @@ public class JSONWriterGson {
     public JSONWriterGson(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
     }
+
     public String getFileInfoAsJson() {
         return fileInfoAsJson;
     }
 
     public void write(String directory) {
-        GsonBuilder gsonBuilder = new GsonBuilder();
+        GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping();
         addCustomSerialisers(gsonBuilder);
 
         Gson gson = gsonBuilder.create();
@@ -44,6 +49,7 @@ public class JSONWriterGson {
             String jsonDirPath = directory + FILE_SEPERATOR + "json_files"; // linux specific path syntax
             File dir = new File(jsonDirPath);
             if (!dir.exists()) {
+                System.out.println("Creating json directory: " + jsonDirPath);
                 if (!dir.mkdirs()) {
                     System.out.println("Could not create output directories!");
                     return;
@@ -95,8 +101,8 @@ public class JSONWriterGson {
                 if (src.getDependencies() != null) {
                     ArrayList<Dependency> deps = src.getDependencies().getDependencies();
                     deps.forEach(x -> {
-                            JsonElement dep = context.serialize(x, Dependency.class);
-                            dependencyCollectionJsonArray.add(dep);  
+                        JsonElement dep = context.serialize(x, Dependency.class);
+                        dependencyCollectionJsonArray.add(dep);
                     });
                     jsonFile.add("dependencies", dependencyCollectionJsonArray);
                 }
@@ -145,7 +151,7 @@ public class JSONWriterGson {
         JsonSerializer<Class> serialiser = new JsonSerializer<Class>() {
             @Override
             public JsonElement serialize(Class src, Type typeOfSrc, JsonSerializationContext context) {
-                // JsonObject jsonClass = new JsonObject();
+             
                 JsonObject jsonDetails = new JsonObject();
 
                 jsonDetails.addProperty("doc", src.getJavaDoc());
@@ -196,8 +202,13 @@ public class JSONWriterGson {
                     }
                 }
 
+                JsonArray nonAccessModifiers = new JsonArray();
+                for(NonAccessModifierType nonAccessModifier : src.getNonAccessModifer()){
+                    nonAccessModifiers.add(nonAccessModifier.toString().toLowerCase());
+                }
+              
                 jsonDetails.addProperty("access_modifier", src.getAccessModifer().toString().toLowerCase());
-                jsonDetails.addProperty("non_access_modifier", src.getNonAccessModifer().toString().toLowerCase());
+                jsonDetails.add("non_access_modifiers", nonAccessModifiers);
                 jsonDetails.add("extend", superJsonArray);
                 jsonDetails.add("implement", implJsonArray);
                 jsonDetails.add("type_params", typeParamsJsonArray);
@@ -208,7 +219,26 @@ public class JSONWriterGson {
                 jsonDetails.add("min_max_lineno", lineNumbers);
 
                 JsonObject jsonVariables = new JsonObject();
-                src.getStoredVarCalls().stream().forEach(x -> jsonVariables.addProperty(x.getName(), x.getMethodCalled()));
+                List<Variable> vars = src.getStoredVarCalls();
+                for(int i=0; i <src.getStoredVarCalls().size();i++){
+                    String varName = vars.get(i).getName();
+                    String mc = vars.get(i).getMethodCalled();
+                    if (jsonVariables.has(varName)) {
+                        if(jsonVariables.get(varName).isJsonArray()){
+                            JsonArray arr = jsonVariables.get(varName).getAsJsonArray();
+                            arr.add(mc);
+                            jsonVariables.add(varName,arr);
+                        }else{
+                            JsonArray jsonArray = new JsonArray();
+                            jsonArray.add(jsonVariables.get(varName).getAsString());
+                            jsonArray.add(mc);
+                            jsonVariables.add(varName, jsonArray);
+                        }
+                    } else {
+                        jsonVariables.addProperty(vars.get(i).getName(), vars.get(i).getMethodCalled());
+                    }
+                }
+            
                 jsonDetails.add("store_vars_calls", jsonVariables);
                 jsonDetails.add("methods", methodsJsonArray);
                 jsonDetails.add("nested_interfaces", interfacesJsonArray);
@@ -282,7 +312,12 @@ public class JSONWriterGson {
                 jsonDetails.addProperty("doc", src.getJavaDoc());
 
                 jsonDetails.addProperty("access_modifier", src.getAccessModifer().toString().toLowerCase());
-                jsonDetails.addProperty("non_access_modifier", src.getNonAccessModifer().toString().toLowerCase());
+                JsonArray nonAccessModifiers = new JsonArray();
+                for(NonAccessModifierType nonAccessModifier : src.getNonAccessModifer()){
+                    nonAccessModifiers.add(nonAccessModifier.toString().toLowerCase());
+                }
+              
+                jsonDetails.add("non_access_modifiers", nonAccessModifiers);
                 jsonDetails.add("args", paramNamesJsonArray);
                 jsonDetails.add("arg_types", paramTypesJsonObject);
                 jsonDetails.addProperty("return_type", src.getReturnType());
@@ -294,8 +329,26 @@ public class JSONWriterGson {
                 jsonDetails.add("min_max_lineno", lineNumbers);
 
                 JsonObject jsonVariables = new JsonObject();
-                src.getStoredVarCalls().stream()
-                        .forEach(x -> jsonVariables.addProperty(x.getName(), x.getMethodCalled()));
+                List<Variable> vars = src.getStoredVarCalls();
+                for(int i=0; i <src.getStoredVarCalls().size();i++){
+                    String varName = vars.get(i).getName();
+                    String mc = vars.get(i).getMethodCalled();
+                    if (jsonVariables.has(varName)) {
+                        if(jsonVariables.get(varName).isJsonArray()){
+                            JsonArray arr = jsonVariables.get(varName).getAsJsonArray();
+                            arr.add(mc);
+                            jsonVariables.add(varName,arr);
+                            
+                        }else{
+                            JsonArray jsonArray = new JsonArray();
+                            jsonArray.add(jsonVariables.get(varName).getAsString());
+                            jsonArray.add(mc);
+                            jsonVariables.add(varName, jsonArray);
+                        }
+                    } else {
+                        jsonVariables.addProperty(vars.get(i).getName(), vars.get(i).getMethodCalled());
+                    }
+                }
                 jsonDetails.add("store_vars_calls", jsonVariables);
                 jsonDetails.add("lambdas", lambdasJsonArray);
                 jsonDetails.add("method_references", referencesJsonArray);

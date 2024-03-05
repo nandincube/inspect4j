@@ -88,7 +88,10 @@ public class AST {
                 Expression expr = stmt.asExpressionStmt().getExpression();
 
                 if (expr.isMethodCallExpr()) {
-                    mainMdCall = expr.asMethodCallExpr().getNameAsString();
+                    String scope = expr.asMethodCallExpr().getScope().isPresent()
+                            ? expr.asMethodCallExpr().getScope().get().toString() + "."
+                            : "";
+                    mainMdCall = scope+ expr.asMethodCallExpr().getNameAsString();
                     break;
                 }
             }

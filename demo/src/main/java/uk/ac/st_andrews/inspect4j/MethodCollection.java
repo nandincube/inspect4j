@@ -153,7 +153,7 @@ public class MethodCollection {
         public List<String> visit(ReturnStmt rs, List<String> arg) { 
             super.visit(rs,arg);
             if(rs.getExpression().isPresent()){
-                String expr = rs.getExpression().get().toString();
+                String expr = rs.getExpression().get().toString().replace("\"", "");
                 arg.add(expr);
             }
             return arg;

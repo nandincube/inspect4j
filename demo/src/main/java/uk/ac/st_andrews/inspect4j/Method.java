@@ -11,6 +11,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.javadoc.JavadocBlockTag;
 
 /**
  * 
@@ -34,7 +35,7 @@ public class Method {
     private boolean isMain;
     private AccessModifierType accessModifer;
    
-    private NonAccessModifierType nonAccessModifer;
+    private List<NonAccessModifierType> nonAccessModifer;
  
        
     /**
@@ -75,37 +76,13 @@ public class Method {
         this.lambdas = new ArrayList<Lambda>();
         this.storedVarCalls = new ArrayList<Variable>();
         this.javaDoc = getJavaDoc(method);
+        this.nonAccessModifer = new ArrayList<NonAccessModifierType>();
         extractAccessModifier();
         extractNonAccessModifier();
 
     }
 
       
-    // /**
-    //  * 
-    //  * @param method
-    //  * @param returnStmts
-    //  */
-    // public Method(MethodDeclaration method, HashSet<String> returnStmts) {
-    //     this.name = method.getNameAsString();*
-    //     this.params = new HashMap<String, String>();*
-    //     this.returnType = method.getTypeAsString();
-    //     extractParameterInformation(method);*
-    //     this.returnStmts = returnStmts;
-    //     this.lineMin = method.getBegin().get().line;*
-    //     this.lineMax = method.getEnd().get().line;*
-    //     this.parent = findParentClassInterface(method);*
-    //     this.declaration = method;*
-    //     this.isMain = checkIfMain(method);
-
-    //     this.classes = new ArrayList<Class>();*
-    //     this.interfaces = new ArrayList<Interface>();*
-    //     this.references = new ArrayList<MethodReference>();*
-    //     this.lambdas = new ArrayList<Lambda>();*
-    //     this.storedVarCalls = new ArrayList<Variable>();*
-    //     this.javaDoc = getJavaDoc(method);*
-    // }
-
 
         /**
      * 
@@ -133,29 +110,38 @@ public class Method {
     private void extractNonAccessModifier() {
 
         for (Modifier mod : declaration.getModifiers()) {
-            if (nonAccessModifer == null || nonAccessModifer == NonAccessModifierType.NONE) {
                 switch (mod.getKeyword()) {
                     case STATIC:
-                        nonAccessModifer = NonAccessModifierType.STATIC;
+                        nonAccessModifer.add(NonAccessModifierType.STATIC);
+                       // nonAccessModifer = NonAccessModifierType.STATIC;
                         break;
                     case ABSTRACT:
-                        nonAccessModifer = NonAccessModifierType.ABSTRACT;
+                        nonAccessModifer.add(NonAccessModifierType.ABSTRACT);
+                       // nonAccessModifer = NonAccessModifierType.ABSTRACT;
                         break;
                     case FINAL:
-                        nonAccessModifer = NonAccessModifierType.FINAL;
+                    
+                        nonAccessModifer.add(NonAccessModifierType.FINAL);
+                        //nonAccessModifer = NonAccessModifierType.FINAL;
                         break;
                     default:
-                        nonAccessModifer = NonAccessModifierType.NONE;
+                        nonAccessModifer.add(NonAccessModifierType.NONE);
+                        //nonAccessModifer = NonAccessModifierType.NONE;
                         break;
                 }
-            }
+            
         }
 
-
-        if(parent.getEntityType() == EntityType.INTERFACE &&  (nonAccessModifer == NonAccessModifierType.NONE || nonAccessModifer == null) ){
-            nonAccessModifer = NonAccessModifierType.ABSTRACT;
-        }else if (nonAccessModifer == null) {
-            nonAccessModifer = NonAccessModifierType.NONE;
+        if(nonAccessModifer.size()  > 1 && nonAccessModifer.contains(NonAccessModifierType.NONE)){
+            nonAccessModifer.remove(NonAccessModifierType.NONE);
+            //nonAccessModifer = NonAccessModifierType.NONE;
+        }else if(parent.getEntityType() == EntityType.INTERFACE &&  (nonAccessModifer.contains(NonAccessModifierType.NONE) ||
+                 nonAccessModifer.size() == 0) ){
+            nonAccessModifer.add(NonAccessModifierType.ABSTRACT);
+           // nonAccessModifer = NonAccessModifierType.ABSTRACT;
+        }else if (nonAccessModifer.size() == 0) {
+            nonAccessModifer.add(NonAccessModifierType.NONE);
+            //nonAccessModifer = NonAccessModifierType.NONE;
         }
        
     }
@@ -227,7 +213,22 @@ public class Method {
      */
     private String getJavaDoc(CallableDeclaration<?> md) {
         if (md.getJavadoc().isPresent()) {
-            return md.getJavadocComment().get().getContent().strip();
+            String doc =  md.getJavadoc().get().getDescription().toText().strip();
+            doc = doc.replaceFirst("^[*]+", "").strip();
+            if(md.getJavadoc().get().getBlockTags().size() > 0){
+
+                List<JavadocBlockTag> tags = md.getJavadoc().get().getBlockTags();
+                doc = doc +". [tags = [";
+                for (int i = 0; i < tags.size(); i++) {
+                    if(i > 0) doc = doc +", ";
+
+                    System.out.println(tags.get(i));
+                    doc = doc +"@"+ tags.get(i).getType().name()+ " "+tags.get(i).getTagName() + " "+
+                    tags.get(i).getContent().toText().strip();
+                }
+                doc = doc +" ]";
+            }
+            return doc.replaceFirst("^[*]+", "").strip();
         }
         return null;
     }
@@ -576,7 +577,7 @@ public class Method {
      * 
      * @return
      */
-    public NonAccessModifierType getNonAccessModifer() {
+    public List<NonAccessModifierType> getNonAccessModifer() {
         return nonAccessModifer;
     }
 
@@ -584,7 +585,7 @@ public class Method {
      * 
      * @param nonAccessModifer
      */
-    public void setNonAccessModifer(NonAccessModifierType nonAccessModifer) {
+    public void setNonAccessModifer(List<NonAccessModifierType> nonAccessModifer) {
         this.nonAccessModifer = nonAccessModifer;
     }
 

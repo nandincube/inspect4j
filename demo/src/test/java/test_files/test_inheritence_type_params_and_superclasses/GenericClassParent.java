@@ -2,7 +2,7 @@ package test_files.test_inheritence_type_params_and_superclasses;
 
 import java.util.List;
 
-public class GenericClassParent<T> {
+public class GenericClassParent<T, A>  {
     
     protected String name;
 

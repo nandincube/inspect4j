@@ -26,7 +26,7 @@ public class ParentEntity<T> {
     }
 
     /**
-     * 
+     *   
      * @return
      */
     public EntityType getEntityType(){

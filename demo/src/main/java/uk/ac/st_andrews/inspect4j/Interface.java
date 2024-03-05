@@ -126,7 +126,8 @@ public class Interface {
      */
     private String getJavaDoc(ClassOrInterfaceDeclaration intf) {
         if (intf.getJavadoc().isPresent()) {
-            return intf.getJavadocComment().get().getContent().strip();
+            String doc = intf.getJavadocComment().get().getContent().strip();
+            return doc.replaceFirst("^[*]+", "").strip();
         }
         return null;
     }

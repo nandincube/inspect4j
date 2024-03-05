@@ -2,9 +2,12 @@ package uk.ac.st_andrews.inspect4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -80,29 +83,18 @@ public class VariableCollection {
         @Override
         public void visit(MethodDeclaration md, List<Variable> collection) {
             super.visit(md, collection);
+            addVariable( md, collection);
 
-            List<AssignExpr> assignments = md.findAll(AssignExpr.class);
-
-            for (AssignExpr assignment : assignments) {
-                if (assignment.getTarget().isNameExpr() ||
-                        assignment.getTarget().isFieldAccessExpr()) { // is the thing being assigned a variable or field
-                    if (assignment.getValue().isMethodCallExpr()) {
-                        collection.add(new Variable(assignment));
-                    }
-                }
-            }
-
-            List<VariableDeclarationExpr> vds = md.findAll(VariableDeclarationExpr.class);
-            
-            vds.stream().forEach(vd -> {
-                vd.getVariables().stream().forEach(a -> {
-                    if (a.getInitializer().isPresent()) {
-                        collection.add(new Variable(a, new ParentEntity<MethodDeclaration>(md, EntityType.METHOD),
-                                a.getInitializer().get()));
-                    }
-                });
-            });
         }
+
+        
+        @Override
+        public void visit(ConstructorDeclaration cd, List<Variable> collection) {
+            super.visit(cd, collection);
+            addVariable(cd, collection);
+        }
+
+
 
         @Override
         public void visit(ClassOrInterfaceDeclaration cd, List<Variable> collection) {
@@ -110,18 +102,52 @@ public class VariableCollection {
             cd.getFields().stream().forEach(x -> {
                 x.getVariables().stream().forEach(a -> {
                     if (a.getInitializer().isPresent()) {
-                        ParentEntity<ClassOrInterfaceDeclaration> par;
-                        if (cd.isInterface()) {
-                            par = new ParentEntity<ClassOrInterfaceDeclaration>(cd, EntityType.INTERFACE);
-                        } else {
-                            par = new ParentEntity<ClassOrInterfaceDeclaration>(cd, EntityType.CLASS);
+                        if (a.getInitializer().get().isMethodCallExpr()|| a.getInitializer().get().isObjectCreationExpr()) {
+
+                            ParentEntity<ClassOrInterfaceDeclaration> par;
+                            if (cd.isInterface()) {
+                                par = new ParentEntity<ClassOrInterfaceDeclaration>(cd, EntityType.INTERFACE);
+                            } else {
+                                par = new ParentEntity<ClassOrInterfaceDeclaration>(cd, EntityType.CLASS);
+                            }
+                            collection.add(new Variable(a, par, a.getInitializer().get()));
                         }
-                        collection.add(new Variable(a, par, a.getInitializer().get()));
                     }
                 });
             });
         }
 
     }
+
+    
+    private static void addVariable(CallableDeclaration<?> md, List<Variable> collection){
+
+        List<AssignExpr> assignments = md.findAll(AssignExpr.class);
+
+            for (AssignExpr assignment : assignments) {
+                if (assignment.getTarget().isNameExpr() ||
+                        assignment.getTarget().isFieldAccessExpr()) { // is the thing being assigned a variable or field
+                    if (assignment.getValue().isMethodCallExpr() || assignment.getValue().isObjectCreationExpr()) {
+                        collection.add(new Variable(assignment));
+                    }
+                }
+            }
+
+            List<VariableDeclarationExpr> vds = md.findAll(VariableDeclarationExpr.class);
+
+            vds.stream().forEach(vd -> {
+                vd.getVariables().stream().forEach(a -> {
+                    if (a.getInitializer().isPresent()) {
+                        if (a.getInitializer().get().isMethodCallExpr() || a.getInitializer().get().isObjectCreationExpr()) {
+                            collection.add(new Variable(a, new ParentEntity<MethodDeclaration>(md.asMethodDeclaration(), EntityType.METHOD),
+                                    a.getInitializer().get()));
+                        }
+
+                    }
+                });
+            });
+            
+    }
+    
 
 }

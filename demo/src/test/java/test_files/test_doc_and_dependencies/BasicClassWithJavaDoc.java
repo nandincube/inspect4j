@@ -1,5 +1,9 @@
 package test_files.test_doc_and_dependencies;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Class with java doc comments
  */
@@ -38,5 +42,15 @@ public class BasicClassWithJavaDoc {
     private void mat(String name , int size){
         System.out.println("mat name:"+name);
         System.out.println("mat size:"+size);
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("a");
+
+        list.forEach(x-> {
+            System.out.println(x);
+        });
+
+        list.forEach((Object x) -> {
+            System.out.println("foo: "+x);
+        });
     }
 }

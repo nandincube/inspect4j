@@ -17,79 +17,81 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
+/**
+ *  The class that collects the dependencies of a file
+ */
 public class DependencyCollection {
-    private ArrayList<Dependency> dependencies;
-    private CompilationUnit ast;
-    private String path;
-    private static String repositoryPath;
-    private static String fileSeperator = FileSystems.getDefault().getSeparator();
+    private ArrayList<Dependency> dependencies; // list of file dependencies
+    private CompilationUnit ast; // the AST of the file
+    private String path; // the path of the file
+    private String repositoryPath; // the path of the repository
+    private static final String SEP = FileSystems.getDefault().getSeparator(); // the file separator
 
+    /**
+     *   Constructor
+     * @param ast - the AST of the file
+     * @param path - the path of the file
+     * @param repositoryPath - the path of the repository
+     */
     public DependencyCollection(CompilationUnit ast, String path, String repositoryPath) {
         this.dependencies = new ArrayList<Dependency>();
         this.ast = ast;
         this.path = path;
         this.repositoryPath = repositoryPath;
-        
     }
 
     /**
-     * 
-     * @return
+     *  Get the file dependencies
+     * @return - the dependencies
      */
     public ArrayList<Dependency> getDependencies() {
         return dependencies;
     }
 
     /**
-     * 
-     * @param dependencies
+     *  Set the file dependencies
+     * @param dependencies - the dependencies
      */
-    public void setDependences(ArrayList<Dependency> dependencies) {
+    public void setDependencies(ArrayList<Dependency> dependencies) {
         this.dependencies = dependencies;
     }
 
     /**
-     * 
-     * @return
+     *  Get the path of the file
+     * @return - the path
      */
     public String getPath() {
         return path;
     }
 
     /**
-     * 
-     * @param path
+     *  Set the path of the file
+     * @param path - the path
      */
     public void setPath(String path) {
         this.path = path;
     }
 
-    /**
-     * 
-     * @param dependencies
-     */
-    public void setDependency(ArrayList<Dependency> dependencies) {
-        this.dependencies = dependencies;
-    }
+ 
 
     /**
-     * 
-     * @return
+     *  Get the AST of the file
+     * @return - the AST
      */
     public CompilationUnit getAst() {
         return ast;
     }
 
     /**
-     * 
-     * @param ast
+     *  Set the AST of the file
+     * @param ast - the AST
      */
     public void setAst(CompilationUnit ast) {
         this.ast = ast;
     }
 
     /**
-    * 
+    *   Prints file dependencies
     */
     public void printMetadata() {
         dependencies.forEach(x -> System.out.println(x.toString()));
@@ -97,7 +99,7 @@ public class DependencyCollection {
     }
 
     /**
-     * 
+     *  Extract the dependencies from the AST
      */
     public void extractDependenciesFromAST() {
         VoidVisitor<List<Dependency>> depDeclCollector = new ImportDeclarationCollector();
@@ -105,7 +107,7 @@ public class DependencyCollection {
     }
 
     /**
-     * 
+     *  The visitor that collects the import declarations
      */
     private class ImportDeclarationCollector extends VoidVisitorAdapter<List<Dependency>> {
         @Override
@@ -115,102 +117,157 @@ public class DependencyCollection {
         }
     }
 
+    /**
+     *  Extract the dependency information from the import declaration
+     * @param imp - the import declaration
+     * @param collection  - the collection of file dependencies
+     */
     public void extractDependencyInfo(ImportDeclaration imp, List<Dependency> collection) {
         String packageName, importName;
 
         if (!imp.isAsterisk()) {
             importName = imp.getName().getIdentifier();
             packageName = getPackageName(imp);
-            
-            if(!imp.isStatic()){
-                String parentPath = (new File(repositoryPath)).getAbsolutePath();
-                boolean addedInternal = addDependency(parentPath, packageName, importName, collection);
-                if(!addedInternal){
-                     collection.add(new Dependency(packageName, importName, "external",  "class/interface"));
-                 }
-            }else{
-                boolean addedInternal = addStaticDependencies(repositoryPath, packageName, collection,false, importName);
-                if(!addedInternal){
-                    collection.add(new Dependency(packageName, importName, "external",  "static member"));
+
+            if (!imp.isStatic()) {
+
+                if (path.equals(repositoryPath)) {
+                    collection.add(new Dependency(packageName, importName, "external", "class/interface"));
+                } else {
+                    String parentPath = (new File(repositoryPath)).getAbsolutePath();
+                    boolean addedAsInternal = addInternalDependency(parentPath, packageName, importName, collection);
+                    if (!addedAsInternal) {
+                        collection.add(new Dependency(packageName, importName, "external", "class/interface"));
+                    }
+                }
+
+            } else {
+                if (path.equals(repositoryPath)) {
+                    collection.add(new Dependency(packageName, importName, "external", "static member"));
+                } else {
+                    boolean addedAsInternal = addStaticDependencies(repositoryPath, packageName, collection, false, importName);
+                    if (!addedAsInternal) {
+                        collection.add(new Dependency(packageName, importName, "external", "static member"));
+                    }
                 }
             }
 
         } else {
             importName = "*";
             packageName = getPackageName(imp);
-            
-            if(!imp.isStatic()){
-                boolean addedInternal = addDependencies(packageName, collection);
-                if(!addedInternal){
-                    collection.add(new Dependency(packageName, importName, "external",  "classes/interfaces"));
+
+            if (!imp.isStatic()) {
+                if (path.equals(repositoryPath)) {
+                    collection.add(new Dependency(packageName, importName, "external", "class/interface"));
+                } else {
+                    boolean addedAsInternal = addDependencies(packageName, collection);
+                    if (!addedAsInternal) {
+                        collection.add(new Dependency(packageName, importName, "external", "classes/interfaces"));
+                    }
                 }
-            }else{
-                boolean addedInternal = addStaticDependencies(repositoryPath, packageName, collection,true,importName);
-                if(!addedInternal){
-                    collection.add(new Dependency(packageName, importName, "external",  "static members"));
+            } else {
+
+                if (path.equals(repositoryPath)) {
+                    collection.add(new Dependency(packageName, importName, "external", "static members"));
+                } else {
+                    boolean addedAsInternal = addStaticDependencies(repositoryPath, packageName, collection, true, importName);
+                    if (!addedAsInternal) {
+                        collection.add(new Dependency(packageName, importName, "external", "static members"));
+                    }
                 }
             }
-        }    
+        }
 
     }
 
-
-
-    // Adaptation of code from inspect4py: REWRITE THISSSS!!
-
-    // same as module = node.module
+    /**
+     *  Get the package name from the import declaration
+     * @param imp - the import declaration
+     * @return - the package name
+     */
     public String getPackageName(ImportDeclaration imp) {
-        if(!imp.isAsterisk()){
+        if (!imp.isAsterisk()) {
             return imp.getName().getQualifier().get().asString();
-        }else{
-            
+        } else {
+
             String id = imp.getName().getIdentifier();
             if (imp.getName().getQualifier().isPresent()) {
                 String qual = imp.getName().getQualifier().get().asString();
-                return qual + fileSeperator + id;
+                return qual + "." + id;
             } else {
                 return id;
             }
         }
-        
+
     }
 
-    
     /**
-     * 
-     * @param packagePath
+     *  Add a internal dependency to the collection of file dependencies
+     * @param packagePath - the path of the package
+     * @param packageName - the package name
+     *  @param importName - the import name
+     * @param collection - the collection of file dependencies
      */
-    public boolean addDependency(String parentPath, String packageName, String importName, List<Dependency> collection) {
-
-        File pkg = new File(parentPath + fileSeperator + packageName);
+    public boolean addInternalDependency(String parentPath, String packageName, String importName,
+            List<Dependency> collection) {
         
-        if (pkg.exists()) {
-            File file = new File(pkg.getAbsolutePath()+fileSeperator+importName+".java");
-            if(file.exists()){
-                ArrayList<Class> classes = searchFileForClasses(file.getAbsolutePath());
-                for(Class c: classes){
-                    if(c.getName().equals(importName)){
-                        collection.add(new Dependency(packageName, importName, "internal",  "class"));
-                        return true;
-                    } 
-                }
-
-                ArrayList<Interface> intfs = searchFileForInterfaces(file.getAbsolutePath());
-                for(Interface i: intfs){
-                    if(i.getName().equals(importName)){
-                        collection.add(new Dependency(packageName, importName, "internal",  "interface"));
-                        return true;
-                    }
-                    
-                }
-            }
-            
-        }
+        boolean found = checkPackageExistence(parentPath, packageName, importName, collection);
+        if(found) return true;
+        String pkgParentPath = new File(parentPath).getParentFile().getAbsolutePath();
+        found = checkPackageExistence(pkgParentPath, packageName, importName, collection);
+        if(found) return true;
         return continueDependencySearch(parentPath, packageName, importName, collection);
     }
 
-    public boolean continueDependencySearch(String parentPath, String packageName, String importName, List<Dependency> collection){
-        
+
+    /**
+     * Check if the package exists and add the dependency to the collection
+     * @param parentPath - the path of the parent directory of the package
+     * @param packageName - the package name
+     * @param importName - the import name
+     * @param collection    - the collection of file dependencies
+     * @return - true if the dependency is internal and has been added to collection
+     */
+    public boolean checkPackageExistence(String parentPath, String packageName, String importName, List<Dependency> collection) {
+    
+        File pkg = new File(parentPath + SEP + packageName.replace(".", SEP));
+        if (pkg.exists()) {
+            File file = new File(pkg.getAbsolutePath() + SEP + importName + ".java");
+            if (file.exists()) {
+                ArrayList<Class> classes = searchFileForClasses(file.getAbsolutePath());
+                for (Class c : classes) {
+                    if (c.getName().equals(importName)) {
+                        collection.add(new Dependency(packageName, importName, "internal", "class"));
+                        return true;
+                    }
+                }
+
+                ArrayList<Interface> intfs = searchFileForInterfaces(file.getAbsolutePath());
+                for (Interface i : intfs) {
+                    if (i.getName().equals(importName)) {
+                        collection.add(new Dependency(packageName, importName, "internal", "interface"));
+                        return true;
+                    }
+
+                }
+            }
+
+        }
+        return false;
+    }
+
+
+    /**
+     *  Continue the search to determine if a dependency is internal or external
+     * @param parentPath - the path of the parent directory of the package
+     * @param packageName - the package name
+     * @param importName  - the import name
+     * @param collection - the collection of dependencies
+     * @return - true if the dependency is internal and has been added to collection
+     */
+    public boolean continueDependencySearch(String parentPath, String packageName, String importName,
+            List<Dependency> collection) {
+
         Path dirObj = Paths.get(parentPath);
         List<File> directories = new ArrayList<>();
         try {
@@ -225,16 +282,18 @@ public class DependencyCollection {
         }
         if (directories.size() > 0) {
             for (int i = 0; i < directories.size(); i++) {
-                boolean found = addDependency(directories.get(i).getAbsolutePath(), packageName, importName,collection);
-                if (found) {return true;}
-            } 
+                boolean found = addInternalDependency(directories.get(i).getAbsolutePath(), packageName, importName,
+                        collection);
+                if (found) {
+                    return true;
+                }
+            }
         }
         return false;
     }
 
-
     /**
-     * 
+     *  Add the dependencies of a file to the collection of file dependencies
      * @param packagePath
      */
     public boolean addDependencies(String packageName, List<Dependency> collection) {
@@ -249,16 +308,25 @@ public class DependencyCollection {
             addImportedInterfaces(files, packageName, collection);
         } else {
             String parPath = (new File(repositoryPath)).getAbsolutePath();
-            boolean found = addDependencies(parPath, packageName, collection);
+            boolean found = addInternalDependencies(parPath, packageName, collection);
+            if(found) return true;
+            parPath = new File(parPath).getParentFile().getAbsolutePath();
+            found = addInternalDependencies(parPath, packageName, collection);
             return found;
         }
         return false;
     }
 
+    /**
+     * Add the dependencies of a file to the collection of file dependencies
+     * @param parentPath 
+     * @param packageName
+     * @param collection
+     * @return
+     */
+    private boolean addInternalDependencies(String parentPath, String packageName, List<Dependency> collection) {
 
-    private boolean addDependencies(String parentPath, String packageName, List<Dependency> collection) {
-
-        File pkg = new File(parentPath + fileSeperator + packageName);
+        File pkg = new File(parentPath + SEP + packageName.replace(".", SEP));
         if (pkg.exists()) {
             Path packageObj = pkg.toPath();
             List<File> files = getFiles(packageObj);
@@ -280,8 +348,10 @@ public class DependencyCollection {
             }
             if (directories.size() > 0) {
                 for (int i = 0; i < directories.size(); i++) {
-                    boolean found = addDependencies(directories.get(i).getAbsolutePath(), packageName, collection);
-                    if (found) {return true;}
+                    boolean found = addInternalDependencies(directories.get(i).getAbsolutePath(), packageName, collection);
+                    if (found) {
+                        return true;
+                    }
                 }
             }
         }
@@ -290,26 +360,26 @@ public class DependencyCollection {
 
     private boolean inSamePackage(File filePackage, String packageName) {
         String fileParentPackage = filePackage.getParentFile().getAbsolutePath();
-        String importPackageFullPath = fileParentPackage + fileSeperator + packageName;
+        String importPackageFullPath = fileParentPackage + SEP + packageName.replace(".", SEP);
         String filePackageAsString = filePackage.getAbsolutePath();
         return filePackageAsString.equals(importPackageFullPath);
     }
 
- 
+    private boolean addStaticDependencies(String parentPath, String classIntf, List<Dependency> collection,
+            boolean isAst, String impName) {
+        if (!classIntf.endsWith(".java"))
+            classIntf = classIntf + ".java";
 
-    private boolean addStaticDependencies(String parentPath, String classIntf, List<Dependency> collection, boolean isAst, String impName){
-        if(!classIntf.endsWith(".java")) classIntf = classIntf+".java";
-
-        File file = new File(parentPath + fileSeperator + classIntf);
+        File file = new File(parentPath + SEP + classIntf);
         if (file.exists()) {
-            if(isAst){
-                collection.add(new Dependency(classIntf, impName, "internal",  "static members"));
-            }else{
-                collection.add(new Dependency(classIntf, impName, "internal",  "static member"));
+            if (isAst) {
+                collection.add(new Dependency(classIntf, impName, "internal", "static members"));
+            } else {
+                collection.add(new Dependency(classIntf, impName, "internal", "static member"));
             }
-           
+
             return true;
-        }else{
+        } else {
             Path dirObj = Paths.get(parentPath);
             List<File> directories = new ArrayList<>();
             try {
@@ -324,8 +394,11 @@ public class DependencyCollection {
             }
             if (directories.size() > 0) {
                 for (int i = 0; i < directories.size(); i++) {
-                    boolean found = addStaticDependencies(directories.get(i).getAbsolutePath(), classIntf, collection, isAst, impName);
-                    if (found) {return true;}
+                    boolean found = addStaticDependencies(directories.get(i).getAbsolutePath(), classIntf, collection,
+                            isAst, impName);
+                    if (found) {
+                        return true;
+                    }
                 }
             }
         }
@@ -333,7 +406,7 @@ public class DependencyCollection {
     }
 
     private void addImportedClasses(List<File> files, String packageName, List<Dependency> collection) {
-        String fileName = path.substring(path.lastIndexOf(fileSeperator)+1);
+        String fileName = path.substring(path.lastIndexOf(SEP) + 1);
         if (files.size() > 0) {
             files.forEach(f -> {
                 if (!f.getName().equals(fileName)) {
@@ -351,7 +424,7 @@ public class DependencyCollection {
 
     private void addImportedInterfaces(List<File> files, String packageName, List<Dependency> collection) {
 
-        String fileName = path.substring(path.lastIndexOf(fileSeperator)).replace(fileSeperator, "");
+        String fileName = path.substring(path.lastIndexOf(SEP)).replace(SEP, "");
         if (files.size() > 0) {
             files.forEach(f -> {
                 if (!f.getName().equals(fileName)) {
