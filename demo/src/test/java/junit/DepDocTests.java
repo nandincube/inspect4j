@@ -37,9 +37,6 @@ public class DepDocTests {
 
                 String json = "";
                 try {
-                        File f = new File(outputFile);
-                        // if (f.exists())
-                        // System.out.println("File exists");
                         json = new String(Files.readAllBytes(Paths.get(outputFile)));
                 } catch (IOException e) {
                         System.out.println("Could not read file: " + e);

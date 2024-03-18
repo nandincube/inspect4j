@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: junit.TypeInheritenceTests
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 s - in junit.TypeInheritenceTests
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.04 s - in junit.TypeInheritenceTests

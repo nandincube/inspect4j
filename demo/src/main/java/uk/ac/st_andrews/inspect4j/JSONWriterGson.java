@@ -122,7 +122,7 @@ public class JSONWriterGson {
                             interfaceCollectionJsonObject.add(x.getName(), intf);
                         }
                     });
-                    System.out.println("Size: "+intfs.size());
+                  //  System.out.println("Size: "+intfs.size());
                     if(intfs.size() > 0) jsonFile.add("interfaces", interfaceCollectionJsonObject);
                 }
 

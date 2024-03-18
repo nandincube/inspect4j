@@ -9,7 +9,8 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 
 /**
- * Class to represent a variable that is assigned a method call or object creation (i.e stored_variable_calls)
+ * Class to represent a variable that is assigned a method call or object
+ * creation (i.e stored_variable_calls)
  */
 public class Variable {
     private String name; // name of the variable
@@ -26,7 +27,7 @@ public class Variable {
         Expression identifier = assignment.getTarget();
         if (identifier.isNameExpr()) {
             this.name = identifier.asNameExpr().getNameAsString();
-        } 
+        }
         if (identifier.isFieldAccessExpr()) {
             this.name = identifier.asFieldAccessExpr().getScope() + "."
                     + identifier.asFieldAccessExpr().getNameAsString();
@@ -34,19 +35,19 @@ public class Variable {
 
         this.parent = findParent(assignment);
         String scope; // scope of the method call
-        if(assignment.getValue().isMethodCallExpr()){ // if the value is a method call
+        if (assignment.getValue().isMethodCallExpr()) { // if the value is a method call
             scope = assignment.getValue().asMethodCallExpr().getScope().isPresent()
                     ? assignment.getValue().asMethodCallExpr().getScope().get().toString() + "."
                     : "";
             this.methodCalled = scope + assignment.getValue().asMethodCallExpr().getName().asString();
-        }else{ // if the value is an object creation
+        } else { // if the value is an object creation
             scope = assignment.getValue().asObjectCreationExpr().getScope().isPresent()
-            ? assignment.getValue().asObjectCreationExpr().getScope().get().toString() + "."
-            : "";
+                    ? assignment.getValue().asObjectCreationExpr().getScope().get().toString() + "."
+                    : "";
             this.methodCalled = scope + assignment.getValue().asObjectCreationExpr().getTypeAsString();
 
         }
-       
+
         if (identifier.isNameExpr()) { // if the identifier is a name expression
             this.javaDoc = findJavaDoc(identifier.asNameExpr());
         }
@@ -56,31 +57,33 @@ public class Variable {
     }
 
     /**
-     *  Constructor
-     * @param var - the variable declarator
+     * Constructor
+     * 
+     * @param var      - the variable declarator
      * @param parentIC - the parent entity
-     * @param mc - the method call expression
+     * @param mc       - the method call expression
      */
     public Variable(VariableDeclarator var, ParentEntity<?> parentIC, Expression mc) {
         this.name = var.getNameAsString();
         this.parent = parentIC;
-        if(mc.isMethodCallExpr()) { // if the expression is a method call
+        if (mc.isMethodCallExpr()) { // if the expression is a method call
             String scope = mc.asMethodCallExpr().getScope().isPresent()
                     ? mc.asMethodCallExpr().getScope().get().toString() + "."
                     : "";
             this.methodCalled = scope + mc.asMethodCallExpr().getName().asString();
-        }else{ // if the expression is an object creation
+        } else { // if the expression is an object creation
             String scope = mc.asObjectCreationExpr().getScope().isPresent()
-            ? mc.asObjectCreationExpr().getScope().get().toString() + "."
-            : "";
-            this.methodCalled = scope+ mc.asObjectCreationExpr().getTypeAsString();
+                    ? mc.asObjectCreationExpr().getScope().get().toString() + "."
+                    : "";
+            this.methodCalled = scope + mc.asObjectCreationExpr().getTypeAsString();
         }
-      
+
         this.javaDoc = findJavaDoc(var);
     }
 
     /**
      * gets JavaDoc comment
+     * 
      * @return - the JavaDoc comment
      */
     public String getJavaDoc() {
@@ -88,7 +91,8 @@ public class Variable {
     }
 
     /**
-     *  sets JavaDoc comment
+     * sets JavaDoc comment
+     * 
      * @param javaDoc - the JavaDoc comment
      */
     public void setJavaDoc(String javaDoc) {
@@ -96,7 +100,8 @@ public class Variable {
     }
 
     /**
-     *  finds  the javadoc comment for the variable (NameExpr)
+     * finds the javadoc comment for the variable (NameExpr)
+     * 
      * @param var - the variable
      * @return - the javadoc comment
      */
@@ -110,9 +115,10 @@ public class Variable {
     }
 
     /**
-     *  finds the javadoc comment for the variable 
+     * finds the javadoc comment for the variable
+     * 
      * @param var - the variable
-     * @return  - the javadoc comment
+     * @return - the javadoc comment
      */
     private String findJavaDoc(FieldAccessExpr var) {
         if (var.getComment().isPresent()) {
@@ -124,7 +130,8 @@ public class Variable {
     }
 
     /**
-     *  finds the javadoc comment for the variable
+     * finds the javadoc comment for the variable
+     * 
      * @param var - the variable
      * @return - the javadoc comment
      */
@@ -138,7 +145,9 @@ public class Variable {
     }
 
     /**
-     *  finds the parent entity of the variable. The parent entity can be a class/interface or a method that the variable is declared/assigned in.
+     * finds the parent entity of the variable. The parent entity can be a
+     * class/interface or a method that the variable is declared/assigned in.
+     * 
      * @param expr - the assignment expression
      * @return - the parent entity
      */
@@ -160,7 +169,8 @@ public class Variable {
     }
 
     /**
-     *  finds the parent class/interface of the variable if it exists
+     * finds the parent class/interface of the variable if it exists
+     * 
      * @param expr - the assignment expression - the variable
      * @return - the parent class/interface if it exists
      */
@@ -178,7 +188,8 @@ public class Variable {
     }
 
     /**
-     *  finds the parent method of the variable if it exists
+     * finds the parent method of the variable if it exists
+     * 
      * @param expr - the assignment expression - the variable
      * @return - the parent method if it exists
      */
@@ -193,7 +204,8 @@ public class Variable {
     }
 
     /**
-     *  gets the name of the variable
+     * gets the name of the variable
+     * 
      * @return - the name of the variable
      */
     public String getName() {
@@ -201,7 +213,8 @@ public class Variable {
     }
 
     /**
-     *  sets the name of the variable
+     * sets the name of the variable
+     * 
      * @param name - the name of the variable
      */
     public void setName(String name) {
@@ -209,7 +222,8 @@ public class Variable {
     }
 
     /**
-     *  gets the method call assigned to the variable
+     * gets the method call assigned to the variable
+     * 
      * @return - the method call assigned to the variable
      */
     public String getMethodCalled() {
@@ -217,7 +231,8 @@ public class Variable {
     }
 
     /**
-     *  sets the method call assigned to the variable
+     * sets the method call assigned to the variable
+     * 
      * @param methodCalled - the method call assigned to the variable
      */
     public void setMethodCalled(String methodCalled) {
@@ -225,7 +240,8 @@ public class Variable {
     }
 
     /**
-     *  gets the parent entity of the variable
+     * gets the parent entity of the variable
+     * 
      * @return - the parent entity of the variable
      */
     public ParentEntity<?> getParent() {
@@ -233,7 +249,8 @@ public class Variable {
     }
 
     /**
-     *  sets the parent entity of the variable
+     * sets the parent entity of the variable
+     * 
      * @param parent - the parent entity of the variable
      */
     public void setParent(ParentEntity<?> parent) {
