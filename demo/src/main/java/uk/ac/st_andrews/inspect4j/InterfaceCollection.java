@@ -58,7 +58,7 @@ public class InterfaceCollection {
      * 
      */
     public void extractInterfacesFromAST(){
-          VoidVisitor<List<Interface>> interfaceDefCollector = new InterfaceDefinitionCollector();
+          VoidVisitor<List<Interface>> interfaceDefCollector = new InterfaceDeclarationCollector();
         interfaceDefCollector.visit(ast, interfaceList);
 
     }
@@ -97,9 +97,9 @@ public class InterfaceCollection {
     }
 
     /**
-     * 
+     *  This class is used to collect the interface declarations from the AST.
      */
-    private static class InterfaceDefinitionCollector extends VoidVisitorAdapter<List<Interface>> {
+    private static class InterfaceDeclarationCollector extends VoidVisitorAdapter<List<Interface>> {
         @Override
         public void visit(ClassOrInterfaceDeclaration intDecl, List<Interface> collection) { 
             super.visit(intDecl, collection);
@@ -107,6 +107,5 @@ public class InterfaceCollection {
                 collection.add(new Interface(intDecl));
             }
         }
-
     }
 }

@@ -13,27 +13,35 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.Statement;
 
+/**
+ * This class is used to create an and store the Abstract Syntax Tree (AST) representation of a given file.
+ 
+ */
 public class AST {
-    private CompilationUnit fullTree;
-    private ClassCollection classCollection;
-    private MethodCollection methodCollection;
-    private InterfaceCollection interfaceCollection;
-    private MethodReferenceCollection referenceCollection;
-    private LambdaCollection lambdaCollection;
-    private VariableCollection variableCollection;
-    private DependencyCollection dependencyCollection;
-    private MainInfo main;
-    private String path;
-    private FileInfo fileInfo;
+    private CompilationUnit fullTree; // The full AST of the file
+    private ClassCollection classCollection; // Collection of classes extracted from the tree
+    private MethodCollection methodCollection; // Collection of methods extracted from the tree
+    private InterfaceCollection interfaceCollection; // Collection of interfaces extracted from the tree
+    private MethodReferenceCollection referenceCollection; // Collection of method references extracted from the tree
+    private LambdaCollection lambdaCollection; // Collection of lambdas extracted from the tree
+    private VariableCollection variableCollection; // Collection of variables extracted from the tree
+    private DependencyCollection dependencyCollection; // Collection of dependencies extracted from the tree
+    private MainInfo main; // Information about the main method
+    private String path; // The path of the file
+    private FileInfo fileInfo; // Information about the file
 
 
     /**
-     * 
-     * @param path
+     *  Constructor for the AST class.
+     * @param path - The path of the file
+     * @param repoPath - The path of the repository
      */
     public AST(String path, String repoPath) {
-        this.path = path;
+        this.path = path; 
         this.fullTree = parseFile(path);
+        if(fullTree == null) {
+            return;
+        }
         this.classCollection = new ClassCollection(fullTree);
         this.methodCollection = new MethodCollection(fullTree);
         this.interfaceCollection = new InterfaceCollection(fullTree);
@@ -45,16 +53,16 @@ public class AST {
     }
 
     /**
-     * 
-     * @param path
-     * @return
+     *  This method is used to parse a file into an AST.
+     * @param path - The path of the file
+     * @return - The AST of the file
      */
     private CompilationUnit parseFile(String path) {
         try {
             Path file = Paths.get(path);
 
             if (Files.exists(file)) {
-                return StaticJavaParser.parse(Files.newInputStream(Paths.get(path)));
+                return StaticJavaParser.parse(Files.newInputStream(Paths.get(path))); //parses the file into an AST
             }
         } catch (IOException e) {
             System.out.println("Error! Could not read file: " + e);
@@ -69,7 +77,7 @@ public class AST {
     }
 
     /**
-     * 
+     *  This method is used to find the main method in the AST.
      * @return
      */
     public MainInfo findMainMethod() {
@@ -148,28 +156,6 @@ public class AST {
         interfaceCollection.addMethods(methodCollection);
         interfaceCollection.addInterfaces(interfaceCollection);
         interfaceCollection.addClasses(classCollection);
-    }
-
-    /**
-     * 
-     */
-    public void printMetadata() {
-        System.out.println("Extracting classes...\n");
-        classCollection.printMetadata();
-        System.out.println("Extracting interfaces...\n");
-        interfaceCollection.printMetadata();
-        System.out.println("Extracting Methods... \n");
-        methodCollection.printMetadata();
-        System.out.println("Extracting Variables...\n");
-        variableCollection.printMetadata();
-        System.out.println("Extracting Lambdas...\n");
-        lambdaCollection.printMetadata();
-        System.out.println("Extracting Method References...\n");
-        referenceCollection.printMetadata();
-        System.out.println("Extracting Dependencies References...\n");
-        dependencyCollection.printMetadata();
-
-
     }
 
     /**
@@ -333,6 +319,10 @@ public class AST {
 
     public void setFileInfo(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
+    }
+
+    public CompilationUnit getAst() {
+        return fullTree;
     }
 
 }

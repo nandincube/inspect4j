@@ -9,11 +9,12 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 /**
- * 
+ *  This class is responsible for collecting all the classes from the AST
  */
 public class ClassCollection {
     private ArrayList<Class> classList;
     private CompilationUnit ast;
+    private static boolean isEnum;
 
     /**
      * 
@@ -28,7 +29,7 @@ public class ClassCollection {
      * 
      */
     public void extractClassesFromAST() {
-        VoidVisitor<List<Class>> classDefCollector = new ClassDefinitionCollector();
+        VoidVisitor<List<Class>> classDefCollector = new ClassDeclarationCollector();
         classDefCollector.visit(ast, classList);
 
     }
@@ -123,12 +124,12 @@ public class ClassCollection {
     /**
      * 
      */
-    private static class ClassDefinitionCollector extends VoidVisitorAdapter<List<Class>> {
+    private static class ClassDeclarationCollector extends VoidVisitorAdapter<List<Class>> {
         @Override
         public void visit(ClassOrInterfaceDeclaration cd, List<Class> collection) {
             super.visit(cd, collection);
-          
-            if (!cd.isInterface()) {
+     
+            if (!cd.isInterface() && !cd.isAnnotationDeclaration() && !cd.isEnumDeclaration()){
                 collection.add(new Class(cd));
             }
 

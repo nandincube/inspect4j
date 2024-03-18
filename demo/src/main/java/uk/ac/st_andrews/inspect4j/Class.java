@@ -11,7 +11,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
 /**
- * Class to represent a clas
+ * C
  */
 public class Class {
     private String name; // !

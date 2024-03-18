@@ -9,9 +9,6 @@ import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.json.JSONArray;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -69,13 +66,10 @@ public class JSONWriterGson {
 
     private void addCustomSerialisers(GsonBuilder gb) {
         serialiseFile(gb);
-
         serialiseClass(gb);
         serialiseInterface(gb);
-
         serialiseMethod(gb);
         serialiseMainInfo(gb);
-
         serialiseLambda(gb);
         serialiseMethodReference(gb);
         serialiseDependency(gb);
@@ -104,11 +98,11 @@ public class JSONWriterGson {
                         JsonElement dep = context.serialize(x, Dependency.class);
                         dependencyCollectionJsonArray.add(dep);
                     });
-                    jsonFile.add("dependencies", dependencyCollectionJsonArray);
+                    if(deps.size() >0) jsonFile.add("dependencies", dependencyCollectionJsonArray);
                 }
 
                 JsonObject classCollectionJsonObject = new JsonObject();
-                if (src.getClasses() != null) {
+                if (src.getClasses() != null && src.getClasses().getClasses().size() > 0) {
                     ArrayList<Class> cls = src.getClasses().getClasses();
                     cls.forEach(x -> {
                         if (x.getClassCategory() == ClassInterfaceCategory.STANDARD) {
@@ -116,11 +110,11 @@ public class JSONWriterGson {
                             classCollectionJsonObject.add(x.getName(), cl);
                         }
                     });
-                    jsonFile.add("classes", classCollectionJsonObject);
+                    if(cls.size() >0) jsonFile.add("classes", classCollectionJsonObject);
                 }
 
                 JsonObject interfaceCollectionJsonObject = new JsonObject();
-                if (src.getInterfaces() != null) {
+                if (src.getInterfaces() != null && src.getInterfaces().getInterfaces().size() > 0) {
                     ArrayList<Interface> intfs = src.getInterfaces().getInterfaces();
                     intfs.forEach(x -> {
                         if (x.getInterfaceCategory() == ClassInterfaceCategory.STANDARD) {
@@ -128,7 +122,8 @@ public class JSONWriterGson {
                             interfaceCollectionJsonObject.add(x.getName(), intf);
                         }
                     });
-                    jsonFile.add("interfaces", interfaceCollectionJsonObject);
+                    System.out.println("Size: "+intfs.size());
+                    if(intfs.size() > 0) jsonFile.add("interfaces", interfaceCollectionJsonObject);
                 }
 
                 if (src.getMain().hasMain()) {
@@ -151,7 +146,7 @@ public class JSONWriterGson {
         JsonSerializer<Class> serialiser = new JsonSerializer<Class>() {
             @Override
             public JsonElement serialize(Class src, Type typeOfSrc, JsonSerializationContext context) {
-             
+
                 JsonObject jsonDetails = new JsonObject();
 
                 jsonDetails.addProperty("doc", src.getJavaDoc());
@@ -203,15 +198,18 @@ public class JSONWriterGson {
                 }
 
                 JsonArray nonAccessModifiers = new JsonArray();
-                for(NonAccessModifierType nonAccessModifier : src.getNonAccessModifer()){
+                for (NonAccessModifierType nonAccessModifier : src.getNonAccessModifer()) {
                     nonAccessModifiers.add(nonAccessModifier.toString().toLowerCase());
                 }
-              
+
                 jsonDetails.addProperty("access_modifier", src.getAccessModifer().toString().toLowerCase());
                 jsonDetails.add("non_access_modifiers", nonAccessModifiers);
-                jsonDetails.add("extend", superJsonArray);
-                jsonDetails.add("implement", implJsonArray);
-                jsonDetails.add("type_params", typeParamsJsonArray);
+                if (superJsonArray.size() > 0)
+                    jsonDetails.add("extend", superJsonArray);
+                if (implJsonArray.size() > 0)
+                    jsonDetails.add("implement", implJsonArray);
+                if (typeParamsJsonArray.size() > 0)
+                    jsonDetails.add("type_params", typeParamsJsonArray);
 
                 JsonObject lineNumbers = new JsonObject();
                 lineNumbers.addProperty("min_lineno", src.getLineMin());
@@ -220,15 +218,15 @@ public class JSONWriterGson {
 
                 JsonObject jsonVariables = new JsonObject();
                 List<Variable> vars = src.getStoredVarCalls();
-                for(int i=0; i <src.getStoredVarCalls().size();i++){
+                for (int i = 0; i < src.getStoredVarCalls().size(); i++) {
                     String varName = vars.get(i).getName();
                     String mc = vars.get(i).getMethodCalled();
                     if (jsonVariables.has(varName)) {
-                        if(jsonVariables.get(varName).isJsonArray()){
+                        if (jsonVariables.get(varName).isJsonArray()) {
                             JsonArray arr = jsonVariables.get(varName).getAsJsonArray();
                             arr.add(mc);
-                            jsonVariables.add(varName,arr);
-                        }else{
+                            jsonVariables.add(varName, arr);
+                        } else {
                             JsonArray jsonArray = new JsonArray();
                             jsonArray.add(jsonVariables.get(varName).getAsString());
                             jsonArray.add(mc);
@@ -238,12 +236,17 @@ public class JSONWriterGson {
                         jsonVariables.addProperty(vars.get(i).getName(), vars.get(i).getMethodCalled());
                     }
                 }
-            
-                jsonDetails.add("store_vars_calls", jsonVariables);
-                jsonDetails.add("methods", methodsJsonArray);
-                jsonDetails.add("nested_interfaces", interfacesJsonArray);
-                jsonDetails.add("inner_classes", innerClassJsonArray);
-                jsonDetails.add("static_nested_classes", staticNestedClassJsonArray);
+
+                if (!jsonVariables.keySet().isEmpty())
+                    jsonDetails.add("store_vars_calls", jsonVariables);
+                if (methodsJsonArray.size() > 0)
+                    jsonDetails.add("methods", methodsJsonArray);
+                if (interfacesJsonArray.size() > 0)
+                    jsonDetails.add("nested_interfaces", interfacesJsonArray);
+                if (innerClassJsonArray.size() > 0)
+                    jsonDetails.add("inner_classes", innerClassJsonArray);
+                if (staticNestedClassJsonArray.size() > 0)
+                    jsonDetails.add("static_nested_classes", staticNestedClassJsonArray);
 
                 return jsonDetails;
             }
@@ -313,15 +316,19 @@ public class JSONWriterGson {
 
                 jsonDetails.addProperty("access_modifier", src.getAccessModifer().toString().toLowerCase());
                 JsonArray nonAccessModifiers = new JsonArray();
-                for(NonAccessModifierType nonAccessModifier : src.getNonAccessModifer()){
+                for (NonAccessModifierType nonAccessModifier : src.getNonAccessModifer()) {
                     nonAccessModifiers.add(nonAccessModifier.toString().toLowerCase());
                 }
-              
+
                 jsonDetails.add("non_access_modifiers", nonAccessModifiers);
-                jsonDetails.add("args", paramNamesJsonArray);
-                jsonDetails.add("arg_types", paramTypesJsonObject);
-                jsonDetails.addProperty("return_type", src.getReturnType());
-                jsonDetails.add("returns", returnStmtsJsonArray);
+                if (paramNamesJsonArray.size() > 0)
+                    jsonDetails.add("args", paramNamesJsonArray);
+                if (paramTypesJsonObject.size() > 0)
+                    jsonDetails.add("arg_types", paramTypesJsonObject);
+                if (src.getReturnType() != null)
+                    jsonDetails.addProperty("return_type", src.getReturnType());
+                if (returnStmtsJsonArray.size() > 0)
+                    jsonDetails.add("returns", returnStmtsJsonArray);
 
                 JsonObject lineNumbers = new JsonObject();
                 lineNumbers.addProperty("min_lineno", src.getLineMin());
@@ -330,16 +337,16 @@ public class JSONWriterGson {
 
                 JsonObject jsonVariables = new JsonObject();
                 List<Variable> vars = src.getStoredVarCalls();
-                for(int i=0; i <src.getStoredVarCalls().size();i++){
+                for (int i = 0; i < src.getStoredVarCalls().size(); i++) {
                     String varName = vars.get(i).getName();
                     String mc = vars.get(i).getMethodCalled();
                     if (jsonVariables.has(varName)) {
-                        if(jsonVariables.get(varName).isJsonArray()){
+                        if (jsonVariables.get(varName).isJsonArray()) {
                             JsonArray arr = jsonVariables.get(varName).getAsJsonArray();
                             arr.add(mc);
-                            jsonVariables.add(varName,arr);
-                            
-                        }else{
+                            jsonVariables.add(varName, arr);
+
+                        } else {
                             JsonArray jsonArray = new JsonArray();
                             jsonArray.add(jsonVariables.get(varName).getAsString());
                             jsonArray.add(mc);
@@ -349,12 +356,17 @@ public class JSONWriterGson {
                         jsonVariables.addProperty(vars.get(i).getName(), vars.get(i).getMethodCalled());
                     }
                 }
-                jsonDetails.add("store_vars_calls", jsonVariables);
-                jsonDetails.add("lambdas", lambdasJsonArray);
-                jsonDetails.add("method_references", referencesJsonArray);
+
+                if (jsonVariables.size() > 0)
+                    jsonDetails.add("store_vars_calls", jsonVariables);
+                if (lambdasJsonArray.size() > 0)
+                    jsonDetails.add("lambdas", lambdasJsonArray);
+                if (referencesJsonArray.size() > 0)
+                    jsonDetails.add("method_references", referencesJsonArray);
 
                 // jsonDetails.add("references", lambdasJsonArray);#
-                jsonDetails.add("local_classes", localClassesJsonArray);
+                if (localClassesJsonArray.size() > 0)
+                    jsonDetails.add("local_classes", localClassesJsonArray);
                 // jsonDetails.add("interfaces", intefacesJsonArray);
 
                 jsonMethod.add(src.getName(), jsonDetails);
@@ -391,10 +403,14 @@ public class JSONWriterGson {
                     });
                 }
 
-                jsonLambda.add("args", paramNamesJsonArray);
-                jsonLambda.add("arg_types", paramTypesJsonObject);
-                jsonLambda.addProperty("body", src.getBodyAsString());
-                jsonLambda.add("returns", returnStmtsJsonArray);
+                if (paramNamesJsonArray.size() > 0)
+                    jsonLambda.add("args", paramNamesJsonArray);
+                if (paramTypesJsonObject.size() > 0)
+                    jsonLambda.add("arg_types", paramTypesJsonObject);
+                if (src.getBodyAsString() != null)
+                    jsonLambda.addProperty("body", src.getBodyAsString());
+                if (returnStmtsJsonArray.size() > 0)
+                    jsonLambda.add("returns", returnStmtsJsonArray);
 
                 JsonObject lineNumbers = new JsonObject();
                 lineNumbers.addProperty("min_lineno", src.getLineMin());
@@ -477,11 +493,16 @@ public class JSONWriterGson {
                 }
 
                 jsonDetails.addProperty("access_modifier", src.getAccessModifer().toString().toLowerCase());
-                jsonDetails.add("type_params", typeParamsJsonArray);
-                jsonDetails.add("extend", extendJsonArray);
-                jsonDetails.add("methods", methodsJsonArray);
-                jsonDetails.add("nested_interfaces", interfacesJsonArray);
-                jsonDetails.add("nested_classes", classesJsonArray);
+                if (typeParamsJsonArray.size() > 0)
+                    jsonDetails.add("type_params", typeParamsJsonArray);
+                if (extendJsonArray.size() > 0)
+                    jsonDetails.add("extend", extendJsonArray);
+                if (methodsJsonArray.size() > 0)
+                    jsonDetails.add("methods", methodsJsonArray);
+                if (interfacesJsonArray.size() > 0)
+                    jsonDetails.add("nested_interfaces", interfacesJsonArray);
+                if (classesJsonArray.size() > 0)
+                    jsonDetails.add("nested_classes", classesJsonArray);
 
                 JsonObject lineNumbers = new JsonObject();
                 lineNumbers.addProperty("min_lineno", src.getLineMin());

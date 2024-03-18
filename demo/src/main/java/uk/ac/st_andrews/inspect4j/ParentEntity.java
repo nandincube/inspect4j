@@ -1,7 +1,7 @@
 package uk.ac.st_andrews.inspect4j;
 
 /**
- * 
+ *  
  */
 public class ParentEntity<T> {
     private T declaration;

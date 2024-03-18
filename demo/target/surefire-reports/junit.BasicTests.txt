@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: junit.AppTest
+Test set: junit.BasicTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.061 s - in junit.AppTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.648 s - in junit.BasicTests

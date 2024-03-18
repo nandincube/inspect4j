@@ -27,17 +27,6 @@ public class Interface {
     private List<String> extendedInterfaces; // !
     private ClassOrInterfaceDeclaration declaration; // !
 
-    // private NonAccessModifierType nonAccessModifer; - all interfaces are
-    // implicitly abstract
-
-    // private List<String> implementedInterfaces;
-    // private List<String> superClasses;
-    // private List<Class> classes;
-    // private List<Interface> interfaces;
-    // private List<MethodReference> references;
-    // private List<Lambda> lambdas;
-    // private List<Variable> storedVarCalls;
-
     /**
      * 
      * @param interfaceDecl

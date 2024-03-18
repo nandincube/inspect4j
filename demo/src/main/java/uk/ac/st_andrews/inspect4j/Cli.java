@@ -38,29 +38,29 @@ public class Cli {
         // Cli c = new Cli(f, OUTPUTDIR_PATH); // if more than 2 args are provided the additional args are ignored
         // c.analyse();
 
-        String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
-        + "test_doc_and_dependencies" + SEP
-        + "BasicClassWithInternalDependencies.java";
-        String outputDir = ((new File(inputPath)).getParentFile().getAbsolutePath()) + SEP + OUTPUTDIR_PATH;
-        String outputFile = outputDir + SEP + "json_files" + SEP + "BasicClassWithInternalDependencies.json";
-        String repoPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files";
+        // String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
+        // + "test_doc_and_dependencies" + SEP
+        // + "BasicClassWithInternalDependencies.java";
+        // String outputDir = ((new File(inputPath)).getParentFile().getAbsolutePath()) + SEP + OUTPUTDIR_PATH;
+        // String outputFile = outputDir + SEP + "json_files" + SEP + "BasicClassWithInternalDependencies.json";
+        // String repoPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files";
 
 
-        System.out.println("outputDir: " + outputDir);
-        System.out.println("inputPath: " + inputPath);
-        System.out.println("repoPath: " + repoPath);
-        AST ast = new AST(inputPath,repoPath);
-        ast.extractMetadata();
-        ast.writeToJson(inputPath, outputDir);
+        // System.out.println("outputDir: " + outputDir);
+        // System.out.println("inputPath: " + inputPath);
+        // System.out.println("repoPath: " + repoPath);
+        // AST ast = new AST(inputPath,repoPath);
+        // ast.extractMetadata();
+        // ast.writeToJson(inputPath, outputDir);
      
-        // if (args.length > 0) {
-        //      String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
-        //      Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
-        //      c.analyse();
-        // } else {
-        //      System.out.println("Usage: java -jar demo" + SEP + "target" + SEP
-        //             + "inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY> [OUTPUT_DIRECTORY]");
-        // }
+        if (args.length > 0) {
+             String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
+             Cli c = new Cli(args[0], out); // if more than 2 args are provided the additional args are ignored
+             c.analyse();
+        } else {
+             System.out.println("Usage: java -jar demo" + SEP + "target" + SEP
+                    + "inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY> [OUTPUT_DIRECTORY]");
+        }
 
     }
 
@@ -145,6 +145,10 @@ public class Cli {
         if (filePath.length() > 0 && filePath != null) {
             if (FilenameUtils.getExtension(filePath).equals("java")) {
                 AST ast = new AST(filePath, repositoryPath);
+                if(ast.getAst() == null) {
+                    System.out.println("Error! Could not parse file into AST!");
+                    return;
+                }
                 ast.extractMetadata();
                 ast.writeToJson(filePath, outDir);
                 System.out.println("Data Extracted for file: " + filePath + ""+SEP);

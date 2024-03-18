@@ -108,7 +108,7 @@ public class Method {
      * 
      */
     private void extractNonAccessModifier() {
-
+       // System.out.println("Name:"+name);
         for (Modifier mod : declaration.getModifiers()) {
                 switch (mod.getKeyword()) {
                     case STATIC:
@@ -222,7 +222,7 @@ public class Method {
                 for (int i = 0; i < tags.size(); i++) {
                     if(i > 0) doc = doc +", ";
 
-                    System.out.println(tags.get(i));
+                    //System.out.println(tags.get(i));
                     doc = doc +"@"+ tags.get(i).getType().name()+ " "+tags.get(i).getTagName() + " "+
                     tags.get(i).getContent().toText().strip();
                 }

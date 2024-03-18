@@ -38,8 +38,6 @@ public class BasicTests {
                 String json = "";
                 try {
                         File f = new File(outputFile);
-                        if (f.exists())
-                                System.out.println("File exists");
                         json = new String(Files.readAllBytes(Paths.get(outputFile)));
                 } catch (IOException e) {
                         System.out.println("Could not read file: " + e);
@@ -64,25 +62,22 @@ public class BasicTests {
                                                 "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\test\\java\\test_files\\test_basic\\BasicClassWithMain.java")
                                 .put("fileNameBase", "BasicClassWithMain")
                                 .put("extension", "java"));
-                jsonObject.put("dependencies", new JSONArray());
                 jsonObject.put("classes", new JSONObject()
                                 .put("BasicClassWithMain", new JSONObject()
                                                 .put("access_modifier", "public")
                                                 .put("non_access_modifiers", new JSONArray().put("none"))
-                                                .put("extend", new JSONArray())
-                                                .put("implement", new JSONArray())
-                                                .put("type_params", new JSONArray())
+
                                                 .put("min_max_lineno", new JSONObject()
                                                                 .put("min_lineno", 3)
                                                                 .put("max_lineno", 9))
-                                                .put("store_vars_calls", new JSONObject())
                                                 .put("methods", new JSONArray()
                                                                 .put(new JSONObject()
                                                                                 .put("main", new JSONObject()
                                                                                                 .put("access_modifier",
                                                                                                                 "public")
                                                                                                 .put("non_access_modifiers",
-                                                                                                new JSONArray().put("static"))
+                                                                                                                new JSONArray().put(
+                                                                                                                                "static"))
                                                                                                 .put("args", new JSONArray()
                                                                                                                 .put("args"))
                                                                                                 .put("arg_types",
@@ -91,24 +86,13 @@ public class BasicTests {
                                                                                                                                 "String[]"))
                                                                                                 .put("return_type",
                                                                                                                 "void")
-                                                                                                .put("returns", new JSONArray())
                                                                                                 .put("min_max_lineno",
                                                                                                                 new JSONObject()
                                                                                                                                 .put("min_lineno",
                                                                                                                                                 4)
                                                                                                                                 .put("max_lineno",
-                                                                                                                                                7))
-                                                                                                .put("store_vars_calls",
-                                                                                                                new JSONObject())
-                                                                                                .put("lambdas", new JSONArray())
-                                                                                                .put("method_references",
-                                                                                                                new JSONArray())
-                                                                                                .put("local_classes",
-                                                                                                                new JSONArray()))))
-                                                .put("nested_interfaces", new JSONArray())
-                                                .put("inner_classes", new JSONArray())
-                                                .put("static_nested_classes", new JSONArray())));
-                jsonObject.put("interfaces", new JSONObject());
+                                                                                                                                                7)))))));
+
                 jsonObject.put("main_info", new JSONObject()
                                 .put("main_flag", true)
                                 .put("main_method", "System.out.println"));
@@ -145,19 +129,17 @@ public class BasicTests {
                 JSONObject classesObject = new JSONObject();
                 JSONObject basicClassObject = new JSONObject()
                                 .put("access_modifier", "public")
-                                .put("non_access_modifiers",new JSONArray().put( "none"))
-                                .put("extend", new JSONArray())
-                                .put("implement", new JSONArray())
-                                .put("type_params", new JSONArray())
+                                .put("non_access_modifiers", new JSONArray().put("none"))
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 5)
                                                 .put("max_lineno", 16))
-                                .put("store_vars_calls", new JSONObject())
                                 .put("methods", new JSONArray()
                                                 .put(new JSONObject()
                                                                 .put("cat", new JSONObject()
                                                                                 .put("access_modifier", "public")
-                                                                                .put("non_access_modifiers", new JSONArray().put("none"))
+                                                                                .put("non_access_modifiers",
+                                                                                                new JSONArray().put(
+                                                                                                                "none"))
                                                                                 .put("args", new JSONArray()
                                                                                                 .put("name")
                                                                                                 .put("list")
@@ -173,22 +155,10 @@ public class BasicTests {
                                                                                                 .put("abdbf"))
                                                                                 .put("min_max_lineno", new JSONObject()
                                                                                                 .put("min_lineno", 8)
-                                                                                                .put("max_lineno", 15))
-                                                                                .put("store_vars_calls",
-                                                                                                new JSONObject())
-                                                                                .put("lambdas", new JSONArray())
-                                                                                .put("method_references",
-                                                                                                new JSONArray())
-                                                                                .put("local_classes",
-                                                                                                new JSONArray()))))
-                                .put("nested_interfaces", new JSONArray())
-                                .put("inner_classes", new JSONArray())
-                                .put("static_nested_classes", new JSONArray());
+                                                                                                .put("max_lineno",
+                                                                                                                15)))));
                 classesObject.put("BasicClassWithOneMethod", basicClassObject);
                 jsonObject.put("classes", classesObject);
-
-                JSONObject interfacesObject = new JSONObject();
-                jsonObject.put("interfaces", interfacesObject);
 
                 checkSimilarity(jsonObject, outputFile);
         }
@@ -222,9 +192,6 @@ public class BasicTests {
                 JSONObject basicClassWithMultipleMethods = new JSONObject()
                                 .put("access_modifier", "public")
                                 .put("non_access_modifiers", new JSONArray().put("none"))
-                                .put("extend", new JSONArray())
-                                .put("implement", new JSONArray())
-                                .put("type_params", new JSONArray())
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 5)
                                                 .put("max_lineno", 50))
@@ -238,14 +205,9 @@ public class BasicTests {
                                 .put("args", new JSONArray().put("args"))
                                 .put("arg_types", new JSONObject().put("args", "String[]"))
                                 .put("return_type", "void")
-                                .put("returns", new JSONArray())
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 10)
-                                                .put("max_lineno", 12))
-                                .put("store_vars_calls", new JSONObject())
-                                .put("lambdas", new JSONArray())
-                                .put("method_references", new JSONArray())
-                                .put("local_classes", new JSONArray());
+                                                .put("max_lineno", 12));
                 methods.put(new JSONObject().put("main", mainMethod));
 
                 JSONObject basicClassWithMultipleMethodsMethod = new JSONObject()
@@ -254,19 +216,14 @@ public class BasicTests {
                                 .put("args", new JSONArray().put("catName"))
                                 .put("arg_types", new JSONObject().put("catName", "String"))
                                 .put("return_type", "void")
-                                .put("returns", new JSONArray())
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 14)
-                                                .put("max_lineno", 16))
-                                .put("store_vars_calls", new JSONObject())
-                                .put("lambdas", new JSONArray())
-                                .put("method_references", new JSONArray())
-                                .put("local_classes", new JSONArray());
+                                                .put("max_lineno", 16));
                 methods.put(new JSONObject().put("BasicClassWithMultipleMethods", basicClassWithMultipleMethodsMethod));
 
                 JSONObject catMethod = new JSONObject()
                                 .put("access_modifier", "public")
-                                .put("non_access_modifiers",new JSONArray().put( "none"))
+                                .put("non_access_modifiers", new JSONArray().put("none"))
                                 .put("args", new JSONArray().put("name").put("list").put("age").put("breed"))
                                 .put("arg_types", new JSONObject()
                                                 .put("name", "String")
@@ -280,10 +237,7 @@ public class BasicTests {
                                                 .put("max_lineno", 28))
                                 .put("store_vars_calls", new JSONObject()
                                                 .put("dog", "dogNameSetter")
-                                                .put("dog2", "dogNameSetter"))
-                                .put("lambdas", new JSONArray())
-                                .put("method_references", new JSONArray())
-                                .put("local_classes", new JSONArray());
+                                                .put("dog2", "dogNameSetter"));
                 methods.put(new JSONObject().put("cat", catMethod));
 
                 JSONObject batMethod = new JSONObject()
@@ -298,11 +252,7 @@ public class BasicTests {
                                 .put("returns", new JSONArray().put("no").put("yes"))
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 30)
-                                                .put("max_lineno", 40))
-                                .put("store_vars_calls", new JSONObject())
-                                .put("lambdas", new JSONArray())
-                                .put("method_references", new JSONArray())
-                                .put("local_classes", new JSONArray());
+                                                .put("max_lineno", 40));
                 methods.put(new JSONObject().put("bat", batMethod));
 
                 JSONObject matMethod = new JSONObject()
@@ -313,41 +263,24 @@ public class BasicTests {
                                                 .put("size", "int")
                                                 .put("name", "String"))
                                 .put("return_type", "void")
-                                .put("returns", new JSONArray())
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 42)
-                                                .put("max_lineno", 45))
-                                .put("store_vars_calls", new JSONObject())
-                                .put("lambdas", new JSONArray())
-                                .put("method_references", new JSONArray())
-                                .put("local_classes", new JSONArray());
+                                                .put("max_lineno", 45));
                 methods.put(new JSONObject().put("mat", matMethod));
 
                 JSONObject dogNameSetterMethod = new JSONObject()
                                 .put("access_modifier", "private")
                                 .put("non_access_modifiers", new JSONArray().put("none"))
-                                .put("args", new JSONArray())
-                                .put("arg_types", new JSONObject())
                                 .put("return_type", "String")
                                 .put("returns", new JSONArray().put("Sam"))
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 47)
-                                                .put("max_lineno", 49))
-                                .put("store_vars_calls", new JSONObject())
-                                .put("lambdas", new JSONArray())
-                                .put("method_references", new JSONArray())
-                                .put("local_classes", new JSONArray());
+                                                .put("max_lineno", 49));
                 methods.put(new JSONObject().put("dogNameSetter", dogNameSetterMethod));
 
-                basicClassWithMultipleMethods.put("methods", methods)
-                                .put("nested_interfaces", new JSONArray())
-                                .put("inner_classes", new JSONArray())
-                                .put("static_nested_classes", new JSONArray());
+                basicClassWithMultipleMethods.put("methods", methods);
                 classes.put("BasicClassWithMultipleMethods", basicClassWithMultipleMethods);
                 jsonObject.put("classes", classes);
-
-                JSONObject interfaces = new JSONObject();
-                jsonObject.put("interfaces", interfaces);
 
                 JSONObject mainInfo = new JSONObject()
                                 .put("main_flag", true)
@@ -380,19 +313,17 @@ public class BasicTests {
                                                 .put("import", "List")
                                                 .put("type", "external")
                                                 .put("type_element", "class/interface")));
-                jsonObject.put("classes", new JSONObject());
                 jsonObject.put("interfaces", new JSONObject()
                                 .put("BasicInterfaceWithMethods", new JSONObject()
                                                 .put("access_modifier", "public")
-                                                .put("type_params", new JSONArray())
-                                                .put("extend", new JSONArray())
                                                 .put("methods", new JSONArray()
                                                                 .put(new JSONObject()
                                                                                 .put("bat", new JSONObject()
                                                                                                 .put("access_modifier",
                                                                                                                 "default")
                                                                                                 .put("non_access_modifiers",
-                                                                                                new JSONArray().put("abstract"))
+                                                                                                                new JSONArray().put(
+                                                                                                                                "abstract"))
                                                                                                 .put("args", new JSONArray()
                                                                                                                 .put("name")
                                                                                                                 .put("list")
@@ -406,26 +337,19 @@ public class BasicTests {
                                                                                                                                 .put("breed", "String"))
                                                                                                 .put("return_type",
                                                                                                                 "String")
-                                                                                                .put("returns", new JSONArray())
                                                                                                 .put("min_max_lineno",
                                                                                                                 new JSONObject()
                                                                                                                                 .put("min_lineno",
                                                                                                                                                 6)
                                                                                                                                 .put("max_lineno",
-                                                                                                                                                6))
-                                                                                                .put("store_vars_calls",
-                                                                                                                new JSONObject())
-                                                                                                .put("lambdas", new JSONArray())
-                                                                                                .put("method_references",
-                                                                                                                new JSONArray())
-                                                                                                .put("local_classes",
-                                                                                                                new JSONArray())))
+                                                                                                                                                6))))
                                                                 .put(new JSONObject()
                                                                                 .put("printAddress", new JSONObject()
                                                                                                 .put("access_modifier",
                                                                                                                 "default")
                                                                                                 .put("non_access_modifiers",
-                                                                                                new JSONArray().put("abstract"))
+                                                                                                                new JSONArray().put(
+                                                                                                                                "abstract"))
                                                                                                 .put("args", new JSONArray()
                                                                                                                 .put("address"))
                                                                                                 .put("arg_types",
@@ -433,22 +357,15 @@ public class BasicTests {
                                                                                                                                 .put("address", "String"))
                                                                                                 .put("return_type",
                                                                                                                 "String")
-                                                                                                .put("returns", new JSONArray())
                                                                                                 .put("min_max_lineno",
                                                                                                                 new JSONObject()
                                                                                                                                 .put("min_lineno",
                                                                                                                                                 7)
                                                                                                                                 .put("max_lineno",
                                                                                                                                                 7))
-                                                                                                .put("store_vars_calls",
-                                                                                                                new JSONObject())
-                                                                                                .put("lambdas", new JSONArray())
-                                                                                                .put("method_references",
-                                                                                                                new JSONArray())
-                                                                                                .put("local_classes",
-                                                                                                                new JSONArray()))))
-                                                .put("nested_interfaces", new JSONArray())
-                                                .put("nested_classes", new JSONArray())
+
+                                                                                )))
+
                                                 .put("min_max_lineno", new JSONObject()
                                                                 .put("min_lineno", 5)
                                                                 .put("max_lineno", 8))));
