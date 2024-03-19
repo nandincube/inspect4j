@@ -19,13 +19,13 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
-public class JSONWriterGson {
+public class OutputWriter {
 
     private FileInfo fileInfo;
     private String fileInfoAsJson;
     private final String FILE_SEPERATOR = FileSystems.getDefault().getSeparator();
 
-    public JSONWriterGson(FileInfo fileInfo) {
+    public OutputWriter(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
     }
 
@@ -54,7 +54,6 @@ public class JSONWriterGson {
             }
 
             String jsonFilePath = dir.getAbsolutePath() + FILE_SEPERATOR + fileName;
-
             BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
             writer.append(fileInfoAsJson);
             writer.close();

@@ -90,6 +90,8 @@ public class Cli {
                     String file = repositoryPath;
                     analyseFile(file, outputDir);
                 }
+                Requirements requirements = new Requirements(repositoryPath, outputDir);
+                requirements.extractRequirements();
 
                 System.out.println("Analysis completed! ");
             } else {

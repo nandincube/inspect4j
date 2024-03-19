@@ -165,7 +165,7 @@ public class AST {
      */
     public void writeToJson(String path, String directory) {
         fileInfo = new FileInfo(path, classCollection, interfaceCollection, main, dependencyCollection);
-        JSONWriterGson json = new JSONWriterGson(fileInfo);
+        OutputWriter json = new OutputWriter(fileInfo);
         json.write(directory);
     }
 
