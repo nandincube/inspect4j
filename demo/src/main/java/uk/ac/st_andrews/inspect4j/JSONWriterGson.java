@@ -356,7 +356,14 @@ public class JSONWriterGson {
                         jsonVariables.addProperty(vars.get(i).getName(), vars.get(i).getMethodCalled());
                     }
                 }
+                
+                JsonArray callsJsonArray = new JsonArray();
+                if (src.getDirectCalls() != null) {
+                    src.getDirectCalls().forEach(x -> callsJsonArray.add(new JsonPrimitive(x.toString())));
+                }
 
+                if (callsJsonArray.size() > 0)
+                    jsonDetails.add("calls", callsJsonArray);
                 if (jsonVariables.size() > 0)
                     jsonDetails.add("store_vars_calls", jsonVariables);
                 if (lambdasJsonArray.size() > 0)

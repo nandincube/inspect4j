@@ -91,7 +91,9 @@ public class BasicTests {
                                                                                                                                 .put("min_lineno",
                                                                                                                                                 4)
                                                                                                                                 .put("max_lineno",
-                                                                                                                                                7)))))));
+                                                                                                                                                7))
+                                                                                                .put("calls", new JSONArray()
+                                                                                                                .put("System.out.println")))))));
 
                 jsonObject.put("main_info", new JSONObject()
                                 .put("main_flag", true)
@@ -156,7 +158,11 @@ public class BasicTests {
                                                                                 .put("min_max_lineno", new JSONObject()
                                                                                                 .put("min_lineno", 8)
                                                                                                 .put("max_lineno",
-                                                                                                                15)))));
+                                                                                                                15))
+                                                                                .put("calls", new JSONArray()
+                                                                                                .put("System.out.println")
+                                                                                                .put("System.out.println")
+                                                                                                .put("System.out.println")))));
                 classesObject.put("BasicClassWithOneMethod", basicClassObject);
                 jsonObject.put("classes", classesObject);
 
@@ -207,7 +213,9 @@ public class BasicTests {
                                 .put("return_type", "void")
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 10)
-                                                .put("max_lineno", 12));
+                                                .put("max_lineno", 12))
+                                .put("calls", new JSONArray()
+                                                .put("System.out.println"));
                 methods.put(new JSONObject().put("main", mainMethod));
 
                 JSONObject basicClassWithMultipleMethodsMethod = new JSONObject()
@@ -219,6 +227,7 @@ public class BasicTests {
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 14)
                                                 .put("max_lineno", 16));
+                                        
                 methods.put(new JSONObject().put("BasicClassWithMultipleMethods", basicClassWithMultipleMethodsMethod));
 
                 JSONObject catMethod = new JSONObject()
@@ -235,6 +244,11 @@ public class BasicTests {
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 18)
                                                 .put("max_lineno", 28))
+                                .put("calls", new JSONArray()
+                                                .put("System.out.println")
+                                                .put("System.out.println")
+                                                .put("System.out.println")
+                                                .put("dogNameSetter"))
                                 .put("store_vars_calls", new JSONObject()
                                                 .put("dog", "dogNameSetter")
                                                 .put("dog2", "dogNameSetter"));
@@ -252,7 +266,10 @@ public class BasicTests {
                                 .put("returns", new JSONArray().put("no").put("yes"))
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 30)
-                                                .put("max_lineno", 40));
+                                                .put("max_lineno", 40))
+                                .put("calls", new JSONArray()
+                                                .put("System.out.println")
+                                                .put("System.out.println"));
                 methods.put(new JSONObject().put("bat", batMethod));
 
                 JSONObject matMethod = new JSONObject()
@@ -265,7 +282,10 @@ public class BasicTests {
                                 .put("return_type", "void")
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 42)
-                                                .put("max_lineno", 45));
+                                                .put("max_lineno", 45))
+                                .put("calls", new JSONArray()
+                                                .put("System.out.println")
+                                                .put("System.out.println"));
                 methods.put(new JSONObject().put("mat", matMethod));
 
                 JSONObject dogNameSetterMethod = new JSONObject()

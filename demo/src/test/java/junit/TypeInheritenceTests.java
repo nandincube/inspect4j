@@ -36,7 +36,7 @@ public class TypeInheritenceTests {
                 String json = "";
                 try {
                         File f = new File(outputFile);
-                     
+
                         json = new String(Files.readAllBytes(Paths.get(outputFile)));
                 } catch (IOException e) {
                         System.out.println("Could not read file: " + e);
@@ -119,7 +119,9 @@ public class TypeInheritenceTests {
                                                                                                                                 .put("min_lineno",
                                                                                                                                                 14)
                                                                                                                                 .put("max_lineno",
-                                                                                                                                                18))))
+                                                                                                                                                18))
+                                                                                                .put("calls", new JSONArray()
+                                                                                                                                                .put("System.out.println"))))
                                                                 .put(new JSONObject()
                                                                                 .put("bat", new JSONObject()
                                                                                                 .put("access_modifier",
@@ -147,7 +149,12 @@ public class TypeInheritenceTests {
                                                                                                                                 .put("min_lineno",
                                                                                                                                                 20)
                                                                                                                                 .put("max_lineno",
-                                                                                                                                                32)))))));
+                                                                                                                                                32))
+                                                                                                .put("calls", new JSONArray()
+                                                                                                .put("System.out.println")
+                                                                                                .put("System.out.println")
+                                                                                                .put("System.out.println")
+                                                                                                .put("name.length")))))));
 
                 checkSimilarity(expectedObject, outputFile);
 
@@ -232,7 +239,12 @@ public class TypeInheritenceTests {
                                                                                                                                                 .put("min_lineno",
                                                                                                                                                                 13)
                                                                                                                                                 .put("max_lineno",
-                                                                                                                                                                17)))))));
+                                                                                                                                                                17))
+                                                                                                                .put("calls", new JSONArray()
+                                                                                                                                .put("System.out.println")
+                                                                                                                                .put("System.out.println")
+                                                                                                                                .put("System.out.println")
+                                                                                                                                ))))));
 
                 checkSimilarity(jsonObject, outputFile);
 
@@ -266,12 +278,10 @@ public class TypeInheritenceTests {
                 dependenciesArray.put(dependencyObject);
                 jsonObject.put("dependencies", dependenciesArray);
 
-        
                 JSONObject interfacesObject = new JSONObject();
                 JSONObject genericTypeInterfaceObject = new JSONObject();
                 genericTypeInterfaceObject.put("access_modifier", "public");
                 genericTypeInterfaceObject.put("type_params", new JSONArray().put("T").put("S").put("A"));
-           
 
                 JSONArray methodsArray = new JSONArray();
                 JSONObject batObject = new JSONObject();
@@ -367,8 +377,7 @@ public class TypeInheritenceTests {
                                 .put("return_type", "T")
                                 .put("min_max_lineno", new JSONObject()
                                                 .put("min_lineno", 7)
-                                                .put("max_lineno", 7))
-                             );
+                                                .put("max_lineno", 7)));
                 methodsArray.put(methodObject);
                 genericTypeInterfaceExtendsInterfaceObject.put("methods", methodsArray);
                 genericTypeInterfaceExtendsInterfaceObject.put("min_max_lineno", new JSONObject()
@@ -378,7 +387,7 @@ public class TypeInheritenceTests {
                                 genericTypeInterfaceExtendsInterfaceObject);
                 jsonObject.put("interfaces", interfacesObject);
 
-                 checkSimilarity(jsonObject, outputFile);
+                checkSimilarity(jsonObject, outputFile);
 
         }
 
@@ -402,7 +411,7 @@ public class TypeInheritenceTests {
                                                                 .put("access_modifier", "public")
                                                                 .put("non_access_modifiers",
                                                                                 new JSONArray().put("none"))
-                                                           
+
                                                                 .put("min_max_lineno", new JSONObject()
                                                                                 .put("min_lineno", 3)
                                                                                 .put("max_lineno", 22))
@@ -428,18 +437,18 @@ public class TypeInheritenceTests {
                                                                                                                                                                 15)
                                                                                                                                                 .put("max_lineno",
                                                                                                                                                                 19))
+                                                                                                                .put("calls", new JSONArray().put("innerObj.innerMethod"))
                                                                                                                 .put("store_vars_calls",
                                                                                                                                 new JSONObject()
                                                                                                                                                 .put("nestObj", "InterfaceNestedInClass")
-                                                                                                                                                .put("innerObj", "nestObj.InnerClass"))
-                                                                                                               )))
+                                                                                                                                                .put("innerObj", "nestObj.InnerClass")))))
                                                                 .put("nested_interfaces", new JSONArray()
                                                                                 .put(new JSONObject()
                                                                                                 .put("nestedInterface",
                                                                                                                 new JSONObject()
                                                                                                                                 .put("access_modifier",
                                                                                                                                                 "public")
-                                                                                                                              
+
                                                                                                                                 .put("methods", new JSONArray()
                                                                                                                                                 .put(new JSONObject()
                                                                                                                                                                 .put("innerMethod",
@@ -449,7 +458,7 @@ public class TypeInheritenceTests {
                                                                                                                                                                                                 .put("non_access_modifiers",
                                                                                                                                                                                                                 new JSONArray().put(
                                                                                                                                                                                                                                 "abstract"))
-                                                                                                                                                        
+
                                                                                                                                                                                                 .put("return_type",
                                                                                                                                                                                                                 "void")
                                                                                                                                                                                                 .put("min_max_lineno",
@@ -457,9 +466,8 @@ public class TypeInheritenceTests {
                                                                                                                                                                                                                                 .put("min_lineno",
                                                                                                                                                                                                                                                 6)
                                                                                                                                                                                                                                 .put("max_lineno",
-                                                                                                                                                                                                                                                6))
-                                                                                                                                                                                       )))
-                                                                                                                              
+                                                                                                                                                                                                                                                6)))))
+
                                                                                                                                 .put("min_max_lineno",
                                                                                                                                                 new JSONObject()
                                                                                                                                                                 .put("min_lineno",
@@ -475,18 +483,18 @@ public class TypeInheritenceTests {
                                                                                                                                 .put("non_access_modifiers",
                                                                                                                                                 new JSONArray().put(
                                                                                                                                                                 "none"))
-                                                                                                                             
+
                                                                                                                                 .put("implement",
                                                                                                                                                 new JSONArray().put(
                                                                                                                                                                 "nestedInterface"))
-                                                                                                                              
+
                                                                                                                                 .put("min_max_lineno",
                                                                                                                                                 new JSONObject()
                                                                                                                                                                 .put("min_lineno",
                                                                                                                                                                                 9)
                                                                                                                                                                 .put("max_lineno",
                                                                                                                                                                                 14))
-                                                                                                                           
+
                                                                                                                                 .put("methods", new JSONArray()
                                                                                                                                                 .put(new JSONObject()
                                                                                                                                                                 .put("innerMethod",
@@ -496,7 +504,7 @@ public class TypeInheritenceTests {
                                                                                                                                                                                                 .put("non_access_modifiers",
                                                                                                                                                                                                                 new JSONArray().put(
                                                                                                                                                                                                                                 "none"))
-                                                                                                                                                                                             
+
                                                                                                                                                                                                 .put("return_type",
                                                                                                                                                                                                                 "void")
                                                                                                                                                                                                 .put("min_max_lineno",
@@ -505,10 +513,9 @@ public class TypeInheritenceTests {
                                                                                                                                                                                                                                                 10)
                                                                                                                                                                                                                                 .put("max_lineno",
                                                                                                                                                                                                                                                 13))
-                                                                                                                                                                                       )))
-                                                                                                                               )))
+                                                                                                                                                                                                .put("calls", new JSONArray().put("System.out.println"))))))))
 
-                                                                ))
+                                                ))
                                 .put("interfaces", new JSONObject())
                                 .put("main_info", new JSONObject()
                                                 .put("main_flag", true)

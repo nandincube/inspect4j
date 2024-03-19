@@ -32,6 +32,7 @@ public class Class {
     private ClassOrInterfaceDeclaration declaration; // !
     private List<Variable> storedVarCalls; // !
     private String javaDoc; // !
+   
 
     /**
      * 
@@ -69,6 +70,7 @@ public class Class {
         interfacesToString(implementedInterfaces);
         superClassesToString(superClasses);
     }
+
 
     /**
      * 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -78,18 +79,26 @@ public class Cli {
      *  Analyse the file or directory
      */
     public void analyse() {
-        Path pathObj = Paths.get(repositoryPath);
-        if (Files.exists(pathObj)) {
-            if (Files.isDirectory(pathObj)) {
-                analyseDirectory(repositoryPath, outputDir);
+        Path pathObj = null;
+        try{
+            pathObj = Paths.get(repositoryPath);
+            
+            if (Files.exists(pathObj)) {
+                if (Files.isDirectory(pathObj)) {
+                    analyseDirectory(repositoryPath, outputDir);
+                } else {
+                    String file = repositoryPath;
+                    analyseFile(file, outputDir);
+                }
+
+                System.out.println("Analysis completed! ");
             } else {
-                String file = repositoryPath;
-                analyseFile(file, outputDir);
+                System.out.println("Could not find source file/directory!");
+                System.exit(0);
             }
 
-            System.out.println("Analysis completed! ");
-        } else {
-            System.out.println("Could not find source file/directory!");
+        }catch(InvalidPathException e) {
+            System.out.println("Invalid path provided! ");
             System.exit(0);
         }
 

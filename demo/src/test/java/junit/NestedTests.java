@@ -34,7 +34,7 @@ public class NestedTests {
 
                 String json = "";
                 try {
-                     
+
                         json = new String(Files.readAllBytes(Paths.get(outputFile)));
                 } catch (IOException e) {
                         System.out.println("Could not read file: " + e);
@@ -88,6 +88,8 @@ public class NestedTests {
                                                                                                                                                 6)
                                                                                                                                 .put("max_lineno",
                                                                                                                                                 12))
+                                                                                                .put("calls", new JSONArray()
+                                                                                                                .put("System.out.println"))
 
                                                                                                 .put("local_classes",
                                                                                                                 new JSONArray()
@@ -114,6 +116,7 @@ public class NestedTests {
                                                 .put("min_max_lineno", new JSONObject()
                                                                 .put("min_lineno", 15)
                                                                 .put("max_lineno", 22))
+
                                                 .put("methods", new JSONArray()
                                                                 .put(new JSONObject()
                                                                                 .put("hi", new JSONObject()
@@ -135,7 +138,9 @@ public class NestedTests {
                                                                                                                                 .put("min_lineno",
                                                                                                                                                 18)
                                                                                                                                 .put("max_lineno",
-                                                                                                                                                20)))))));
+                                                                                                                                                20))
+                                                                                                .put("calls", new JSONArray()
+                                                                                                                .put("System.out.println")))))));
 
                 checkSimilarity(expectedObject, outputFile);
         }
@@ -183,7 +188,8 @@ public class NestedTests {
                                 .put("non_access_modifiers", new JSONArray().put("none"))
                                 .put("args", new JSONArray().put("arg"))
                                 .put("arg_types", new JSONObject().put("arg", "String")).put("return_type", "void")
-                                .put("min_max_lineno", new JSONObject().put("min_lineno", 9).put("max_lineno", 11)));
+                                .put("min_max_lineno", new JSONObject().put("min_lineno", 9).put("max_lineno", 11))
+                                .put("calls", new JSONArray().put("System.out.println")));
                 methodsArray.put(methodObject);
 
                 nestedClassObject.put("methods", methodsArray);
@@ -193,11 +199,8 @@ public class NestedTests {
                 classesObject.put("BasicClassWithNestedClasses", basicClassObject);
                 jsonObject.put("classes", classesObject);
 
-          
-
                 checkSimilarity(jsonObject, outputFile);
 
         }
-
 
 }

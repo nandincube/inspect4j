@@ -98,6 +98,7 @@ public class DepDocTests {
                 mainMethodObject.put("min_max_lineno", new JSONObject()
                                 .put("min_lineno", 9)
                                 .put("max_lineno", 12));
+                mainMethodObject.put("calls", new JSONArray().put("System.out.println"));
 
                 main.put("main", mainMethodObject);
 
@@ -115,6 +116,8 @@ public class DepDocTests {
                 batMethodObject.put("min_max_lineno", new JSONObject()
                                 .put("min_lineno", 14)
                                 .put("max_lineno", 24));
+                batMethodObject.put("calls", new JSONArray().put("System.out.println")
+                                                .put("System.out.println"));
 
                 bat.put("bat", batMethodObject);
                 methodsArray.put(main);
@@ -180,6 +183,7 @@ public class DepDocTests {
                 mainMethodObject.put("min_max_lineno", new JSONObject()
                                 .put("min_lineno", 8)
                                 .put("max_lineno", 11));
+                mainMethodObject.put("calls", new JSONArray().put("System.out.println"));
 
                 methodsArray.put(new JSONObject().put("main", mainMethodObject));
 
@@ -342,7 +346,10 @@ public class DepDocTests {
                                                 .put("returns", new JSONArray().put("printed cat details"))
                                                 .put("min_max_lineno",
                                                                 new JSONObject().put("min_lineno", 29).put("max_lineno",
-                                                                                35)));
+                                                                                35))
+                                                .put("calls", new JSONArray().put("System.out.println")
+                                                                                        .put("System.out.println")
+                                                                                        .put("System.out.println")));
                 methodsArray.put(catObject);
 
                 JSONObject matObject = new JSONObject()
@@ -358,6 +365,14 @@ public class DepDocTests {
                                                 .put("min_max_lineno",
                                                                 new JSONObject().put("min_lineno", 42).put("max_lineno",
                                                                                 55))
+                                                .put("calls", new JSONArray().put("System.out.println")
+                                                        .put("System.out.println")
+                                                        .put("list.add")
+                                                        .put("list.forEach")
+                                                        .put("System.out.println")
+                                                        .put("list.forEach")
+                                                        .put("System.out.println")
+                                                )
                                                 .put("store_vars_calls",
                                                                 new JSONObject().put("list", "ArrayList<String>"))
                                                 .put("lambdas", new JSONArray()

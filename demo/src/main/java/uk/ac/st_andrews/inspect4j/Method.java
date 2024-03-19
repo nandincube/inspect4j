@@ -11,6 +11,9 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.javadoc.JavadocBlockTag;
 
 /**
@@ -33,6 +36,7 @@ public class Method {
     private CallableDeclaration<?> declaration; // the declaration of the method
     private boolean isMain; // whether the method is the main method
     private AccessModifierType accessModifer; // the access modifier of the method
+    private List<String> directCalls; // the direct method calls in the method
 
     private List<NonAccessModifierType> nonAccessModifer; // the non-access modifiers of the method
 
@@ -80,10 +84,12 @@ public class Method {
         this.references = new ArrayList<MethodReference>();
         this.lambdas = new ArrayList<Lambda>();
         this.storedVarCalls = new ArrayList<Variable>();
+        this.directCalls = new ArrayList<String>();
         this.javaDoc = getJavaDoc(method);
         this.nonAccessModifer = new ArrayList<NonAccessModifierType>();
         extractAccessModifier();
         extractNonAccessModifier();
+        extractDirectCalls();
 
     }
 
@@ -163,6 +169,25 @@ public class Method {
             }
         }
         return false;
+    }
+
+    /**
+     * Method to extract the direct method calls in the method
+     */
+    private void extractDirectCalls() {
+        List<MethodCallExpr> calls = declaration.findAll(MethodCallExpr.class);
+        if (calls != null) {
+            for (MethodCallExpr call : calls) {
+                if (!(call.getParentNode().get() instanceof AssignExpr|| call.getParentNode().get() instanceof VariableDeclarationExpr)) {
+
+                    String scope = call.asMethodCallExpr().getScope().isPresent()
+                            ? call.asMethodCallExpr().getScope().get().toString() + "."
+                            : "";
+
+                    directCalls.add(scope + call.getNameAsString());
+                }
+            }
+        }
     }
 
     /**
@@ -644,6 +669,24 @@ public class Method {
      */
     public void setNonAccessModifer(List<NonAccessModifierType> nonAccessModifer) {
         this.nonAccessModifer = nonAccessModifer;
+    }
+
+    /**
+     * Method to get the direct method calls in the method
+     * 
+     * @return List<String> - the direct method calls in the method
+     */
+    public List<String> getDirectCalls() {
+        return directCalls;
+    }
+
+    /**
+     * Method to set the direct method calls in the method
+     * 
+     * @param directCalls - the direct method calls in the method
+     */
+    public void setDirectCalls(List<String> directCalls) {
+        this.directCalls = directCalls;
     }
 
 }
