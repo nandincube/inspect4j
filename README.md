@@ -41,11 +41,14 @@ java -jar target/inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY>
 
 ### Package dependencies:
 ```
-junit=4.11
-javaparser-symbol-solver-core=3.25.5
-commons-io=2.8.0
-picocli=4.7.5
-javaparser-core-serialization=3.25.5
-gson=2.10.1
+junit:junit==4.11
+com.github.javaparser:javaparser-symbol-solver-core==3.25.5
+commons-io:commons-io==2.8.0
+info.picocli:picocli==4.7.5
+com.github.javaparser:javaparser-core-serialization==3.25.5
+com.google.code.gson:gson==2.10.1
+org.json:json==20230618
+org.apache.maven:maven-model==3.6.3
+
 
 ```
