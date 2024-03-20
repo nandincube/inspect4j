@@ -77,7 +77,7 @@ public class VariableCollection {
     }
 
     /**
-     * This class is used to collect all the variables in a class/method and store
+     * This Visitor class is used to collect all the variables in a class/method and store
      * them in a list.
      */
     private static class StoredVariableCallsCollector extends VoidVisitorAdapter<List<Variable>> {

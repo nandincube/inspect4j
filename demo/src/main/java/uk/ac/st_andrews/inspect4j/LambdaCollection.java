@@ -12,15 +12,15 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 /**
- * 
+ *  This class is responsible for collecting all the lambdas from the AST
  */
 public class LambdaCollection {
-    private ArrayList<Lambda> lambdas;
-    private CompilationUnit ast;
+    private ArrayList<Lambda> lambdas; // list of lambdas as Lambda objects
+    private CompilationUnit ast; // AST for the class being analysed
 
     /**
-     * 
-     * @param ast
+     *  Constructor
+     * @param ast - CompilationUnit object representing the AST of a file
      */
     public LambdaCollection(CompilationUnit ast) {
         this.lambdas = new ArrayList<>();
@@ -28,7 +28,7 @@ public class LambdaCollection {
     }
 
     /**
-     * 
+     *  This method extracts all the lambdas from the AST of a file
      */
     public void extractLambdasFromAST() {
         VoidVisitor<List<Lambda>> lambdaDeclCollector = new LambdaExprCollector();
@@ -36,7 +36,7 @@ public class LambdaCollection {
     }
 
     /**
-     * 
+     *  This method links all the classes to relevant parent lambdas
     * @param classes
     */
     public void addClasses(ClassCollection classes) {
@@ -44,7 +44,7 @@ public class LambdaCollection {
     }
 
     /**
-     * 
+     *  This method links all the lambdas to relevant parent lambdas
      * @param lmbds
      */
     public void addLambdas(LambdaCollection lmbds) {
@@ -52,57 +52,57 @@ public class LambdaCollection {
     }
 
     /**
-     * 
-     * @param refs
+     *  This method links all the method references to relevant parent lambdas
+     * @param refs - MethodReferenceCollection object representing the method references in a file
      */
     public void addReferences(MethodReferenceCollection refs) {
         lambdas.forEach(x -> x.findReferences(refs));
     }
 
     /**
-     * 
-     * @param vars
+     *  This method links all the assignment methods/stored variable calls to relevant parent lambdas
+     * @param vars - VariableCollection object representing the variables in a file
      */
     public void addVariable(VariableCollection vars) {
         lambdas.forEach(x -> x.findVariables(vars));
     }
 
     /**
-     * 
-     * @return
+     *  Gets the list of lambdas
+     * @return ArrayList<Lambda> - list of lambdas
      */
     public ArrayList<Lambda> getLambdas() {
         return lambdas;
     }
 
     /**
-     * 
-     * @param lambdas
+     *  Sets the list of lambdas
+     * @param lambda - list of lambdas
      */
     public void setLambdas(ArrayList<Lambda> lambdas) {
         this.lambdas = lambdas;
     }
 
+    /**
+     * Gets the AST for the entity being analysed
+     * @return CompilationUnit - AST for the entity being analysed
+     */
     public CompilationUnit getAst() {
         return ast;
     }
 
     /**
-     * 
+     *  Sets the AST for the entity being analysed
+     * @param ast - AST for the entity being analysed
      */
     public void setAst(CompilationUnit ast) {
         this.ast = ast;
     }
 
-    /**
-     * 
-     */
-    public void printMetadata() {
-        lambdas.forEach(x -> System.out.println(x.toString()));
-    }
 
     /**
-     * 
+     * Visitor Class to collect all the lambdas in an ast and store them in a
+     * list.
      */
     private class LambdaExprCollector extends VoidVisitorAdapter<List<Lambda>> {
         @Override
@@ -112,11 +112,11 @@ public class LambdaCollection {
         }
 
     }
-
-    /**
+ /**
+     * This method is used to get the return statements for a given lambda.
      * 
-     * @param le
-     * @return
+     * @param le - The lambda expression declaration
+     * @return - The set of return statements
      */
     private HashSet<String> getReturnStatements(LambdaExpr le) {
         List<String> rtns = new ArrayList<String>();
@@ -124,8 +124,9 @@ public class LambdaCollection {
         return new HashSet<String>(returnPrinter.visit(le, rtns));
     }
 
-    /**
-     * 
+      /**
+     * This visitor class is used to collect all the return statements for in a given lambda
+     * subtree of the original AST and stores them in a list.
      */
     private class ReturnStatementCollector extends GenericListVisitorAdapter<String, List<String>> {
         @Override

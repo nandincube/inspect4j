@@ -18,7 +18,7 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 /**
- *  The class that collects the dependencies of a file
+ *  The class that collects the dependencies (i.e. imported entities) of a file
  */
 public class DependencyCollection {
     private ArrayList<Dependency> dependencies; // list of file dependencies
@@ -294,7 +294,8 @@ public class DependencyCollection {
 
     /**
      *  Add the dependencies of a file to the collection of file dependencies
-     * @param packagePath
+     * @param packageName - the name of the package containing imported entity
+     * @param collection - the collection of file dependencies
      */
     public boolean addDependencies(String packageName, List<Dependency> collection) {
 
@@ -319,11 +320,11 @@ public class DependencyCollection {
 
     /**
      * Add the dependencies of a file to the collection of file dependencies
-     * @param parentPath 
-     * @param packageName
-     * @param collection
-     * @return
-     */
+     * @param parentPath - the path of the parent directory of the package
+     * @param packageName - the package name
+     * @param collection - the collection of file dependencies
+     * @return - true if the dependency is internal and has been added to collection
+     */ 
     private boolean addInternalDependencies(String parentPath, String packageName, List<Dependency> collection) {
 
         File pkg = new File(parentPath + SEP + packageName.replace(".", SEP));
@@ -358,6 +359,12 @@ public class DependencyCollection {
         return false;
     }
 
+    /**
+     * Check if the file is in the same package as the import
+     * @param filePackage - the package of the file
+     * @param packageName - the package name of the import
+     * @return - true if the file is in the same package as the imported entity
+     */
     private boolean inSamePackage(File filePackage, String packageName) {
         String fileParentPackage = filePackage.getParentFile().getAbsolutePath();
         String importPackageFullPath = fileParentPackage + SEP + packageName.replace(".", SEP);
@@ -365,6 +372,15 @@ public class DependencyCollection {
         return filePackageAsString.equals(importPackageFullPath);
     }
 
+    /**
+     * Add the static dependencies of a file to the collection of file dependencies
+     * @param parentPath - the path of the parent directory of the package
+     * @param classIntf - the name of the class/interface containing the static member
+     * @param collection - the collection of file dependencies
+     * @param isAst - true if the import is an asterisk import
+     * @param impName - the name of the imported entity
+     * @return - true if the dependency is internal and has been added to collection
+     */
     private boolean addStaticDependencies(String parentPath, String classIntf, List<Dependency> collection,
             boolean isAst, String impName) {
         if (!classIntf.endsWith(".java"))
@@ -405,6 +421,12 @@ public class DependencyCollection {
         return false;
     }
 
+    /**
+     * Add internal imported classes to the collection of file dependencies
+     * @param files - the files in the directory containing the file being analysed 
+     * @param packageName - the package name
+     * @param collection - the collection of file dependencies
+     */
     private void addImportedClasses(List<File> files, String packageName, List<Dependency> collection) {
         String fileName = path.substring(path.lastIndexOf(SEP) + 1);
         if (files.size() > 0) {
@@ -422,6 +444,12 @@ public class DependencyCollection {
         }
     }
 
+    /**
+     * Add internal imported interfaces to the collection of file dependencies
+     * @param files - the files in the directory containing the file being analysed
+     * @param packageName - the package name
+     * @param collection - the collection of file dependencies
+     */
     private void addImportedInterfaces(List<File> files, String packageName, List<Dependency> collection) {
 
         String fileName = path.substring(path.lastIndexOf(SEP)).replace(SEP, "");
@@ -441,6 +469,11 @@ public class DependencyCollection {
 
     }
 
+    /**
+     * Get the files in a directory
+     * @param packageObj - the path of the directory
+     * @return - the files in the directory
+     */
     private List<File> getFiles(Path packageObj) {
         List<File> files = null;
         try {
@@ -458,8 +491,9 @@ public class DependencyCollection {
     }
 
     /**
-     * 
-     * @param filePath
+     *  Search a file for classes. These are classes are classes that are not nested or private.
+     * @param filePath - the path of the file
+     * @return - the classes in the file as list of Class objects
      */
     public ArrayList<Class> searchFileForClasses(String filePath) {
         if (filePath.length() > 0 && filePath != null) {
@@ -477,9 +511,9 @@ public class DependencyCollection {
     }
 
     /**
-     * 
-     * @param filePath
-     * @return
+     *  Search a file for interfaces. These are interfaces that are not nested or private.
+     * @param filePath - the path of a file
+     * @return - the interfaces in the file as list of Interface objects
      */
     public ArrayList<Interface> searchFileForInterfaces(String filePath) {
         if (filePath.length() > 0 && filePath != null) {

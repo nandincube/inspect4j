@@ -73,7 +73,7 @@ public class MethodReferenceCollection {
     }
 
     /**
-     * Class to collect all the method references in an ast and store them in a
+     * Visitor Class to collect all the method references in an ast and store them in a
      * list.
      */
     private static class MethodReferenceExprCollector extends VoidVisitorAdapter<List<MethodReference>> {

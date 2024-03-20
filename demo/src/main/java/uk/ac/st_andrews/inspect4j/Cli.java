@@ -12,47 +12,23 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
-
-@Command(name = "inspect4j", version = "inspect4j 1.0", mixinStandardHelpOptions = true)
 
 /**
  *  Command line interface for inspect4j
  *
  */
 public class Cli {
+    private String repositoryPath; // path of the file or repository to inspect
+    private String outputDir; // output directory path to store results in json files
+    private static final String OUTPUTDIR_PATH = "OutputDir"; // default output directory name
+    public static final String SEP = FileSystems.getDefault().getSeparator(); // file separator
 
-    // @Option(names = { "-i",
-    //         "--input_path" }, type = String.class, required = true, description = "input path of the file or directory to inspect.")
-    private String repositoryPath;
-    // @Option(names = { "-o",
-    //         "--output_path" }, type = String.class, defaultValue = "OutputDir", description = "output directory path to store results. If the directory does not exist, the tool will create it")
-    private String outputDir;
-    private static final String OUTPUTDIR_PATH = "OutputDir";
-    public static final String SEP = FileSystems.getDefault().getSeparator();
-
-    @Option(names = { "--help" }, description = "Show this message and exit.")
-
+    /**
+     * Main method
+     * @param args - command line arguments
+     * @throws Exception  - exception
+     */
     public static void main(String[] args) throws Exception {
-        // String f = "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\little-music-player";
-        // Cli c = new Cli(f, OUTPUTDIR_PATH); // if more than 2 args are provided the additional args are ignored
-        // c.analyse();
-
-        // String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
-        // + "test_doc_and_dependencies" + SEP
-        // + "BasicClassWithInternalDependencies.java";
-        // String outputDir = ((new File(inputPath)).getParentFile().getAbsolutePath()) + SEP + OUTPUTDIR_PATH;
-        // String outputFile = outputDir + SEP + "json_files" + SEP + "BasicClassWithInternalDependencies.json";
-        // String repoPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files";
-
-
-        // System.out.println("outputDir: " + outputDir);
-        // System.out.println("inputPath: " + inputPath);
-        // System.out.println("repoPath: " + repoPath);
-        // AST ast = new AST(inputPath,repoPath);
-        // ast.extractMetadata();
-        // ast.writeToJson(inputPath, outputDir);
      
         if (args.length > 0) {
              String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];

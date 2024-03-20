@@ -11,25 +11,25 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.LambdaExpr;
 
 /**
- * 
+ *  This class represents a Lambda in the AST
  */
 public class Lambda {
-    private String bodyAsString;
-    private HashMap<String, String> params;
-    private HashSet<String> returnStmts;
-    private ParentEntity<?> parent;
-    private int lineMin;
-    private int lineMax;
-    private LambdaExpr declaration;
-    private List<Class> classes;
-    private List<MethodReference> references;
-    private List<Lambda> lambdas;
-    private List<Variable> storedVarCalls;
+    private String bodyAsString; // body of the lambda as a string
+    private HashMap<String, String> params; // parameters of the lambda - key is the name of the parameter, value is the type of the parameter
+    private HashSet<String> returnStmts; // return statements in the lambda
+    private ParentEntity<?> parent; // parent entity of the lambda
+    private int lineMin; // start line of the lambda
+    private int lineMax; // end line of the lambda
+    private LambdaExpr declaration; // the lambda declaration
+    private List<Class> classes; // list of classes in the lambda
+    private List<MethodReference> references; // list of method references in the lambda
+    private List<Lambda> lambdas; // list of lambdas in the lambda
+    private List<Variable> storedVarCalls; // list of assignment variables/stored variable calls in the lambda
 
     /**
-     * 
-     * @param lambdaDecl
-     * @param returnStmts
+     *  Constructor
+     * @param lambdaDecl - the lambda declaration
+     * @param returnStmts - the return statements in the lambda
      */
     public Lambda(LambdaExpr lambdaDecl, HashSet<String> returnStmts) {
 
@@ -47,44 +47,44 @@ public class Lambda {
     }
 
     /**
-     * 
-     * @return
+     *  Method to get the body of the lambda as a string
+     * @return String - body of the lambda as a string
      */
     public String getBodyAsString() {
         return bodyAsString;
     }
 
     /**
-     * 
-     * @param md
+     *  Extracts the parameter information from the lambda declaration
+     * @param md - the lambda declaration
      */
     private void extractParameterInformation(LambdaExpr md) {
         if (md.getParameters() != null) {
             for (Parameter param : md.getParameters()) {
-                params.put(param.getNameAsString(), param.getTypeAsString());
+                params.put(param.getNameAsString(), param.getTypeAsString()); // key is the name of the parameter, value is the type of the parameter
             }
         }
     }
 
     /**
-     * 
-     * @param expressionAsString
+     *  Sets the body of the lambda as a string
+     * @param expressionAsString - body of the lambda as a string
      */
     public void setExpressionAsString(String expressionAsString) {
         this.bodyAsString = expressionAsString;
     }
 
     /**
-     * 
-     * @return
+     *  Gets the start line of the lambda
+     * @return int - start line of the lambda
      */
     public int getLineMin() {
         return lineMin;
     }
 
     /**
-     * 
-     * @param lineMin
+     *  Sets the start lineof the lambda
+     * @param lineMin - start line of the lambda
      */
     public void setLineMin(int lineMin) {
         this.lineMin = lineMin;
@@ -92,24 +92,24 @@ public class Lambda {
 
 
     /**
-     * 
-     * @return
+     *  Gets the end line of the lambda
+     * @return int - end line of the lambda
      */
     public int getLineMax() {
         return lineMax;
     }
 
     /**
-     * 
-     * @param lineMax
+     *  Sets the end line of the lambda
+     * @param lineMax - end line of the lambda
      */
     public void setLineMax(int lineMax) {
         this.lineMax = lineMax;
     }
 
     /**
-     * 
-     * @param cls
+     * Using ClassCollection, finds and stores the classes that belong to this lambda
+     * @param cls - ClassCollection object representing the classes in a file
      */
     public void findClasses(ClassCollection cls) {
         for (Class cl : cls.getClasses()) {
@@ -123,8 +123,8 @@ public class Lambda {
     }
 
     /**
-     * 
-     * @param lbds
+     *  Using LambdaCollection, finds and stores the lambdas that belong to this lambda
+     * @param lbds - LambdaCollection object representing the lambdas in a file
      */
     public void findLambdas(LambdaCollection lbds) {
         for (Lambda lm : lbds.getLambdas()) {
@@ -138,8 +138,8 @@ public class Lambda {
     }
 
     /**
-     * 
-     * @param refs
+     *  Using MethodReferenceCollection, finds and stores the method references that belong to this lambda
+     * @param refs - MethodReferenceCollection object representing the method references in a file
      */
     public void findReferences(MethodReferenceCollection refs) {
         for (MethodReference ref : refs.getMethodReferences()) {
@@ -153,8 +153,8 @@ public class Lambda {
     }
 
     /**
-     * 
-     * @param vars
+     * Using VariableCollection, finds and stores the assigment variables that belong to this lambda
+     * @param vars - VariableCollection object representing the variables in a file
      */
     public void findVariables(VariableCollection vars) {
         for (Variable var : vars.getVariables()) {
@@ -167,10 +167,11 @@ public class Lambda {
         }
     }
 
-    /**
+     /**
+     * finds the parent class/interface/method of the lambda if it exists
      * 
-     * @param expr
-     * @return
+     * @param expr - the lambda declaration
+     * @return - the parent class/interface/method if it exists
      */
     private ParentEntity<?> findParent(LambdaExpr expr) {
 
@@ -179,20 +180,21 @@ public class Lambda {
 
         if (parentIC == null && parentMethod == null)
             return null;
-        if (parentIC == null && parentMethod != null)
+        if (parentIC == null && parentMethod != null) // if the lambda is in a method
             return parentMethod;
-        if (parentIC != null && parentMethod == null)
+        if (parentIC != null && parentMethod == null) // if the lambda is in a class/interface (outside a method)
             return parentIC;
-        if (parentIC.getDeclaration().isAncestorOf(parentMethod.getDeclaration())) {
+        if (parentIC.getDeclaration().isAncestorOf(parentMethod.getDeclaration())) { // if the class/interface is the ancestor of the method
             return parentMethod;
         }
         return parentIC;
     }
 
-    /**
+       /**
+     * finds the parent/ancestor class/interface of the lambda if it exists
      * 
-     * @param expr
-     * @return
+     * @param expr - the lambda declaration
+     * @return - the parent class/interface of the class if it exists
      */
     private ParentEntity<ClassOrInterfaceDeclaration> findParentClassInterface(LambdaExpr expr) {
         if (expr.findAncestor(ClassOrInterfaceDeclaration.class).isPresent()) {
@@ -207,10 +209,11 @@ public class Lambda {
 
     }
 
-    /**
+      /**
+     * finds the parent/ancestor method of the class if it exists
      * 
-     * @param expr
-     * @return
+     * @param expr - the lambda declaration
+     * @return - the parent method of the class if it exists
      */
     private ParentEntity<MethodDeclaration> findParentMethod(LambdaExpr expr) {
         if (expr.findAncestor(MethodDeclaration.class).isPresent()) {
@@ -223,7 +226,7 @@ public class Lambda {
     }
 
     /**
-     * 
+     *  Gets the string representation of the lambda
      */
     @Override
     public String toString() {
@@ -231,49 +234,49 @@ public class Lambda {
                 + returnStmts + ", parent=" + parent + ", lineMin=" + lineMin + ", lineMax=" + lineMax + "]";
     }
 
-    /**
-     * 
-     * @return
+    /** 
+     *  Gets the return statements in the lambda
+     * @return  HashSet<String> - return statements in the lambda
      */
     public HashSet<String> getReturnStmts() {
         return returnStmts;
     }
 
     /**
-     * 
-     * @param returnStmts
+     *  Sets the return statements in the lambda
+     * @param returnStmts - return statements in the lambda
      */
     public void setReturnStmts(HashSet<String> returnStmts) {
         this.returnStmts = returnStmts;
     }
 
     /**
-     * 
-     * @return
+     *  Gets the parameters of the lambda
+     * @return  HashMap<String, String> - parameters of the lambda
      */
     public HashMap<String, String> getParams() {
         return params;
     }
 
     /**
-     * 
-     * @param params
+     *  Sets the parameters of the lambda
+     * @param params - parameters of the lambda
      */
     public void setParams(HashMap<String, String> params) {
         this.params = params;
     }
 
     /**
-     * 
-     * @return
+     *  Gets the parent entity of the lambda
+     * @return ParentEntity<?> - parent entity of the lambda
      */
     public ParentEntity<?> getParent() {
         return parent;
     }
 
     /**
-     * 
-     * @param parent
+     *  Sets the parent entity of the lambda
+     * @param parent - parent entity of the lambda
      */
     public void setParent(ParentEntity<?> parent) {
         this.parent = parent;

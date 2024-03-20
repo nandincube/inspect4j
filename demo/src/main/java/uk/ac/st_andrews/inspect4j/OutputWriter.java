@@ -19,43 +19,58 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ *  This class writes the file information extacted to a JSON file.
+ */
 public class OutputWriter {
 
-    private FileInfo fileInfo;
-    private String fileInfoAsJson;
-    private final String FILE_SEPERATOR = FileSystems.getDefault().getSeparator();
+    private FileInfo fileInfo; // The file information
+    private String fileInfoAsJson; // The file information as JSON
+    private final String FILE_SEPERATOR = FileSystems.getDefault().getSeparator(); // File separator
 
+    /**
+     * Constructor
+     * @param fileInfo - The file information
+     */
     public OutputWriter(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
     }
 
+    /**
+     * Get the file information as JSON
+     * @return String - The file information as JSON
+     */
     public String getFileInfoAsJson() {
         return fileInfoAsJson;
     }
 
+    /**
+     * Write the file information to a JSON file
+     * @param directory - The path to the output directory to write the JSON file to
+     */
     public void write(String directory) {
-        GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping();
+        GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping(); // Create a GsonBuilder
         addCustomSerialisers(gsonBuilder);
 
         Gson gson = gsonBuilder.create();
         fileInfoAsJson = gson.toJson(fileInfo);
-        String fileName = fileInfo.getFileNameBase() + ".json";
+        String fileName = fileInfo.getFileNameBase() + ".json"; // The name of the JSON file
 
         try {
 
-            String jsonDirPath = directory + FILE_SEPERATOR + "json_files"; // linux specific path syntax
+            String jsonDirPath = directory + FILE_SEPERATOR + "json_files"; // The path to the JSON directory
             File dir = new File(jsonDirPath);
-            if (!dir.exists()) {
+            if (!dir.exists()) { // If the directory does not exist
                 System.out.println("Creating json directory: " + jsonDirPath);
-                if (!dir.mkdirs()) {
+                if (!dir.mkdirs()) { // Creates the directory 
                     System.out.println("Could not create output directories!");
                     return;
                 }
             }
 
-            String jsonFilePath = dir.getAbsolutePath() + FILE_SEPERATOR + fileName;
-            BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
-            writer.append(fileInfoAsJson);
+            String jsonFilePath = dir.getAbsolutePath() + FILE_SEPERATOR + fileName; // The path to the JSON file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath)); // Create a writer
+            writer.append(fileInfoAsJson); // Write the JSON to the file
             writer.close();
         } catch (IOException e) {
             System.out.println("Could not write to json!");
@@ -63,6 +78,10 @@ public class OutputWriter {
 
     }
 
+    /**
+     * Add custom serialisers to the GsonBuilder
+     * @param gb - The GsonBuilder
+     */
     private void addCustomSerialisers(GsonBuilder gb) {
         serialiseFile(gb);
         serialiseClass(gb);
@@ -74,6 +93,10 @@ public class OutputWriter {
         serialiseDependency(gb);
     }
 
+    /**
+     * Serialise a file's information
+     * @param gb - The GsonBuilder
+     */
     private void serialiseFile(GsonBuilder gb) {
         Type parameterType = new TypeToken<FileInfo>() {
         }.getType();
@@ -121,7 +144,6 @@ public class OutputWriter {
                             interfaceCollectionJsonObject.add(x.getName(), intf);
                         }
                     });
-                  //  System.out.println("Size: "+intfs.size());
                     if(intfs.size() > 0) jsonFile.add("interfaces", interfaceCollectionJsonObject);
                 }
 
@@ -138,6 +160,10 @@ public class OutputWriter {
 
     }
 
+    /**
+     * Serialise a class's information
+     * @param gb - The GsonBuilder
+     */
     private void serialiseClass(GsonBuilder gb) {
         Type parameterType = new TypeToken<Class>() {
         }.getType();
@@ -255,6 +281,10 @@ public class OutputWriter {
 
     }
 
+    /**
+     * Serialises a method's information
+     * @param gb - The GsonBuilder
+     */
     private void serialiseMethod(GsonBuilder gb) {
         Type parameterType = new TypeToken<Method>() {
         }.getType();
@@ -301,9 +331,7 @@ public class OutputWriter {
                 JsonArray localClassesJsonArray = new JsonArray();
 
                 for (Class cl : src.getClasses()) {
-                    // System.out.println("Class "+cl.getName()+ " is local:" +cl.isLocalClass());
                     if (cl.getClassCategory() == ClassInterfaceCategory.LOCAL) {
-                        // System.out.println("Local Class - json: ");
                         JsonObject localClassesJsonObject = new JsonObject();
                         JsonElement methodElement = context.serialize(cl, Class.class);
                         localClassesJsonObject.add(cl.getName(), methodElement);
@@ -385,6 +413,10 @@ public class OutputWriter {
 
     }
 
+    /**
+     * Serialise a lambda's information
+     * @param gb - The GsonBuilder
+     */
     private void serialiseLambda(GsonBuilder gb) {
         Type parameterType = new TypeToken<Lambda>() {
         }.getType();
@@ -431,6 +463,10 @@ public class OutputWriter {
 
     }
 
+    /**
+     * Serialise a method reference's information
+     * @param gb - The GsonBuilder
+     */
     private void serialiseMethodReference(GsonBuilder gb) {
         Type parameterType = new TypeToken<MethodReference>() {
         }.getType();
@@ -451,6 +487,10 @@ public class OutputWriter {
 
     }
 
+    /**
+     * Serialises an interface's information
+     * @param gb - The GsonBuilder
+     */
     private void serialiseInterface(GsonBuilder gb) {
         Type parameterType = new TypeToken<Interface>() {
         }.getType();
@@ -523,6 +563,10 @@ public class OutputWriter {
 
     }
 
+    /**
+     * Serialise the information about the main method of a file
+     * @param gb - The GsonBuilder
+     */
     private void serialiseMainInfo(GsonBuilder gb) {
         Type parameterType = new TypeToken<MainInfo>() {
         }.getType();
@@ -543,6 +587,10 @@ public class OutputWriter {
 
     }
 
+    /**
+     * Serialise a dependency's information
+     * @param gb - The GsonBuilder
+     */
     private void serialiseDependency(GsonBuilder gb) {
         Type parameterType = new TypeToken<Dependency>() {
         }.getType();

@@ -15,12 +15,18 @@ import org.junit.Test;
 import uk.ac.st_andrews.inspect4j.AST;
 
 /**
- * Unit test for simple App.
+ * Unit test for Basic Class/Interface features.
  */
 public class BasicTests {
         private static final String SEP = FileSystems.getDefault().getSeparator();
         private static final String OUTPUTDIR_PATH = "OutputDir";
 
+        /**
+         * Analyse the file and write the output to a json file.
+         * 
+         * @param path   - path of the file to analyse
+         * @param outdir - output directory path to store results in json files
+         */
         private void analyse(String path, String outdir) {
                 AST ast = new AST(path, path);
                 ast.extractMetadata();
@@ -28,11 +34,21 @@ public class BasicTests {
 
         }
 
+        /**
+         * Check if the output json file is similar to the expected json object.
+         * @param expectedObject - expected json object
+         * @param outputFile - output json file
+         */
         private void checkSimilarity(JSONObject expectedObject, String outputFile) {
                 JSONObject actualObject = readJson(outputFile);
                 assertTrue(expectedObject.similar(actualObject));
         }
 
+        /**
+         * Read the json file and return the json object.
+         * @param outputFile - output json file
+         * @return - json object
+         */
         private JSONObject readJson(String outputFile) {
 
                 String json = "";
@@ -46,6 +62,9 @@ public class BasicTests {
 
         }
 
+        /**
+         * Test the basic class with main method.
+         */
         @Test
         public void TestBasicClassWithMain() {
 
@@ -103,6 +122,9 @@ public class BasicTests {
 
         }
 
+        /**
+         * Test the basic class with one method.
+         */
         @Test
         public void TestBasicClassWithOneMethod() {
 
@@ -169,6 +191,9 @@ public class BasicTests {
                 checkSimilarity(jsonObject, outputFile);
         }
 
+        /**
+         * Test the basic class with multiple methods.
+         */
         @Test
         public void TestBasicClassWithMultipleMethods() {
 
@@ -311,6 +336,9 @@ public class BasicTests {
 
         }
 
+        /**
+         * Test the basic interface with methods.
+         */
         @Test
         public void TestBasicInterfaceWithMethods() {
 

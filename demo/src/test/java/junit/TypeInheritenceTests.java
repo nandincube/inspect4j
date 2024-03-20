@@ -14,11 +14,21 @@ import org.junit.Test;
 
 import uk.ac.st_andrews.inspect4j.AST;
 
+/**
+ * Unit tests for inheritence relationships and type parameterisation
+ 
+ */
 public class TypeInheritenceTests {
 
         private static final String SEP = FileSystems.getDefault().getSeparator();
         private static final String OUTPUTDIR_PATH = "OutputDir";
 
+        /**
+         * Analyse the file and write the output to a json file
+         * 
+         * @param path   - path to the file
+         * @param outdir - path to the output directory
+         */
         private void analyse(String path, String outdir) {
                 AST ast = new AST(path, path);
                 ast.extractMetadata();
@@ -26,11 +36,23 @@ public class TypeInheritenceTests {
 
         }
 
+        /**
+         * Check if the expected json object is similar to the actual json object
+         * 
+         * @param expectedObject - expected json object
+         * @param outputFile     - path to the output json file
+         */
         private void checkSimilarity(JSONObject expectedObject, String outputFile) {
                 JSONObject actualObject = readJson(outputFile);
                 assertTrue(expectedObject.similar(actualObject));
         }
 
+        /**
+         * Read the json file and return the json object
+         * 
+         * @param outputFile - path to the output json file
+         * @return JSONObject - json object
+         */
         private JSONObject readJson(String outputFile) {
 
                 String json = "";
@@ -45,6 +67,9 @@ public class TypeInheritenceTests {
 
         }
 
+        /*
+         * Test for basic generic class (contains type parameters) with inheritance of Generic class and implementation of generic interface
+         */
         @Test
         public void testGenericClass() {
                 String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
@@ -160,6 +185,9 @@ public class TypeInheritenceTests {
 
         }
 
+        /**
+         * Test for generic class (containing type parameters)
+         */
         @Test
         public void testGenericClassParent() {
                 String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
@@ -250,6 +278,9 @@ public class TypeInheritenceTests {
 
         }
 
+        /**
+         * Test for generic interface (containing type parameters)
+         */
         @Test
         public void testGenericTypeInterface() {
                 String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
@@ -330,6 +361,9 @@ public class TypeInheritenceTests {
 
         }
 
+        /**
+         * Test for generic interface (containing type parameters) that extends another interface
+         */
         @Test
         public void testGenericTypeInterfaceExtendsInterface() {
                 String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
@@ -391,138 +425,6 @@ public class TypeInheritenceTests {
 
         }
 
-        @Test
-        public void testInterfaceNestedInClass() {
-                String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
-                                + "test_inheritence_type_params_and_superclasses" + SEP + "InterfaceNestedInClass.java";
-
-                String outputDir = ((new File(inputPath)).getParentFile().getAbsolutePath()) + SEP + OUTPUTDIR_PATH;
-                String outputFile = outputDir + SEP + "json_files" + SEP + "InterfaceNestedInClass.json";
-                analyse(inputPath, outputDir);
-
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("file", new JSONObject()
-                                .put("path",
-                                                "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\demo\\src\\test\\java\\test_files\\test_inheritence_type_params_and_superclasses\\InterfaceNestedInClass.java")
-                                .put("fileNameBase", "InterfaceNestedInClass")
-                                .put("extension", "java"))
-                                .put("classes", new JSONObject()
-                                                .put("InterfaceNestedInClass", new JSONObject()
-                                                                .put("access_modifier", "public")
-                                                                .put("non_access_modifiers",
-                                                                                new JSONArray().put("none"))
-
-                                                                .put("min_max_lineno", new JSONObject()
-                                                                                .put("min_lineno", 3)
-                                                                                .put("max_lineno", 22))
-                                                                .put("methods", new JSONArray()
-                                                                                .put(new JSONObject()
-                                                                                                .put("main", new JSONObject()
-                                                                                                                .put("access_modifier",
-                                                                                                                                "public")
-                                                                                                                .put("non_access_modifiers",
-                                                                                                                                new JSONArray().put(
-                                                                                                                                                "static"))
-                                                                                                                .put("args", new JSONArray()
-                                                                                                                                .put("args"))
-                                                                                                                .put("arg_types",
-                                                                                                                                new JSONObject().put(
-                                                                                                                                                "args",
-                                                                                                                                                "String[]"))
-                                                                                                                .put("return_type",
-                                                                                                                                "void")
-                                                                                                                .put("min_max_lineno",
-                                                                                                                                new JSONObject()
-                                                                                                                                                .put("min_lineno",
-                                                                                                                                                                15)
-                                                                                                                                                .put("max_lineno",
-                                                                                                                                                                19))
-                                                                                                                .put("calls", new JSONArray().put("innerObj.innerMethod"))
-                                                                                                                .put("store_vars_calls",
-                                                                                                                                new JSONObject()
-                                                                                                                                                .put("nestObj", "InterfaceNestedInClass")
-                                                                                                                                                .put("innerObj", "nestObj.InnerClass")))))
-                                                                .put("nested_interfaces", new JSONArray()
-                                                                                .put(new JSONObject()
-                                                                                                .put("nestedInterface",
-                                                                                                                new JSONObject()
-                                                                                                                                .put("access_modifier",
-                                                                                                                                                "public")
-
-                                                                                                                                .put("methods", new JSONArray()
-                                                                                                                                                .put(new JSONObject()
-                                                                                                                                                                .put("innerMethod",
-                                                                                                                                                                                new JSONObject()
-                                                                                                                                                                                                .put("access_modifier",
-                                                                                                                                                                                                                "default")
-                                                                                                                                                                                                .put("non_access_modifiers",
-                                                                                                                                                                                                                new JSONArray().put(
-                                                                                                                                                                                                                                "abstract"))
-
-                                                                                                                                                                                                .put("return_type",
-                                                                                                                                                                                                                "void")
-                                                                                                                                                                                                .put("min_max_lineno",
-                                                                                                                                                                                                                new JSONObject()
-                                                                                                                                                                                                                                .put("min_lineno",
-                                                                                                                                                                                                                                                6)
-                                                                                                                                                                                                                                .put("max_lineno",
-                                                                                                                                                                                                                                                6)))))
-
-                                                                                                                                .put("min_max_lineno",
-                                                                                                                                                new JSONObject()
-                                                                                                                                                                .put("min_lineno",
-                                                                                                                                                                                5)
-                                                                                                                                                                .put("max_lineno",
-                                                                                                                                                                                7)))))
-                                                                .put("inner_classes", new JSONArray()
-                                                                                .put(new JSONObject()
-                                                                                                .put("InnerClass",
-                                                                                                                new JSONObject()
-                                                                                                                                .put("access_modifier",
-                                                                                                                                                "public")
-                                                                                                                                .put("non_access_modifiers",
-                                                                                                                                                new JSONArray().put(
-                                                                                                                                                                "none"))
-
-                                                                                                                                .put("implement",
-                                                                                                                                                new JSONArray().put(
-                                                                                                                                                                "nestedInterface"))
-
-                                                                                                                                .put("min_max_lineno",
-                                                                                                                                                new JSONObject()
-                                                                                                                                                                .put("min_lineno",
-                                                                                                                                                                                9)
-                                                                                                                                                                .put("max_lineno",
-                                                                                                                                                                                14))
-
-                                                                                                                                .put("methods", new JSONArray()
-                                                                                                                                                .put(new JSONObject()
-                                                                                                                                                                .put("innerMethod",
-                                                                                                                                                                                new JSONObject()
-                                                                                                                                                                                                .put("access_modifier",
-                                                                                                                                                                                                                "public")
-                                                                                                                                                                                                .put("non_access_modifiers",
-                                                                                                                                                                                                                new JSONArray().put(
-                                                                                                                                                                                                                                "none"))
-
-                                                                                                                                                                                                .put("return_type",
-                                                                                                                                                                                                                "void")
-                                                                                                                                                                                                .put("min_max_lineno",
-                                                                                                                                                                                                                new JSONObject()
-                                                                                                                                                                                                                                .put("min_lineno",
-                                                                                                                                                                                                                                                10)
-                                                                                                                                                                                                                                .put("max_lineno",
-                                                                                                                                                                                                                                                13))
-                                                                                                                                                                                                .put("calls", new JSONArray().put("System.out.println"))))))))
-
-                                                ))
-                                .put("interfaces", new JSONObject())
-                                .put("main_info", new JSONObject()
-                                                .put("main_flag", true)
-                                                .put("main_method", "innerObj.innerMethod"));
-
-                checkSimilarity(jsonObject, outputFile);
-
-        }
+     
 
 }

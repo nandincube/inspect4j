@@ -14,8 +14,8 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.Statement;
 
 /**
- * This class is used to create an and store the Abstract Syntax Tree (AST) representation of a given file.
- 
+ * This class is used to create and store the Abstract Syntax Tree (AST) representation of a given file.
+ * This class is also used to extract metadata from the AST which will get encapsulated in the FileInfo object, that will be written to a JSON file.
  */
 public class AST {
     private CompilationUnit fullTree; // The full AST of the file
@@ -78,7 +78,7 @@ public class AST {
 
     /**
      *  This method is used to find the main method in the AST.
-     * @return
+     * @return - Information about the main method
      */
     public MainInfo findMainMethod() {
         Method mainMd = methodCollection.getMethods()
@@ -109,7 +109,7 @@ public class AST {
     }
 
     /**
-     * 
+     * This method is used to extract metadata from the AST.
      */
     public void extractMetadata() {
         variableCollection.extractVariablesFromAST();
@@ -122,12 +122,11 @@ public class AST {
         addMethodMembers();
         addClassMembers();
         addInterfaceMembers();
-        //addLambdaMembers();
         main = findMainMethod();
     }
 
     /**
-     * 
+     * This method is used to add the members to the methods in the collection.
      */
     private void addMethodMembers() {
         methodCollection.addVariables(variableCollection);
@@ -138,7 +137,7 @@ public class AST {
     }
 
     /**
-     * 
+     * This method is used to add the members to the classes in the collection.
      */
     private void addClassMembers() {
         classCollection.addVariables(variableCollection);
@@ -150,7 +149,7 @@ public class AST {
     }
 
     /**
-     * 
+     * The method is used to add the members to the interfaces in the collection.
      */
     private void addInterfaceMembers() {
         interfaceCollection.addMethods(methodCollection);
@@ -159,9 +158,9 @@ public class AST {
     }
 
     /**
-     * 
-     * @param path
-     * @param directory
+     * This method is used to write the metadata to a JSON file.
+     * @param path - The path of the file being analysed
+     * @param directory - The directory to write the JSON file to
      */
     public void writeToJson(String path, String directory) {
         fileInfo = new FileInfo(path, classCollection, interfaceCollection, main, dependencyCollection);
@@ -170,157 +169,185 @@ public class AST {
     }
 
     /**
-     * 
-     * @return
+     *  The method used to get the full AST of the file.
+     * @return - The full AST of the file
      */
     public CompilationUnit getFullTree() {
         return fullTree;
     }
 
     /**
-     * 
-     * @param fullTree
+     *  The method used to set the full AST of the file.
+     * @param fullTree - The full AST of the file
      */
     public void setFullTree(CompilationUnit fullTree) {
         this.fullTree = fullTree;
     }
 
     /**
-     * 
-     * @return
+     *  The method used to get the class collection.
+     * @return - The class collection
      */
     public ClassCollection getClassCollection() {
         return classCollection;
     }
 
     /**
-     * 
-     * @param classCollection
+     *  The method used to set the class collection.
+     * @param classCollection   - The class collection
      */
     public void setClassCollection(ClassCollection classCollection) {
         this.classCollection = classCollection;
     }
 
     /**
-     * 
-     * @return
+     *  The method used to get the method collection.
+     * @return - The method collection
      */
     public MethodCollection getMethodCollection() {
         return methodCollection;
     }
 
     /**
-     * 
-     * @param methodCollection
+     *  The method used to set the method collection.
+     * @param methodCollection - The method collection
      */
     public void setMethodCollection(MethodCollection methodCollection) {
         this.methodCollection = methodCollection;
     }
 
     /**
-     * 
-     * @return
+     *  The method used to get the interface collection.
+     * @return - The interface collection
      */
     public InterfaceCollection getInterfaceCollection() {
         return interfaceCollection;
     }
 
     /**
-     * 
-     * @param interfaceCollection
+     *  The method used to set the interface collection.
+     * @param interfaceCollection - The interface collection
      */
     public void setInterfaceCollection(InterfaceCollection interfaceCollection) {
         this.interfaceCollection = interfaceCollection;
     }
 
     /**
-     * 
-     * @return
+     *  The method used to get the method reference collection.
+     * @return - The method reference collection
      */
     public MethodReferenceCollection getReferenceCollection() {
         return referenceCollection;
     }
 
     /**
-     * 
-     * @param referenceCollection
+     *  The method used to set the method reference collection.
+     * @param referenceCollection - The method reference collection
      */
     public void setReferenceCollection(MethodReferenceCollection referenceCollection) {
         this.referenceCollection = referenceCollection;
     }
 
     /**
-     * 
-     * @return
+     *  The method used to get the lambda collection.
+     * @return - The lambda collection
      */
     public LambdaCollection getLambdaCollection() {
         return lambdaCollection;
     }
 
     /**
-     * 
-     * @param lambdaCollection
+     *  The method used to set the lambda collection.
+     * @param lambdaCollection - The lambda collection
      */
     public void setLambdaCollection(LambdaCollection lambdaCollection) {
         this.lambdaCollection = lambdaCollection;
     }
 
     /**
-     * 
-     * @return
+     *  The method used to get the variable collection.
+     * @return - The variable collection
      */
     public VariableCollection getVariableCollection() {
         return variableCollection;
     }
 
     /**
-     * 
-     * @param variableCollection
+     *  The method used to set the variable collection.
+     * @param variableCollection    - The variable collection
      */
     public void setVariableCollection(VariableCollection variableCollection) {
         this.variableCollection = variableCollection;
     }
 
     /**
-     * 
-     * @return
+     *  The method used to get the main method information.
+     * @return - The main method information
      */
     public MainInfo getMain() {
         return main;
     }
 
     /**
-     * 
-     * @param main
+     *  The method used to set the main method information.
+     * @param main - The main method information
      */
     public void setMain(MainInfo main) {
         this.main = main;
     }
 
+    /**
+     *  The method used to get the path of the file.
+     * @return - The path of the file
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     *  The method used to set the path of the file.
+     * @param path - The path of the file
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     *  The method used to get the dependency collection.
+     * @return - The dependency collection
+     */
     public DependencyCollection getDependencyCollection() {
         return dependencyCollection;
     }
 
+    /**
+     * The method used to set the dependency collection.
+     * @param dependencyCollection - The dependency collection
+     */
     public void setDependencyCollection(DependencyCollection dependencyCollection) {
         this.dependencyCollection = dependencyCollection;
     }
     
+    /**
+     * The method used to get the file information.
+     * @return - The file information
+     */
     public FileInfo getFileInfo() {
         return fileInfo;
     }
 
+    /**
+     * The method used to set the file information.
+     * @param fileInfo - The file information
+     */
     public void setFileInfo(FileInfo fileInfo) {
         this.fileInfo = fileInfo;
     }
 
+    /**
+     * The method used to get the full AST of the file.
+     * @return - The full AST of the file
+     */
     public CompilationUnit getAst() {
         return fullTree;
     }

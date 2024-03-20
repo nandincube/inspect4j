@@ -1,6 +1,6 @@
-package test_files.test_inheritence_type_params_and_superclasses;
+package test_files.test_nested_classes_interfaces;
 
-public class InterfaceNestedInClass  {
+public class BasicInterfaceNestedInClass  {
 
         public interface nestedInterface {
             void innerMethod();
@@ -13,8 +13,8 @@ public class InterfaceNestedInClass  {
             }
         }
         public static void main(String[] args) {
-            InterfaceNestedInClass nestObj = new InterfaceNestedInClass();
-            InterfaceNestedInClass.InnerClass innerObj = nestObj.new InnerClass();
+            BasicInterfaceNestedInClass nestObj = new BasicInterfaceNestedInClass();
+            BasicInterfaceNestedInClass.InnerClass innerObj = nestObj.new InnerClass();
             innerObj.innerMethod();
         }
 

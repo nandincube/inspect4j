@@ -15,12 +15,17 @@ import org.junit.Test;
 import uk.ac.st_andrews.inspect4j.AST;
 
 /**
- * Unit test for basic class/interface with methods.
+ * Unit test for dependencies and documentation extraction.
  */
 public class DepDocTests {
         private static final String SEP = FileSystems.getDefault().getSeparator();
         private static final String OUTPUTDIR_PATH = "OutputDir";
 
+        /**
+         * Analyse the file and write the output to a json file
+         * @param path - path of the file to analyse
+         * @param outdir - output directory path to store results in json files
+         */
         private void analyse(String path, String outdir) {
                 AST ast = new AST(path, path);
                 ast.extractMetadata();
@@ -28,11 +33,21 @@ public class DepDocTests {
 
         }
 
+        /**
+         * Check if the expected json object is similar to the actual json object
+         * @param expectedObject - expected json object
+         * @param outputFile - path of the output json file
+         */
         private void checkSimilarity(JSONObject expectedObject, String outputFile) {
                 JSONObject actualObject = readJson(outputFile);
                 assertTrue(expectedObject.similar(actualObject));
         }
 
+        /**
+         * Read the json file and return the json object
+         * @param outputFile - path of the output json file
+         * @return - json object
+         */
         private JSONObject readJson(String outputFile) {
 
                 String json = "";
@@ -45,6 +60,9 @@ public class DepDocTests {
 
         }
 
+        /**
+         * Test a basic class with with only external dependencies
+         */
         @Test
         public void testBasicClassWithExternalDependencies() {
                 String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
@@ -134,6 +152,9 @@ public class DepDocTests {
 
         }
 
+        /**
+         * Test a basic class with wit external,  asterisks dependencies 
+         */
         @Test
         public void testBasicClassWithExternalDependenciesAsterisks() {
                 String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
@@ -199,6 +220,9 @@ public class DepDocTests {
 
         }
 
+        /**
+         * Test a basic class with internal dependencies
+         */
         @Test
         public void testBasicClassWithInternalDependencies() {
                 String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP
@@ -229,11 +253,7 @@ public class DepDocTests {
                                 .put("import", "GenericClassParent")
                                 .put("type", "internal")
                                 .put("type_element", "class"));
-                dependenciesArray.put(new JSONObject()
-                                .put("from_package", "test_files.test_inheritence_type_params_and_superclasses")
-                                .put("import", "InterfaceNestedInClass")
-                                .put("type", "internal")
-                                .put("type_element", "class"));
+
                 dependenciesArray.put(new JSONObject()
                                 .put("from_package", "test_files.test_inheritence_type_params_and_superclasses")
                                 .put("import", "GenericTypeInterface")
@@ -269,6 +289,9 @@ public class DepDocTests {
 
         }
 
+        /**
+         * Test a basic class with java doc comments
+         */
         @Test
         public void testBasicClassWithJavaDoc() {
                 String inputPath = "src" + SEP + "test" + SEP + "java" + SEP + "test_files" + SEP

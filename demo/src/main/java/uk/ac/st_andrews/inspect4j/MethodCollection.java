@@ -124,7 +124,7 @@ public class MethodCollection {
     }
 
     /**
-     * This static class is used to collect all the method declarations from the AST
+     * This static visitor class is used to collect all the method declarations from the AST
      * and store them in a list.
      */
     private static class MethodDeclarationCollector extends VoidVisitorAdapter<List<Method>> {
@@ -171,7 +171,7 @@ public class MethodCollection {
     }
 
     /**
-     * This class is used to collect all the return statements for in a given Method
+     * This visitor class is used to collect all the return statements for in a given Method
      * subtree of an AST and stores them in a list.
      */
     private static class ReturnStatementCollector extends GenericListVisitorAdapter<String, List<String>> {

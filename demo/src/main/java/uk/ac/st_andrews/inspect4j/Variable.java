@@ -9,8 +9,8 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 
 /**
- * Class to represent a variable that is assigned a method call or object
- * creation (i.e stored_variable_calls)
+ * Class to represent a variable that is assigned a method call or object 
+ * creation (i.e assignment method or stored_variable_calls)
  */
 public class Variable {
     private String name; // name of the variable
@@ -158,11 +158,12 @@ public class Variable {
 
         if (parentIC == null && parentMethod == null)
             return null;
-        if (parentIC == null && parentMethod != null)
+        if (parentIC == null && parentMethod != null) // if the variable is in a method
             return parentMethod;
-        if (parentIC != null && parentMethod == null)
+        if (parentIC != null && parentMethod == null) //if the variable is in a class/interface (outside a method)
             return parentIC;
-        if (parentIC.getDeclaration().isAncestorOf(parentMethod.getDeclaration())) {
+        if (parentIC.getDeclaration().isAncestorOf(parentMethod.getDeclaration())) { // if the class/interface is the
+                                                                                     // ancestor of the method
             return parentMethod;
         }
         return parentIC;

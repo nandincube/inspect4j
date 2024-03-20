@@ -2,7 +2,6 @@ package uk.ac.st_andrews.inspect4j;
 
 /**
  * This class is used to store information about the main method of a class.
- 
  */
 public class MainInfo {
     private boolean hasMain; // whether the class has a main method

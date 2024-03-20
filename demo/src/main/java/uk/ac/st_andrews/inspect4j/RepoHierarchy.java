@@ -16,6 +16,10 @@ public class RepoHierarchy {
     private Path repoPath; // path to the repository
     private static StringBuilder hierarchy; // the directory tree as a String
 
+    /**
+     * Constructor
+     * @param path - path to the repository
+     */
     public RepoHierarchy(String path) {
         this.repoPath = Path.of(path);
         hierarchy = new StringBuilder();
