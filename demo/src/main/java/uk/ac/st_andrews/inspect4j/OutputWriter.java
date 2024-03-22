@@ -397,11 +397,9 @@ public class OutputWriter {
                     jsonDetails.add("lambdas", lambdasJsonArray);
                 if (referencesJsonArray.size() > 0)
                     jsonDetails.add("method_references", referencesJsonArray);
-
-                // jsonDetails.add("references", lambdasJsonArray);#
                 if (localClassesJsonArray.size() > 0)
                     jsonDetails.add("local_classes", localClassesJsonArray);
-                // jsonDetails.add("interfaces", intefacesJsonArray);
+          
 
                 jsonMethod.add(src.getName(), jsonDetails);
 

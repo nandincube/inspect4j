@@ -18,7 +18,6 @@ uk\ac\st_andrews\inspect4j\VariableCollection$StoredVariableCallsCollector.class
 uk\ac\st_andrews\inspect4j\DependencyCollection.class
 uk\ac\st_andrews\inspect4j\InterfaceCollection$InterfaceDeclarationCollector.class
 uk\ac\st_andrews\inspect4j\OutputWriter$10.class
-META-INF\native-image\picocli-generated\uk.ac.st_andrews.inspect4j\inspect4j\reflect-config.json
 uk\ac\st_andrews\inspect4j\MethodReferenceCollection$MethodReferenceExprCollector.class
 uk\ac\st_andrews\inspect4j\AccessModifierType.class
 uk\ac\st_andrews\inspect4j\Variable.class
@@ -30,7 +29,6 @@ uk\ac\st_andrews\inspect4j\OutputWriter$16.class
 uk\ac\st_andrews\inspect4j\LambdaCollection.class
 uk\ac\st_andrews\inspect4j\AST.class
 uk\ac\st_andrews\inspect4j\OutputWriter$7.class
-META-INF\native-image\picocli-generated\uk.ac.st_andrews.inspect4j\inspect4j\proxy-config.json
 uk\ac\st_andrews\inspect4j\ClassCollection$ClassDeclarationCollector.class
 uk\ac\st_andrews\inspect4j\FileInfo.class
 uk\ac\st_andrews\inspect4j\RepoHierarchy$1.class
@@ -39,7 +37,6 @@ uk\ac\st_andrews\inspect4j\OutputWriter$13.class
 uk\ac\st_andrews\inspect4j\Lambda.class
 uk\ac\st_andrews\inspect4j\OutputWriter$4.class
 uk\ac\st_andrews\inspect4j\RepoHierarchy$Directory.class
-META-INF\native-image\picocli-generated\uk.ac.st_andrews.inspect4j\inspect4j\resource-config.json
 uk\ac\st_andrews\inspect4j\Class.class
 uk\ac\st_andrews\inspect4j\MethodCollection$ReturnStatementCollector.class
 uk\ac\st_andrews\inspect4j\OutputWriter$15.class

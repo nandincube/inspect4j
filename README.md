@@ -30,7 +30,7 @@ You are done!
 The tool can be executed to inspect a file, or all the files of a given directory (and its subdirectories).
 For example, it can be used to inspect all the java files of a given GitHub repository (that has been previously cloned locally).
 
-To run:
+To run analysis on a repository:
 
 First, `cd` into `demo` within the `inspect4j` repository/package and run the following commands:
 
@@ -38,7 +38,16 @@ First, `cd` into `demo` within the `inspect4j` repository/package and run the fo
 mvn clean package
 java -jar target/inspect4j-1.0-jar-with-dependencies.jar <FILE.java | DIRECTORY> [OUTPUT_DIRECTORY]
 ```
+To view the repository hierarchy:
+ `cd` into `demo` within the `inspect4j` repository/package and run the following commands:
 
+```
+mvn clean package
+java -jar target/inspect4j-1.0-jar-with-dependencies.jar <DIRECTORY> [OPTIONS]
+
+options: 
+    -t, --tree  Prints the directory/repository hierarchy of the given repository.
+```
 ### Package dependencies:
 ```
 junit:junit==4.11

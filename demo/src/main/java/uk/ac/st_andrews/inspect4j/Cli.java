@@ -29,6 +29,12 @@ public class Cli {
      * @throws Exception  - exception
      */
     public static void main(String[] args) throws Exception {
+
+        if(args.length == 2){
+            if (printRepositoryHierarchy(args)){
+                return;
+            }
+        }
      
         if (args.length > 0) {
              String out = args.length == 1 ? OUTPUTDIR_PATH : args[1];
@@ -49,6 +55,39 @@ public class Cli {
     public Cli(String repositoryPath, String outputDir) {
         this.repositoryPath = repositoryPath;
         this.outputDir = outputDir;
+    }
+
+    /**
+     * Print the hierarchy of the repository
+     * @param repo - path of the repository
+     */
+    public static boolean printRepositoryHierarchy(String[] args){
+        if(args[0].equals("-t") || args[0].equals("--tree")){
+            File file = new File(args[1]);
+            if (file.isDirectory()) {
+                RepoHierarchy repoHierarchy = new RepoHierarchy(args[1]);
+                repoHierarchy.buildDirectoryTree();
+                repoHierarchy.printHierarchy();
+            } else {
+                System.out.println("Path provided is not a directory! ");
+                System.exit(0);
+            }
+            return true;
+        }else if(args[1].equals("-t") || args[1].equals("--tree")){
+
+            File file = new File(args[0]);
+            if (file.isDirectory()) {
+                RepoHierarchy repoHierarchy = new RepoHierarchy(args[0]);
+                repoHierarchy.buildDirectoryTree();
+                repoHierarchy.printHierarchy();
+            } else {
+                System.out.println("Path provided is not a directory! ");
+                System.exit(0);
+            }
+            return true;
+        }
+        return false;
+        
     }
 
     /**
