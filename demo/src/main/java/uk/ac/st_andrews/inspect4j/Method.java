@@ -11,8 +11,10 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.javadoc.JavadocBlockTag;
 
@@ -176,15 +178,28 @@ public class Method {
      */
     private void extractDirectCalls() {
         List<MethodCallExpr> calls = declaration.findAll(MethodCallExpr.class);
+        List<ObjectCreationExpr> consCalls = declaration.findAll(ObjectCreationExpr.class);
         if (calls != null) {
             for (MethodCallExpr call : calls) {
-                if (!(call.getParentNode().get() instanceof AssignExpr|| call.getParentNode().get() instanceof VariableDeclarationExpr)) {
+                if (!(call.getParentNode().get() instanceof AssignExpr|| call.getParentNode().get() instanceof VariableDeclarationExpr
+                || call.getParentNode().get() instanceof VariableDeclarator)) {
 
                     String scope = call.asMethodCallExpr().getScope().isPresent()
                             ? call.asMethodCallExpr().getScope().get().toString() + "."
                             : "";
 
                     directCalls.add(scope + call.getNameAsString());
+                }
+            }
+        }
+
+        if(consCalls != null){
+            for (ObjectCreationExpr call : consCalls) {
+                if (!(call.getParentNode().get() instanceof AssignExpr|| call.getParentNode().get() instanceof VariableDeclarationExpr 
+                || call.getParentNode().get() instanceof VariableDeclarator)) {
+
+                    String scope = call.asObjectCreationExpr().getType().toString();
+                    directCalls.add(scope);
                 }
             }
         }

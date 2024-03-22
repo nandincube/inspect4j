@@ -272,8 +272,8 @@ public class BasicTests {
                                 .put("calls", new JSONArray()
                                                 .put("System.out.println")
                                                 .put("System.out.println")
-                                                .put("System.out.println")
-                                                .put("dogNameSetter"))
+                                                .put("System.out.println"))
+                                              
                                 .put("store_vars_calls", new JSONObject()
                                                 .put("dog", "dogNameSetter")
                                                 .put("dog2", "dogNameSetter"));

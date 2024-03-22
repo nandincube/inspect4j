@@ -93,6 +93,9 @@ public class AST {
             NodeList<Statement> stmts = mainMd.getDeclaration().asMethodDeclaration().getBody().get().getStatements();
             String mainMdCall = null;
             for (Statement stmt : stmts) {
+                if (!stmt.isExpressionStmt()) {
+                    continue;
+                }
                 Expression expr = stmt.asExpressionStmt().getExpression();
 
                 if (expr.isMethodCallExpr()) {
