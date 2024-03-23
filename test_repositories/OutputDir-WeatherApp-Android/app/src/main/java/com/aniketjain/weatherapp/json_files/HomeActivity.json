@@ -1,0 +1,1028 @@
+{
+    "file": {
+        "path": "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\WeatherApp-Android\\app\\src\\main\\java\\com\\aniketjain\\weatherapp\\HomeActivity.java",
+        "fileNameBase": "HomeActivity",
+        "extension": "java"
+    },
+    "dependencies": [
+        {
+            "from_package": "com.aniketjain.weatherapp.location.CityFinder",
+            "import": "getCityNameUsingNetwork",
+            "type": "internal",
+            "type_element": "static member"
+        },
+        {
+            "from_package": "com.aniketjain.weatherapp.location.CityFinder",
+            "import": "setLongitudeLatitude",
+            "type": "internal",
+            "type_element": "static member"
+        },
+        {
+            "from_package": "com.aniketjain.weatherapp.network.InternetConnectivity",
+            "import": "isInternetConnected",
+            "type": "internal",
+            "type_element": "static member"
+        },
+        {
+            "from_package": "android",
+            "import": "Manifest",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.annotation",
+            "import": "SuppressLint",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.app",
+            "import": "Activity",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.content",
+            "import": "Intent",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.content",
+            "import": "IntentSender",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.content.pm",
+            "import": "PackageManager",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.os",
+            "import": "Build",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.os",
+            "import": "Bundle",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.speech",
+            "import": "RecognizerIntent",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.util",
+            "import": "Log",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.view",
+            "import": "View",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.view.inputmethod",
+            "import": "EditorInfo",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.view.inputmethod",
+            "import": "InputMethodManager",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "androidx.annotation",
+            "import": "NonNull",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "androidx.annotation",
+            "import": "Nullable",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "androidx.appcompat.app",
+            "import": "AppCompatActivity",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "androidx.core.app",
+            "import": "ActivityCompat",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "androidx.recyclerview.widget",
+            "import": "LinearLayoutManager",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.android.volley",
+            "import": "Request",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.android.volley",
+            "import": "RequestQueue",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.android.volley.toolbox",
+            "import": "JsonObjectRequest",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.android.volley.toolbox",
+            "import": "Volley",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.aniketjain.weatherapp.adapter",
+            "import": "DaysAdapter",
+            "type": "internal",
+            "type_element": "class"
+        },
+        {
+            "from_package": "com.aniketjain.weatherapp.databinding",
+            "import": "ActivityHomeBinding",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.aniketjain.weatherapp.location",
+            "import": "LocationCord",
+            "type": "internal",
+            "type_element": "class"
+        },
+        {
+            "from_package": "com.aniketjain.weatherapp.toast",
+            "import": "Toaster",
+            "type": "internal",
+            "type_element": "class"
+        },
+        {
+            "from_package": "com.aniketjain.weatherapp.update",
+            "import": "UpdateUI",
+            "type": "internal",
+            "type_element": "class"
+        },
+        {
+            "from_package": "com.aniketjain.weatherapp.url",
+            "import": "URL",
+            "type": "internal",
+            "type_element": "class"
+        },
+        {
+            "from_package": "com.google.android.gms.location",
+            "import": "FusedLocationProviderClient",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.google.android.gms.location",
+            "import": "LocationServices",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.google.android.play.core.appupdate",
+            "import": "AppUpdateInfo",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.google.android.play.core.appupdate",
+            "import": "AppUpdateManager",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.google.android.play.core.appupdate",
+            "import": "AppUpdateManagerFactory",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.google.android.play.core.install.model",
+            "import": "AppUpdateType",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.google.android.play.core.install.model",
+            "import": "UpdateAvailability",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "com.google.android.play.core.tasks",
+            "import": "Task",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "org.json",
+            "import": "JSONException",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.text",
+            "import": "SimpleDateFormat",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.util",
+            "import": "ArrayList",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.util",
+            "import": "Date",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.util",
+            "import": "Locale",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.util",
+            "import": "Objects",
+            "type": "external",
+            "type_element": "class/interface"
+        }
+    ],
+    "classes": {
+        "HomeActivity": {
+            "access_modifier": "public",
+            "non_access_modifiers": [
+                "none"
+            ],
+            "extend": [
+                "AppCompatActivity"
+            ],
+            "min_max_lineno": {
+                "min_lineno": 54,
+                "max_lineno": 331
+            },
+            "methods": [
+                {
+                    "onCreate": {
+                        "access_modifier": "protected",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "savedInstanceState"
+                        ],
+                        "arg_types": {
+                            "savedInstanceState": "Bundle"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 65,
+                            "max_lineno": 89
+                        },
+                        "calls": [
+                            "super.onCreate",
+                            "getLayoutInflater",
+                            "setContentView",
+                            "setNavigationBarColor",
+                            "checkUpdate",
+                            "setRefreshLayoutColor",
+                            "listeners",
+                            "getDataUsingNetwork"
+                        ],
+                        "store_vars_calls": {
+                            "binding": "ActivityHomeBinding.inflate",
+                            "view": "binding.getRoot"
+                        }
+                    }
+                },
+                {
+                    "onActivityResult": {
+                        "access_modifier": "protected",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "data",
+                            "resultCode",
+                            "requestCode"
+                        ],
+                        "arg_types": {
+                            "data": "Intent",
+                            "resultCode": "int",
+                            "requestCode": "int"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 92,
+                            "max_lineno": 102
+                        },
+                        "calls": [
+                            "super.onActivityResult",
+                            "binding.layout.cityEt.setText",
+                            "Objects.requireNonNull(arrayList).get(0).toUpperCase",
+                            "Objects.requireNonNull(arrayList).get",
+                            "Objects.requireNonNull",
+                            "searchCity",
+                            "binding.layout.cityEt.getText().toString",
+                            "binding.layout.cityEt.getText"
+                        ],
+                        "store_vars_calls": {
+                            "arrayList": "data.getStringArrayListExtra"
+                        }
+                    }
+                },
+                {
+                    "setNavigationBarColor": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 105,
+                            "max_lineno": 109
+                        },
+                        "calls": [
+                            "getWindow().setNavigationBarColor",
+                            "getWindow",
+                            "getResources().getColor",
+                            "getResources"
+                        ]
+                    }
+                },
+                {
+                    "setUpDaysRecyclerView": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 111,
+                            "max_lineno": 117
+                        },
+                        "calls": [
+                            "binding.dayRv.setLayoutManager",
+                            "binding.dayRv.setAdapter",
+                            "LinearLayoutManager"
+                        ],
+                        "store_vars_calls": {
+                            "daysAdapter": "DaysAdapter"
+                        }
+                    }
+                },
+                {
+                    "listeners": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "returns": [
+                            "false",
+                            "true"
+                        ],
+                        "min_max_lineno": {
+                            "min_lineno": 119,
+                            "max_lineno": 161
+                        },
+                        "calls": [
+                            "binding.layout.mainLayout.setOnTouchListener",
+                            "hideKeyboard",
+                            "binding.layout.searchBarIv.setOnClickListener",
+                            "searchCity",
+                            "binding.layout.cityEt.getText().toString",
+                            "binding.layout.cityEt.getText",
+                            "binding.layout.searchBarIv.setOnTouchListener",
+                            "hideKeyboard",
+                            "binding.layout.cityEt.setOnEditorActionListener",
+                            "searchCity",
+                            "binding.layout.cityEt.getText().toString",
+                            "binding.layout.cityEt.getText",
+                            "hideKeyboard",
+                            "binding.layout.cityEt.setOnFocusChangeListener",
+                            "hideKeyboard",
+                            "binding.mainRefreshLayout.setOnRefreshListener",
+                            "checkConnection",
+                            "Log.i",
+                            "binding.mainRefreshLayout.setRefreshing",
+                            "binding.layout.micSearchId.setOnClickListener",
+                            "intent.putExtra",
+                            "intent.putExtra",
+                            "Locale.getDefault",
+                            "intent.putExtra",
+                            "startActivityForResult",
+                            "Log.d"
+                        ],
+                        "store_vars_calls": {
+                            "intent": "Intent"
+                        },
+                        "lambdas": [
+                            {
+                                "args": [
+                                    "view",
+                                    "motionEvent"
+                                ],
+                                "arg_types": {
+                                    "view": "",
+                                    "motionEvent": ""
+                                },
+                                "body": "{\r\n    hideKeyboard(view);\r\n    return false;\r\n}",
+                                "returns": [
+                                    "false"
+                                ],
+                                "min_max_lineno": {
+                                    "min_lineno": 121,
+                                    "max_lineno": 124
+                                }
+                            },
+                            {
+                                "args": [
+                                    "view"
+                                ],
+                                "arg_types": {
+                                    "view": ""
+                                },
+                                "body": "searchCity(binding.layout.cityEt.getText().toString());",
+                                "min_max_lineno": {
+                                    "min_lineno": 125,
+                                    "max_lineno": 125
+                                }
+                            },
+                            {
+                                "args": [
+                                    "view",
+                                    "motionEvent"
+                                ],
+                                "arg_types": {
+                                    "view": "",
+                                    "motionEvent": ""
+                                },
+                                "body": "{\r\n    hideKeyboard(view);\r\n    return false;\r\n}",
+                                "returns": [
+                                    "false"
+                                ],
+                                "min_max_lineno": {
+                                    "min_lineno": 126,
+                                    "max_lineno": 129
+                                }
+                            },
+                            {
+                                "args": [
+                                    "i",
+                                    "keyEvent",
+                                    "textView"
+                                ],
+                                "arg_types": {
+                                    "i": "",
+                                    "keyEvent": "",
+                                    "textView": ""
+                                },
+                                "body": "{\r\n    if (i == EditorInfo.IME_ACTION_GO) {\r\n        searchCity(binding.layout.cityEt.getText().toString());\r\n        hideKeyboard(textView);\r\n        return true;\r\n    }\r\n    return false;\r\n}",
+                                "returns": [
+                                    "true",
+                                    "false"
+                                ],
+                                "min_max_lineno": {
+                                    "min_lineno": 130,
+                                    "max_lineno": 137
+                                }
+                            },
+                            {
+                                "args": [
+                                    "view",
+                                    "b"
+                                ],
+                                "arg_types": {
+                                    "view": "",
+                                    "b": ""
+                                },
+                                "body": "{\r\n    if (!b) {\r\n        hideKeyboard(view);\r\n    }\r\n}",
+                                "min_max_lineno": {
+                                    "min_lineno": 138,
+                                    "max_lineno": 142
+                                }
+                            },
+                            {
+                                "body": "{\r\n    checkConnection();\r\n    Log.i(\"refresh\", \"Refresh Done.\");\r\n    //for the next time\r\n    binding.mainRefreshLayout.setRefreshing(false);\r\n}",
+                                "min_max_lineno": {
+                                    "min_lineno": 143,
+                                    "max_lineno": 147
+                                }
+                            },
+                            {
+                                "args": [
+                                    "view"
+                                ],
+                                "arg_types": {
+                                    "view": ""
+                                },
+                                "body": "{\r\n    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);\r\n    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);\r\n    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());\r\n    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, REQUEST_CODE_EXTRA_INPUT);\r\n    try {\r\n        //it was deprecated but still work\r\n        startActivityForResult(intent, REQUEST_CODE_EXTRA_INPUT);\r\n    } catch (Exception e) {\r\n        Log.d(\"Error Voice\", \"Mic Error:  \" + e);\r\n    }\r\n}",
+                                "min_max_lineno": {
+                                    "min_lineno": 149,
+                                    "max_lineno": 160
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "setRefreshLayoutColor": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 163,
+                            "max_lineno": 170
+                        },
+                        "calls": [
+                            "binding.mainRefreshLayout.setProgressBackgroundColorSchemeColor",
+                            "getResources().getColor",
+                            "getResources",
+                            "binding.mainRefreshLayout.setColorSchemeColors",
+                            "getResources().getColor",
+                            "getResources"
+                        ]
+                    }
+                },
+                {
+                    "searchCity": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "cityName"
+                        ],
+                        "arg_types": {
+                            "cityName": "String"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 172,
+                            "max_lineno": 178
+                        },
+                        "calls": [
+                            "cityName.isEmpty",
+                            "Toaster.errorToast",
+                            "setLatitudeLongitudeUsingCity"
+                        ]
+                    }
+                },
+                {
+                    "getDataUsingNetwork": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 180,
+                            "max_lineno": 193
+                        },
+                        "calls": [
+                            "ActivityCompat.checkSelfPermission",
+                            "ActivityCompat.checkSelfPermission",
+                            "ActivityCompat.requestPermissions",
+                            "client.getLastLocation().addOnSuccessListener",
+                            "client.getLastLocation",
+                            "setLongitudeLatitude",
+                            "getTodayWeatherInfo"
+                        ],
+                        "store_vars_calls": {
+                            "city": "getCityNameUsingNetwork",
+                            "client": "LocationServices.getFusedLocationProviderClient"
+                        },
+                        "lambdas": [
+                            {
+                                "args": [
+                                    "location"
+                                ],
+                                "arg_types": {
+                                    "location": ""
+                                },
+                                "body": "{\r\n    setLongitudeLatitude(location);\r\n    city = getCityNameUsingNetwork(this, location);\r\n    getTodayWeatherInfo(city);\r\n}",
+                                "min_max_lineno": {
+                                    "min_lineno": 187,
+                                    "max_lineno": 191
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "setLatitudeLongitudeUsingCity": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "cityName"
+                        ],
+                        "arg_types": {
+                            "cityName": "String"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 195,
+                            "max_lineno": 210
+                        },
+                        "calls": [
+                            "URL.setCity_url",
+                            "URL.getCity_url",
+                            "response.getJSONObject",
+                            "response.getJSONObject",
+                            "getTodayWeatherInfo",
+                            "binding.layout.cityEt.setText",
+                            "e.printStackTrace",
+                            "Toaster.errorToast",
+                            "requestQueue.add"
+                        ],
+                        "store_vars_calls": {
+                            "LocationCord.lat": "response.getJSONObject(\"coord\").getString",
+                            "LocationCord.lon": "response.getJSONObject(\"coord\").getString",
+                            "requestQueue": "Volley.newRequestQueue",
+                            "jsonObjectRequest": "JsonObjectRequest"
+                        },
+                        "lambdas": [
+                            {
+                                "args": [
+                                    "response"
+                                ],
+                                "arg_types": {
+                                    "response": ""
+                                },
+                                "body": "{\r\n    try {\r\n        LocationCord.lat = response.getJSONObject(\"coord\").getString(\"lat\");\r\n        LocationCord.lon = response.getJSONObject(\"coord\").getString(\"lon\");\r\n        getTodayWeatherInfo(cityName);\r\n        // After the successfully city search the cityEt(editText) is Empty.\r\n        binding.layout.cityEt.setText(\"\");\r\n    } catch (JSONException e) {\r\n        e.printStackTrace();\r\n    }\r\n}",
+                                "min_max_lineno": {
+                                    "min_lineno": 198,
+                                    "max_lineno": 208
+                                }
+                            },
+                            {
+                                "args": [
+                                    "error"
+                                ],
+                                "arg_types": {
+                                    "error": ""
+                                },
+                                "body": "Toaster.errorToast(this, \"Please enter the correct city name\");",
+                                "min_max_lineno": {
+                                    "min_lineno": 208,
+                                    "max_lineno": 208
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "getTodayWeatherInfo": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "name"
+                        ],
+                        "arg_types": {
+                            "name": "String"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 212,
+                            "max_lineno": 243
+                        },
+                        "calls": [
+                            "url.getLink",
+                            "response.getJSONObject",
+                            "response.getJSONArray(\"daily\").getJSONObject(0).getJSONArray(\"weather\").getJSONObject",
+                            "response.getJSONArray(\"daily\").getJSONObject(0).getJSONArray",
+                            "response.getJSONArray(\"daily\").getJSONObject",
+                            "response.getJSONArray",
+                            "response.getJSONArray(\"daily\").getJSONObject",
+                            "response.getJSONArray",
+                            "response.getJSONArray(\"daily\").getJSONObject",
+                            "response.getJSONArray",
+                            "response.getJSONObject(\"current\").getJSONArray(\"weather\").getJSONObject",
+                            "response.getJSONObject(\"current\").getJSONArray",
+                            "response.getJSONObject",
+                            "Math.round",
+                            "response.getJSONObject(\"current\").getDouble",
+                            "response.getJSONObject",
+                            "response.getJSONArray(\"daily\").getJSONObject(0).getJSONObject(\"temp\").getDouble",
+                            "response.getJSONArray(\"daily\").getJSONObject(0).getJSONObject",
+                            "response.getJSONArray(\"daily\").getJSONObject",
+                            "response.getJSONArray",
+                            "response.getJSONArray(\"daily\").getJSONObject(0).getJSONObject(\"temp\").getDouble",
+                            "response.getJSONArray(\"daily\").getJSONObject(0).getJSONObject",
+                            "response.getJSONArray(\"daily\").getJSONObject",
+                            "response.getJSONArray",
+                            "response.getJSONArray(\"daily\").getJSONObject",
+                            "response.getJSONArray",
+                            "response.getJSONArray(\"daily\").getJSONObject",
+                            "response.getJSONArray",
+                            "response.getJSONArray(\"daily\").getJSONObject",
+                            "response.getJSONArray",
+                            "updateUI",
+                            "hideProgressBar",
+                            "setUpDaysRecyclerView",
+                            "e.printStackTrace",
+                            "requestQueue.add",
+                            "Log.i",
+                            "SimpleDateFormat",
+                            "Date"
+                        ],
+                        "store_vars_calls": {
+                            "update_time": "response.getJSONObject(\"current\").getLong",
+                            "updated_at": "new SimpleDateFormat(\"EEEE hh:mm a\", Locale.ENGLISH).format",
+                            "condition": "response.getJSONArray(\"daily\").getJSONObject(0).getJSONArray(\"weather\").getJSONObject(0).getInt",
+                            "sunrise": "response.getJSONArray(\"daily\").getJSONObject(0).getLong",
+                            "sunset": "response.getJSONArray(\"daily\").getJSONObject(0).getLong",
+                            "description": "response.getJSONObject(\"current\").getJSONArray(\"weather\").getJSONObject(0).getString",
+                            "temperature": "String.valueOf",
+                            "min_temperature": "String.format",
+                            "max_temperature": "String.format",
+                            "pressure": "response.getJSONArray(\"daily\").getJSONObject(0).getString",
+                            "wind_speed": "response.getJSONArray(\"daily\").getJSONObject(0).getString",
+                            "humidity": "response.getJSONArray(\"daily\").getJSONObject(0).getString",
+                            "url": "URL",
+                            "requestQueue": "Volley.newRequestQueue",
+                            "jsonObjectRequest": "JsonObjectRequest"
+                        },
+                        "lambdas": [
+                            {
+                                "args": [
+                                    "response"
+                                ],
+                                "arg_types": {
+                                    "response": ""
+                                },
+                                "body": "{\r\n    try {\r\n        this.name = name;\r\n        update_time = response.getJSONObject(\"current\").getLong(\"dt\");\r\n        updated_at = new SimpleDateFormat(\"EEEE hh:mm a\", Locale.ENGLISH).format(new Date(update_time * 1000));\r\n        condition = response.getJSONArray(\"daily\").getJSONObject(0).getJSONArray(\"weather\").getJSONObject(0).getInt(\"id\");\r\n        sunrise = response.getJSONArray(\"daily\").getJSONObject(0).getLong(\"sunrise\");\r\n        sunset = response.getJSONArray(\"daily\").getJSONObject(0).getLong(\"sunset\");\r\n        description = response.getJSONObject(\"current\").getJSONArray(\"weather\").getJSONObject(0).getString(\"main\");\r\n        temperature = String.valueOf(Math.round(response.getJSONObject(\"current\").getDouble(\"temp\") - 273.15));\r\n        min_temperature = String.format(\"%.0f\", response.getJSONArray(\"daily\").getJSONObject(0).getJSONObject(\"temp\").getDouble(\"min\") - 273.15);\r\n        max_temperature = String.format(\"%.0f\", response.getJSONArray(\"daily\").getJSONObject(0).getJSONObject(\"temp\").getDouble(\"max\") - 273.15);\r\n        pressure = response.getJSONArray(\"daily\").getJSONObject(0).getString(\"pressure\");\r\n        wind_speed = response.getJSONArray(\"daily\").getJSONObject(0).getString(\"wind_speed\");\r\n        humidity = response.getJSONArray(\"daily\").getJSONObject(0).getString(\"humidity\");\r\n        updateUI();\r\n        hideProgressBar();\r\n        setUpDaysRecyclerView();\r\n    } catch (JSONException e) {\r\n        e.printStackTrace();\r\n    }\r\n}",
+                                "min_max_lineno": {
+                                    "min_lineno": 216,
+                                    "max_lineno": 240
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "updateUI": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 245,
+                            "max_lineno": 263
+                        },
+                        "calls": [
+                            "binding.layout.nameTv.setText",
+                            "binding.layout.updatedAtTv.setText",
+                            "binding.layout.conditionIv.setImageResource",
+                            "getResources().getIdentifier",
+                            "getResources",
+                            "UpdateUI.getIconID",
+                            "getPackageName",
+                            "binding.layout.conditionDescTv.setText",
+                            "binding.layout.tempTv.setText",
+                            "binding.layout.minTempTv.setText",
+                            "binding.layout.maxTempTv.setText",
+                            "binding.layout.pressureTv.setText",
+                            "binding.layout.windTv.setText",
+                            "binding.layout.humidityTv.setText"
+                        ],
+                        "store_vars_calls": {
+                            "updated_at": "translate"
+                        }
+                    }
+                },
+                {
+                    "translate": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "dayToTranslate"
+                        ],
+                        "arg_types": {
+                            "dayToTranslate": "String"
+                        },
+                        "return_type": "String",
+                        "returns": [
+                            "dayToTranslateSplit[0].concat(  + dayToTranslateSplit[1])"
+                        ],
+                        "min_max_lineno": {
+                            "min_lineno": 265,
+                            "max_lineno": 269
+                        },
+                        "calls": [
+                            "dayToTranslateSplit[0].trim",
+                            "getApplicationContext",
+                            "dayToTranslateSplit[0].concat"
+                        ],
+                        "store_vars_calls": {
+                            "dayToTranslateSplit": "dayToTranslate.split"
+                        }
+                    }
+                },
+                {
+                    "hideProgressBar": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 271,
+                            "max_lineno": 274
+                        },
+                        "calls": [
+                            "binding.progress.setVisibility",
+                            "binding.layout.mainLayout.setVisibility"
+                        ]
+                    }
+                },
+                {
+                    "hideMainLayout": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 276,
+                            "max_lineno": 279
+                        },
+                        "calls": [
+                            "binding.progress.setVisibility",
+                            "binding.layout.mainLayout.setVisibility"
+                        ]
+                    }
+                },
+                {
+                    "hideKeyboard": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "view"
+                        ],
+                        "arg_types": {
+                            "view": "View"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 281,
+                            "max_lineno": 284
+                        },
+                        "calls": [
+                            "view.getContext().getSystemService",
+                            "view.getContext",
+                            "inputMethodManager.hideSoftInputFromWindow",
+                            "view.getWindowToken"
+                        ]
+                    }
+                },
+                {
+                    "checkConnection": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 286,
+                            "max_lineno": 294
+                        },
+                        "calls": [
+                            "isInternetConnected",
+                            "hideMainLayout",
+                            "Toaster.errorToast",
+                            "hideProgressBar",
+                            "getDataUsingNetwork"
+                        ]
+                    }
+                },
+                {
+                    "onRequestPermissionsResult": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "grantResults",
+                            "permissions",
+                            "requestCode"
+                        ],
+                        "arg_types": {
+                            "grantResults": "int[]",
+                            "permissions": "String[]",
+                            "requestCode": "int"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 296,
+                            "max_lineno": 308
+                        },
+                        "calls": [
+                            "super.onRequestPermissionsResult",
+                            "Toaster.successToast",
+                            "getDataUsingNetwork",
+                            "Toaster.errorToast",
+                            "finish"
+                        ]
+                    }
+                },
+                {
+                    "onResume": {
+                        "access_modifier": "protected",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 310,
+                            "max_lineno": 314
+                        },
+                        "calls": [
+                            "super.onResume",
+                            "checkConnection"
+                        ]
+                    }
+                },
+                {
+                    "checkUpdate": {
+                        "access_modifier": "private",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 316,
+                            "max_lineno": 329
+                        },
+                        "calls": [
+                            "appUpdateInfoTask.addOnSuccessListener",
+                            "appUpdateInfo.updateAvailability",
+                            "appUpdateInfo.isUpdateTypeAllowed",
+                            "appUpdateManager.startUpdateFlowForResult",
+                            "Toaster.errorToast"
+                        ],
+                        "store_vars_calls": {
+                            "appUpdateManager": "AppUpdateManagerFactory.create",
+                            "appUpdateInfoTask": "appUpdateManager.getAppUpdateInfo"
+                        },
+                        "lambdas": [
+                            {
+                                "args": [
+                                    "appUpdateInfo"
+                                ],
+                                "arg_types": {
+                                    "appUpdateInfo": ""
+                                },
+                                "body": "{\r\n    if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {\r\n        try {\r\n            appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, HomeActivity.this, WEATHER_FORECAST_APP_UPDATE_REQ_CODE);\r\n        } catch (IntentSender.SendIntentException exception) {\r\n            Toaster.errorToast(this, \"Update Failed\");\r\n        }\r\n    }\r\n}",
+                                "min_max_lineno": {
+                                    "min_lineno": 319,
+                                    "max_lineno": 328
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

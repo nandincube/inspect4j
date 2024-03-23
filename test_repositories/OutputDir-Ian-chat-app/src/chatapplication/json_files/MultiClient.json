@@ -1,0 +1,71 @@
+{
+    "file": {
+        "path": "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\lan-chat-app\\src\\chatapplication\\MultiClient.java",
+        "fileNameBase": "MultiClient",
+        "extension": "java",
+        "doc": "* @author Pinder"
+    },
+    "dependencies": [
+        {
+            "from_package": "chatapplication.MulticastClient",
+            "import": "name",
+            "type": "internal",
+            "type_element": "static member"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JOptionPane",
+            "type": "external",
+            "type_element": "class/interface"
+        }
+    ],
+    "classes": {
+        "MultiClient": {
+            "doc": "* @author Pinder",
+            "access_modifier": "public",
+            "non_access_modifiers": [
+                "none"
+            ],
+            "min_max_lineno": {
+                "min_lineno": 15,
+                "max_lineno": 39
+            },
+            "store_vars_calls": {
+                "name": [
+                    "JOptionPane.showInputDialog",
+                    "JOptionPane.showInputDialog"
+                ]
+            },
+            "methods": [
+                {
+                    "MultiClient": {
+                        "access_modifier": "default",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 16,
+                            "max_lineno": 38
+                        },
+                        "calls": [
+                            "name.equals",
+                            "new ChatApp().setVisible",
+                            "name.equals",
+                            "JOptionPane.showMessageDialog",
+                            "new MulticastClient().setVisible",
+                            "t1.start",
+                            "ChatApp",
+                            "ChatApp",
+                            "MulticastClient",
+                            "Client"
+                        ],
+                        "store_vars_calls": {
+                            "t1": "Thread"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

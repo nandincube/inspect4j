@@ -1,0 +1,60 @@
+{
+    "file": {
+        "path": "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\little-music-player\\app\\src\\main\\java\\com\\martinmimigames\\littlemusicplayer\\Exceptions.java",
+        "fileNameBase": "Exceptions",
+        "extension": "java"
+    },
+    "dependencies": [
+        {
+            "from_package": "android.content",
+            "import": "Context",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "mg.utils.notify",
+            "import": "ToastHelper",
+            "type": "external",
+            "type_element": "class/interface"
+        }
+    ],
+    "classes": {
+        "Exceptions": {
+            "access_modifier": "default",
+            "non_access_modifiers": [
+                "final"
+            ],
+            "min_max_lineno": {
+                "min_lineno": 7,
+                "max_lineno": 21
+            },
+            "methods": [
+                {
+                    "throwError": {
+                        "doc": "create and display error toast to report errors",
+                        "access_modifier": "default",
+                        "non_access_modifiers": [
+                            "static"
+                        ],
+                        "args": [
+                            "msg",
+                            "context"
+                        ],
+                        "arg_types": {
+                            "msg": "String",
+                            "context": "Context"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 18,
+                            "max_lineno": 20
+                        },
+                        "calls": [
+                            "ToastHelper.showLong"
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

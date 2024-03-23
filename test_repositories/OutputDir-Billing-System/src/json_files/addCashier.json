@@ -1,0 +1,210 @@
+{
+    "file": {
+        "path": "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\Billing-System\\src\\addCashier.java",
+        "fileNameBase": "addCashier",
+        "extension": "java"
+    },
+    "dependencies": [
+        {
+            "from_package": "java.awt",
+            "import": "Font",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JButton",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JLabel",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JMenu",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JMenuItem",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JPanel",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JScrollPane",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JTextArea",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JTextField",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "javax.swing",
+            "import": "JPasswordField",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.awt",
+            "import": "Color",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.awt.event",
+            "import": "ActionListener",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.awt.event",
+            "import": "ActionEvent",
+            "type": "external",
+            "type_element": "class/interface"
+        }
+    ],
+    "classes": {
+        "addCashier": {
+            "access_modifier": "public",
+            "non_access_modifiers": [
+                "none"
+            ],
+            "extend": [
+                "JPanel"
+            ],
+            "min_max_lineno": {
+                "min_lineno": 16,
+                "max_lineno": 80
+            },
+            "store_vars_calls": {
+                "userField": "JTextField",
+                "btnAddCashier": "JButton",
+                "passwordField": "JPasswordField",
+                "error": "JLabel"
+            },
+            "methods": [
+                {
+                    "actionPerformed": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "e"
+                        ],
+                        "arg_types": {
+                            "e": "ActionEvent"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 52,
+                            "max_lineno": 64
+                        },
+                        "calls": [
+                            "userField.getText",
+                            "passwordField.getText().toString().trim",
+                            "passwordField.getText().toString",
+                            "passwordField.getText",
+                            "user.equals",
+                            "pass.equals",
+                            "error.setText",
+                            "error.setText",
+                            "DB.addCashier",
+                            "userField.setText",
+                            "passwordField.setText"
+                        ],
+                        "store_vars_calls": {
+                            "user": [
+                                "userField.getText().trim",
+                                "userField.getText().trim"
+                            ],
+                            "pass": [
+                                "passwordField.getText().toString().trim().toLowerCase",
+                                "passwordField.getText().toString().trim().toLowerCase"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "addCashier": {
+                        "doc": "Create the panel.",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 27,
+                            "max_lineno": 78
+                        },
+                        "calls": [
+                            "setLayout",
+                            "setBounds",
+                            "lblAddCashier.setBounds",
+                            "lblAddCashier.setFont",
+                            "add",
+                            "lblUserName.setFont",
+                            "lblUserName.setBounds",
+                            "add",
+                            "lblPassword.setFont",
+                            "lblPassword.setBounds",
+                            "add",
+                            "userField.setBounds",
+                            "add",
+                            "userField.setColumns",
+                            "btnAddCashier.addActionListener",
+                            "userField.getText",
+                            "passwordField.getText().toString().trim",
+                            "passwordField.getText().toString",
+                            "passwordField.getText",
+                            "user.equals",
+                            "pass.equals",
+                            "error.setText",
+                            "error.setText",
+                            "DB.addCashier",
+                            "userField.setText",
+                            "passwordField.setText",
+                            "btnAddCashier.setBounds",
+                            "add",
+                            "passwordField.setBounds",
+                            "add",
+                            "error.setForeground",
+                            "error.setBounds",
+                            "add",
+                            "Font",
+                            "Font",
+                            "Font",
+                            "ActionListener"
+                        ],
+                        "store_vars_calls": {
+                            "lblAddCashier": "JLabel",
+                            "lblUserName": "JLabel",
+                            "lblPassword": "JLabel"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,266 @@
+{
+    "file": {
+        "path": "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\little-music-player\\app\\src\\main\\java\\com\\martinmimigames\\littlemusicplayer\\AudioPlayer.java",
+        "fileNameBase": "AudioPlayer",
+        "extension": "java",
+        "doc": "audio playing logic class"
+    },
+    "dependencies": [
+        {
+            "from_package": "android.media",
+            "import": "AudioAttributes",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.media",
+            "import": "AudioManager",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.media",
+            "import": "MediaPlayer",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.net",
+            "import": "Uri",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.os",
+            "import": "Build",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "java.io",
+            "import": "IOException",
+            "type": "external",
+            "type_element": "class/interface"
+        }
+    ],
+    "classes": {
+        "AudioPlayer": {
+            "doc": "audio playing logic class",
+            "access_modifier": "default",
+            "non_access_modifiers": [
+                "none"
+            ],
+            "extend": [
+                "Thread"
+            ],
+            "implement": [
+                "MediaPlayer.OnCompletionListener",
+                "MediaPlayerStateListener"
+            ],
+            "min_max_lineno": {
+                "min_lineno": 14,
+                "max_lineno": 126
+            },
+            "store_vars_calls": {
+                "mediaPlayer": "MediaPlayer"
+            },
+            "methods": [
+                {
+                    "AudioPlayer": {
+                        "doc": "Initiate an audio player, throws exceptions if failed.. [tags = [@PARAM param the service initialising this., @PARAM param the Uri containing the location of the audio., @THROWS throws when the media player need cookies, but we do not supply it., @THROWS throws when the media player is not in the correct state., @THROWS throws when the audio file is protected and cannot be played., @THROWS throws when the audio file cannot be read. ]",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "service",
+                            "location"
+                        ],
+                        "arg_types": {
+                            "service": "Service",
+                            "location": "Uri"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 29,
+                            "max_lineno": 52
+                        },
+                        "calls": [
+                            "mediaPlayer.setDataSource",
+                            "mediaPlayer.setAudioStreamType",
+                            "mediaPlayer.setAudioAttributes",
+                            "new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_MEDIA).build",
+                            "new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setUsage",
+                            "new AudioAttributes.Builder().setContentType",
+                            "mediaPlayer.setLooping",
+                            "mediaPlayer.setOnCompletionListener",
+                            "AudioAttributes.Builder"
+                        ]
+                    }
+                },
+                {
+                    "run": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 54,
+                            "max_lineno": 67
+                        },
+                        "calls": [
+                            "mediaPlayer.prepare",
+                            "service.setState",
+                            "Exceptions.throwError",
+                            "service.playOrDestroy",
+                            "Exceptions.throwError",
+                            "service.playOrDestroy"
+                        ]
+                    }
+                },
+                {
+                    "isPlaying": {
+                        "doc": "check if audio is playing",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "boolean",
+                        "returns": [
+                            "mediaPlayer.isPlaying()"
+                        ],
+                        "min_max_lineno": {
+                            "min_lineno": 72,
+                            "max_lineno": 74
+                        },
+                        "calls": [
+                            "mediaPlayer.isPlaying"
+                        ]
+                    }
+                },
+                {
+                    "isLooping": {
+                        "doc": "check if audio is looping, always false on < android cupcake (sdk 3)",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "boolean",
+                        "returns": [
+                            "mediaPlayer.isLooping()",
+                            "false"
+                        ],
+                        "min_max_lineno": {
+                            "min_lineno": 79,
+                            "max_lineno": 85
+                        },
+                        "calls": [
+                            "mediaPlayer.isLooping"
+                        ]
+                    }
+                },
+                {
+                    "setState": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "looping",
+                            "playing"
+                        ],
+                        "arg_types": {
+                            "looping": "boolean",
+                            "playing": "boolean"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 87,
+                            "max_lineno": 95
+                        },
+                        "calls": [
+                            "mediaPlayer.start",
+                            "mediaPlayer.pause",
+                            "mediaPlayer.setLooping"
+                        ]
+                    }
+                },
+                {
+                    "onCompletion": {
+                        "doc": "notifies playback completion",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "mp"
+                        ],
+                        "arg_types": {
+                            "mp": "MediaPlayer"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 100,
+                            "max_lineno": 103
+                        },
+                        "calls": [
+                            "service.onMediaPlayerComplete"
+                        ]
+                    }
+                },
+                {
+                    "onMediaPlayerDestroy": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 105,
+                            "max_lineno": 111
+                        },
+                        "calls": [
+                            "isInterrupted",
+                            "interrupt"
+                        ]
+                    }
+                },
+                {
+                    "onMediaPlayerReset": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 113,
+                            "max_lineno": 116
+                        },
+                        "calls": [
+                            "mediaPlayer.reset"
+                        ]
+                    }
+                },
+                {
+                    "interrupt": {
+                        "doc": "release and kill service",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 121,
+                            "max_lineno": 125
+                        },
+                        "calls": [
+                            "mediaPlayer.release",
+                            "super.interrupt"
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,166 @@
+{
+    "file": {
+        "path": "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\lan-chat-app\\src\\chatapplication\\OnlineStatus.java",
+        "fileNameBase": "OnlineStatus",
+        "extension": "java"
+    },
+    "dependencies": [
+        {
+            "from_package": "java.io",
+            "import": "*",
+            "type": "external",
+            "type_element": "classes/interfaces"
+        },
+        {
+            "from_package": "java.lang.Thread",
+            "import": "sleep",
+            "type": "external",
+            "type_element": "static member"
+        },
+        {
+            "from_package": "java.net",
+            "import": "*",
+            "type": "external",
+            "type_element": "classes/interfaces"
+        },
+        {
+            "from_package": "java.util",
+            "import": "*",
+            "type": "external",
+            "type_element": "classes/interfaces"
+        }
+    ],
+    "classes": {
+        "OnlineStatus": {
+            "access_modifier": "public",
+            "non_access_modifiers": [
+                "none"
+            ],
+            "implement": [
+                "Runnable"
+            ],
+            "min_max_lineno": {
+                "min_lineno": 17,
+                "max_lineno": 59
+            },
+            "store_vars_calls": {
+                "s": "DatagramSocket"
+            },
+            "methods": [
+                {
+                    "OnlineStatus": {
+                        "access_modifier": "default",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 20,
+                            "max_lineno": 25
+                        }
+                    }
+                },
+                {
+                    "run": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 26,
+                            "max_lineno": 58
+                        },
+                        "calls": [
+                            "s.send",
+                            "sleep",
+                            "Math.random",
+                            "System.out.println",
+                            "s.close"
+                        ],
+                        "store_vars_calls": {
+                            "buf": "MulticastClient.name.getBytes",
+                            "group": "InetAddress.getByName",
+                            "packet": "DatagramPacket"
+                        }
+                    }
+                }
+            ]
+        },
+        "ReceiveOnlineStatus": {
+            "access_modifier": "default",
+            "non_access_modifiers": [
+                "none"
+            ],
+            "implement": [
+                "Runnable"
+            ],
+            "min_max_lineno": {
+                "min_lineno": 59,
+                "max_lineno": 130
+            },
+            "store_vars_calls": {
+                "socket": "MulticastSocket",
+                "address": "InetAddress.getByName",
+                "al": "ArrayList"
+            },
+            "methods": [
+                {
+                    "ReceiveOnlineStatus": {
+                        "access_modifier": "default",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 63,
+                            "max_lineno": 74
+                        },
+                        "calls": [
+                            "socket.joinGroup",
+                            "System.err.println"
+                        ]
+                    }
+                },
+                {
+                    "run": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 78,
+                            "max_lineno": 125
+                        },
+                        "calls": [
+                            "socket.receive",
+                            "packet.getData",
+                            "packet.getLength",
+                            "name.equals",
+                            "al.contains",
+                            "name.equals",
+                            "al.add",
+                            "MulticastClient.jTextArea3.getText().equals",
+                            "MulticastClient.jTextArea3.getText",
+                            "MulticastClient.jTextArea3.setText",
+                            "MulticastClient.jTextArea3.setText",
+                            "MulticastClient.jTextArea3.setText",
+                            "MulticastClient.jTextArea3.getText",
+                            "obj.toString",
+                            "System.out.println"
+                        ],
+                        "store_vars_calls": {
+                            "al": [
+                                "ArrayList",
+                                "ArrayList"
+                            ],
+                            "packet": "DatagramPacket",
+                            "name": "String"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

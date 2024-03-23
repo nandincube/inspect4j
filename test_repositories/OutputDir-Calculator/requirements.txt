@@ -1,0 +1,5 @@
+Java Version: 11
+Java Target Version: 11
+
+com.fasterxml.jackson.dataformat:jackson-dataformat-yaml==${jackson-dataformat-yaml.version}
+org.junit.jupiter:junit-jupiter-params==${junit-jupiter-params.version}

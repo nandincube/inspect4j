@@ -1,0 +1,291 @@
+{
+    "file": {
+        "path": "C:\\Users\\nandi\\OneDrive\\Documents\\4th year\\CS4099 - Dissertation\\Dissertation\\inspect4j\\test_repositories\\little-music-player\\app\\src\\main\\java\\com\\martinmimigames\\littlemusicplayer\\HWListener.java",
+        "fileNameBase": "HWListener",
+        "extension": "java",
+        "doc": "Hardware Listener for button controls"
+    },
+    "dependencies": [
+        {
+            "from_package": "android.content.Intent",
+            "import": "EXTRA_KEY_EVENT",
+            "type": "external",
+            "type_element": "static member"
+        },
+        {
+            "from_package": "android.content",
+            "import": "BroadcastReceiver",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.content",
+            "import": "ComponentName",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.content",
+            "import": "Context",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.content",
+            "import": "Intent",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.content",
+            "import": "IntentFilter",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.media",
+            "import": "AudioManager",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.media.session",
+            "import": "MediaSession",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.media.session",
+            "import": "PlaybackState",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.os",
+            "import": "Build",
+            "type": "external",
+            "type_element": "class/interface"
+        },
+        {
+            "from_package": "android.view",
+            "import": "KeyEvent",
+            "type": "external",
+            "type_element": "class/interface"
+        }
+    ],
+    "classes": {
+        "HWListener": {
+            "doc": "Hardware Listener for button controls",
+            "access_modifier": "public",
+            "non_access_modifiers": [
+                "none"
+            ],
+            "extend": [
+                "BroadcastReceiver"
+            ],
+            "implement": [
+                "MediaPlayerStateListener"
+            ],
+            "min_max_lineno": {
+                "min_lineno": 20,
+                "max_lineno": 125
+            },
+            "methods": [
+                {
+                    "HWListener": {
+                        "doc": "Required for older android versions,\r\ninitialized by the system",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 31,
+                            "max_lineno": 33
+                        }
+                    }
+                },
+                {
+                    "HWListener": {
+                        "doc": "Returns an instance, only useful when SDK_INT >= LOLLIPOP. [tags = [@PARAM param the music service ]",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "service"
+                        ],
+                        "arg_types": {
+                            "service": "Service"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 40,
+                            "max_lineno": 42
+                        }
+                    }
+                },
+                {
+                    "onMediaButtonEvent": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "mediaButtonIntent"
+                        ],
+                        "arg_types": {
+                            "mediaButtonIntent": "Intent"
+                        },
+                        "return_type": "boolean",
+                        "returns": [
+                            "super.onMediaButtonEvent(mediaButtonIntent)"
+                        ],
+                        "min_max_lineno": {
+                            "min_lineno": 52,
+                            "max_lineno": 56
+                        },
+                        "calls": [
+                            "onReceive",
+                            "super.onMediaButtonEvent"
+                        ]
+                    }
+                },
+                {
+                    "create": {
+                        "doc": "Initializer, only useful when SDK_INT >= LOLLIPOP",
+                        "access_modifier": "default",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "returns": [
+                            "super.onMediaButtonEvent(mediaButtonIntent)"
+                        ],
+                        "min_max_lineno": {
+                            "min_lineno": 47,
+                            "max_lineno": 71
+                        },
+                        "calls": [
+                            "HWListener.class.toString",
+                            "mediaSession.setCallback",
+                            "onReceive",
+                            "super.onMediaButtonEvent",
+                            "playbackStateBuilder.setActions",
+                            "mediaSession.setPlaybackState",
+                            "playbackStateBuilder.build",
+                            "mediaSession.setActive",
+                            "((AudioManager) service.getSystemService(Context.AUDIO_SERVICE)).registerMediaButtonEventReceiver",
+                            "service.getSystemService",
+                            "service.registerReceiver",
+                            "MediaSession.Callback",
+                            "IntentFilter"
+                        ],
+                        "store_vars_calls": {
+                            "mediaSession": "MediaSession",
+                            "playbackStateBuilder": "PlaybackState.Builder",
+                            "cn": "ComponentName"
+                        }
+                    }
+                },
+                {
+                    "setState": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "looping",
+                            "playing"
+                        ],
+                        "arg_types": {
+                            "looping": "boolean",
+                            "playing": "boolean"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 73,
+                            "max_lineno": 83
+                        },
+                        "calls": [
+                            "playbackStateBuilder.setState",
+                            "playbackStateBuilder.setState",
+                            "mediaSession.setPlaybackState",
+                            "playbackStateBuilder.build"
+                        ]
+                    }
+                },
+                {
+                    "onMediaPlayerReset": {
+                        "doc": "Get ready to be destroyed, only useful when SDK_INT >= LOLLIPOP",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 88,
+                            "max_lineno": 99
+                        },
+                        "calls": [
+                            "mediaSession.setActive",
+                            "mediaSession.release",
+                            "((AudioManager) service.getSystemService(Context.AUDIO_SERVICE)).unregisterMediaButtonEventReceiver",
+                            "service.getSystemService",
+                            "service.unregisterReceiver"
+                        ]
+                    }
+                },
+                {
+                    "onMediaPlayerDestroy": {
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 101,
+                            "max_lineno": 103
+                        }
+                    }
+                },
+                {
+                    "onReceive": {
+                        "doc": "Responds to media keycodes (ie. from bluetooth ear phones, etc.).\r\nDoes not connect directly to service variable because service may not be initialized.",
+                        "access_modifier": "public",
+                        "non_access_modifiers": [
+                            "none"
+                        ],
+                        "args": [
+                            "context",
+                            "intent"
+                        ],
+                        "arg_types": {
+                            "context": "Context",
+                            "intent": "Intent"
+                        },
+                        "return_type": "void",
+                        "min_max_lineno": {
+                            "min_lineno": 109,
+                            "max_lineno": 124
+                        },
+                        "calls": [
+                            "event.getAction",
+                            "intent.addFlags",
+                            "event.getKeyCode",
+                            "intent.putExtra",
+                            "intent.putExtra",
+                            "intent.putExtra",
+                            "intent.putExtra",
+                            "context.startService"
+                        ],
+                        "store_vars_calls": {
+                            "intent": "Intent",
+                            "event": "intent.getParcelableExtra"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
