@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: junit.DepDocTests
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.211 s - in junit.DepDocTests
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.247 s - in junit.DepDocTests

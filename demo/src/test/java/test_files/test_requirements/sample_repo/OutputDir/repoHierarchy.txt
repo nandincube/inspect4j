@@ -1,0 +1,17 @@
+sample_repo/
+    ├──BasicClassWithMain.java
+    └──dirTwo/
+        ├──BasicClassWithDependencies.java
+        └──pom.xml
+    └──OutputDir/
+        └──dirTwo/
+            └──json_files/
+                └──BasicClassWithDependencies.json
+        └──json_files/
+            └──BasicClassWithMain.json
+        ├──repoHierarchy.txt
+        └──requirements.txt
+    └──pom.xml
+
+
+    
